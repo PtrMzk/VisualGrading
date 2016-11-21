@@ -1,0 +1,70 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:t="clr-namespace:StudentTestReporting.Tests"
+             xmlns:help="clr-namespace:StudentTestReporting.Helpers"
+             xmlns:local="clr-namespace:StudentTestReporting"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+            xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
+            x:Class="StudentTestReporting.Tests.TestView"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             help:MVVMBehaviors.LoadedMethodName="LoadTests">
+    <!--<UserControl.DataContext>
+        <vm:TestViewModel />
+    </UserControl.DataContext>-->
+    <UserControl.InputBindings>
+        <KeyBinding Key="D"
+                    Command="{Binding DeleteCommand}" />
+    </UserControl.InputBindings>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <ei:CallMethodAction TargetObject="{Binding}" MethodName="LoadTests"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Button Content="Add Test"
+                    Command="{Binding AddTestCommand}"
+                    HorizontalAlignment="Left">
+            </Button>
+        </Grid>
+        <DataGrid ItemsSource="{Binding tests}"
+			AutoGenerateColumns ="False"
+			CanUserAddRows="False"
+			Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Subject}"
+					Width="*"/>
+                <DataGridTextColumn Binding="{Binding TestNumber}"
+					Width="*"/>
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Chart Test"
+								Command="{Binding DataContext.AddTestCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+								CommandParameter="{Binding}"
+								Margin="5"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Edit Test"
+								Command="{Binding DataContext.EditTestCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+								CommandParameter="{Binding}"
+								Margin="5"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

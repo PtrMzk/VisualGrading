@@ -1,0 +1,52 @@
+﻿<Window x:Class="StudentTestReporting.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentTestReporting"
+        xmlns:g="clr-namespace:StudentTestReporting.GraphicFrontEnd"
+        xmlns:c="clr-namespace:StudentTestReporting.Charts"
+        xmlns:t="clr-namespace:StudentTestReporting.Tests"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="Scholastic Notation Bookkeeping App" Height="506.522" Width="517.113">
+    <Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type t:TestViewModel}">
+            <t:TestView></t:TestView>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type t:AddEditTestViewModel}">
+            <t:AddEditTestView></t:AddEditTestView>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid x:Name ="NavBar">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Content ="Tests"
+                Command="{Binding NavCommand}"
+                CommandParameter="tests"
+                Grid.Column ="0">
+            </Button>
+            <Button Content ="Grades"
+                Command="{Binding NavCommand}"
+                CommandParameter="grades"
+                Grid.Column ="2">
+            </Button>
+        </Grid>
+        <Grid x:Name="MainContent"
+              Grid.Row="1">
+        <ContentControl Content="{Binding CurrentViewModel}"></ContentControl>
+    </Grid>
+    </Grid>
+</Window>
+
