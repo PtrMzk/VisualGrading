@@ -63,12 +63,14 @@ namespace StudentTestReporting.Tests
         //    List<Test> testsCopy = new List<Test>(tests);
         //    return testsCopy;
         //}
+        
 
         public async Task<List<Test>> GetTestsAsync(string fileLocation)
         {
             List<Test> tests = new List<Test>();
 
             //TODO: Make this file location dependent on a setting
+            //TODO: Test when the file and/or folder don't exist - causes issues
 
             try
             {
