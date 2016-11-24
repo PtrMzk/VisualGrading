@@ -68,13 +68,15 @@ namespace StudentTestReporting.Tests
         {
             List<Test> tests = new List<Test>();
 
-            if (!File.Exists(fileLocation))
-            {
-                await Helpers.JSONSerialization.SerializeJSONAsync(fileLocation, tests);
-            }
+            //TODO: Make this file location dependent on a setting
 
             try
             {
+                if (!File.Exists(fileLocation))
+                {
+                    await Helpers.JSONSerialization.SerializeJSONAsync(fileLocation, tests);
+                }
+
                 tests = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Test>>(fileLocation);
             }
             catch
