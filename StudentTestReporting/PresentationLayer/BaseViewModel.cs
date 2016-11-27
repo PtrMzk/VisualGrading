@@ -6,13 +6,13 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudentTestReporting.GraphicFrontEnd
+namespace StudentTestReporting.Presentation
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public virtual void SetProperty<T>(ref T member, T val,
+        protected virtual void SetProperty<T>(ref T member, T val,
             [CallerMemberName] string propertName = null)
         {
             if (object.Equals(member, val)) return;
@@ -20,7 +20,7 @@ namespace StudentTestReporting.GraphicFrontEnd
             PropertyChanged(this, new PropertyChangedEventArgs(propertName));
         }
 
-        public virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }

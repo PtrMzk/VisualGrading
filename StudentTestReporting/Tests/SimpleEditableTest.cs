@@ -1,20 +1,26 @@
-﻿using StudentTestReporting.GraphicFrontEnd;
+﻿using StudentTestReporting.Presentation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StudentTestReporting.Helpers;
 
 namespace StudentTestReporting.Tests
 {
-    public class SimpleEditableTest : BaseViewModel
+    public class SimpleEditableTest : ValidatableBaseViewModel
     {
+
+        #region Public Properties
+        [Required]
         public Guid TestID
         {
             get { return _testID; } 
             set { SetProperty(ref _testID, value); }
         }
 
+        [Required]
         public string Subject
         {
             get { return _subject; }
@@ -26,9 +32,6 @@ namespace StudentTestReporting.Tests
             get { return _testNumber; }
             set { SetProperty(ref _testNumber, value); }
         }
-
-        #region Public Properties
-        
         #endregion
 
         #region Private Properties

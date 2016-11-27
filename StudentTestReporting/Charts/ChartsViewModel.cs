@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 using StudentTestReporting.Tests;
 using StudentTestReporting.Grades;
 using StudentTestReporting.Helpers;
-using StudentTestReporting.GraphicFrontEnd;
+using StudentTestReporting.Presentation;
 
 namespace StudentTestReporting.Charts
 {
-    public class ChartViewModel : StudentTestReporting.GraphicFrontEnd.BaseViewModel
+    public class ChartViewModel : StudentTestReporting.Presentation.BaseViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

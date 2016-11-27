@@ -3,26 +3,74 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:StudentTestReporting"
-             xmlns:t="clr-namespace:StudentTestReporting.Tests" 
+             xmlns:local="clr-namespace:StudentTestReporting.Tests"
              x:Class="StudentTestReporting.Tests.AddEditTestView"
+             xmlns:h="clr-namespace:StudentTestReporting.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid x:Name="grid1" DataContext="{Binding Test}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
+    <UserControl.Resources>
+        <h:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
+        <h:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
+                                                 Negate="True" />
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError"
+                         Value="True">
+                    <Setter Property ="ToolTip"
+                            Value="{Binding RelativeSource={x:Static RelativeSource.Self},
+                        Path=(Validation.Errors).CurrentItem.ErrorContent}"/>
+                </Trigger>
+             
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label Content="Subject:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
-        <TextBox x:Name="subjectTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding Subject, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
-        <Label Content="Test ID:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center"/>
-        <TextBox x:Name="testIDTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" Text="{Binding TestID, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
-        <Label Content="Test Number:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center"/>
-        <TextBox x:Name="testNumberTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding TestNumber, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" VerticalAlignment="Center" Width="120"/>
+        <Grid x:Name="grid1" DataContext="{Binding Test}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Subject:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
+            <TextBox x:Name="subjectTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding Subject, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="Test ID:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center"/>
+            <TextBox x:Name="testIDTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" Text="{Binding TestID, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="Test Number:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center"/>
+            <TextBox x:Name="testNumberTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding TestNumber, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Button Content ="Save"
+                    Command ="{Binding SaveCommand}"
+                    Visibility ="{Binding EditMode, Converter={StaticResource VisConverter}}"
+                    HorizontalAlignment="Left"
+                    Margin="25,5,0,0"
+                    VerticalAlignment="Top"
+                    Width="75">
+            </Button>
+            <Button Content ="Add"
+                    Command ="{Binding SaveCommand}"
+                    Visibility ="{Binding EditMode, Converter={StaticResource NegVisConverter}}"
+                    HorizontalAlignment="Left"
+                    Margin="25,5,0,0"
+                    VerticalAlignment="Top"
+                    Width="75">
+            </Button>
+            <Button Content ="Cancel"
+                    Command ="{Binding CancelCommand}"
+                    HorizontalAlignment="Left"
+                    Margin="150,5,0,0"
+                    VerticalAlignment="Top"
+                    Width="75">
+            </Button>
+        </Grid>
+
     </Grid>
 </UserControl>

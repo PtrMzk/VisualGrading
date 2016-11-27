@@ -7,28 +7,27 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
-using StudentTestReporting.GraphicFrontEnd;
+using StudentTestReporting.Presentation;
+using StudentTestReporting.Helpers;
 
 namespace StudentTestReporting.Tests
 {
-    public class AddEditTestViewModel : StudentTestReporting.GraphicFrontEnd.BaseViewModel
+    public class AddEditTestViewModel : StudentTestReporting.Presentation.BaseViewModel
     {
         #region Constructor
 
-        public AddEditTestViewModel()
+        public AddEditTestViewModel(ITestManager manager)
         {
-
+            _manager = manager; 
+            CancelCommand = new RelayCommand(OnCancel);
+            SaveCommand = new RelayCommand(OnSave, CanSave);
         }
 
         #endregion
 
         #region Properties
 
-        public AddEditMode Mode
-        {
-            get { return _mode; }
-            set { SetProperty(ref _mode, value); }
-        }
+        private ITestManager _manager;
 
         private Test _editingTest = null;
 
@@ -39,13 +38,26 @@ namespace StudentTestReporting.Tests
         }
 
         private SimpleEditableTest _test;
-        private AddEditMode _mode;
 
-        public enum AddEditMode
+        private bool _editMode;
+
+        public bool EditMode
         {
-            AddMode,
-            EditMode
+            get { return _editMode; }
+            set { SetProperty(ref _editMode, value); }
         }
+
+        public RelayCommand CancelCommand
+        {
+            get; private set;
+        }
+
+        public RelayCommand SaveCommand
+        {
+            get; private set;
+        }
+
+        public event Action Done = delegate { };
 
         #endregion
 
@@ -54,21 +66,43 @@ namespace StudentTestReporting.Tests
         public void SetTest(Test test)
         {
             _editingTest = test;
+            if (Test != null) Test.ErrorsChanged -= RaiseCanExecuteChanged;
             Test = new SimpleEditableTest();
+            Test.ErrorsChanged += RaiseCanExecuteChanged;
             CopyTest(test, Test);
+        }
+
+        private void RaiseCanExecuteChanged(object sender, EventArgs e)
+        {
+            SaveCommand.RaiseCanExecuteChanged();
         }
 
         private void CopyTest(Test source, SimpleEditableTest target)
         {
             target.TestID = source.TestID;
 
-            if (Mode == AddEditMode.EditMode)
+            if (EditMode == true)
             {
                 target.Subject = source.Subject;
                 target.TestNumber = source.TestNumber;
             }
         }
 
+        private bool CanSave()
+        {
+            return !Test.HasErrors;
+        }
+
+        private async void OnSave()
+        {
+            Done();
+        }
+
+        private void OnCancel()
+        {
+            Done();
+
+        }
         #endregion
 
     }

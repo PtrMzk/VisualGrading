@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace StudentTestReporting.Tests
 {
-    public sealed class TestManager : INotifyPropertyChanged
+    public sealed class TestManager : INotifyPropertyChanged, ITestManager
     {
         #region Singleton Implementation
 

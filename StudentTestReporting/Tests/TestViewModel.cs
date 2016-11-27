@@ -9,35 +9,36 @@ using System.Windows.Input;
 using System.Windows;
 using StudentTestReporting.Tests;
 using StudentTestReporting.Helpers;
-using StudentTestReporting.GraphicFrontEnd;
+using StudentTestReporting.Presentation;
 
 namespace StudentTestReporting.Tests
 {
-    public class TestViewModel : StudentTestReporting.GraphicFrontEnd.BaseViewModel
+    public class TestViewModel : StudentTestReporting.Presentation.BaseViewModel
     {
 
         #region Singleton Implementation
+        //TODO: Is Singleton even needed here? 
+        //static readonly TestViewModel instance = new TestViewModel(ITestManager);
 
-        static readonly TestViewModel instance = new TestViewModel();
+        //static TestViewModel()
+        //{
 
-        static TestViewModel()
-        {
+        //}
 
-        }
-
-        public static TestViewModel Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        //public static TestViewModel Instance
+        //{
+        //    get
+        //    {
+        //        return instance;
+        //    }
+        //}
         #endregion
 
         #region Constructor
 
-        public TestViewModel()
+        public TestViewModel(ITestManager manager)
         {
+            _manager = manager; 
             DeleteCommand = new RelayCommand(OnDelete, CanDelete);
             AddTestCommand = new RelayCommand(OnAddTest);
             EditTestCommand = new RelayCommand<Test>(OnEditTest);
@@ -71,7 +72,7 @@ namespace StudentTestReporting.Tests
 
         #region Properties
 
-        private TestManager _TestManager = new TestManager();
+        private ITestManager _manager;
 
         private Test _selectedTest { get; set; }
 
@@ -122,7 +123,7 @@ namespace StudentTestReporting.Tests
             if (DesignerProperties.GetIsInDesignMode(
                new System.Windows.DependencyObject())) return;
             //var tests = new List<Test>();
-            tests = new ObservableCollection<Test>(await _TestManager.GetTestsAsync(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json"));
+            tests = new ObservableCollection<Test>(await _manager.GetTestsAsync(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json"));
             //if (tests == null || tests.Count == 0)
             //{
             //    Test test = new Test();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Practices.Unity;
 using StudentTestReporting;
 using StudentTestReporting.Charts;
 using StudentTestReporting.Grades;
@@ -12,24 +13,27 @@ using StudentTestReporting.Students;
 
 namespace StudentTestReporting
 {
-    class MainWindowViewModel : GraphicFrontEnd.BaseViewModel
+    class MainWindowViewModel : Presentation.BaseViewModel
     {
-        private TestViewModel _testViewModel = new TestViewModel();
+        private TestViewModel _testViewModel;
         private StudentViewModel _StudentViewModel = new StudentViewModel();
         private GradeViewModel _gradesViewModel = new GradeViewModel();
         private ChartViewModel _ChartViewModel = new ChartViewModel();
-        private AddEditTestViewModel _addEditTestViewModel = new AddEditTestViewModel();
+        private AddEditTestViewModel _addEditTestViewModel;
 
-        private GraphicFrontEnd.BaseViewModel _currentViewModel;
+        private Presentation.BaseViewModel _currentViewModel;
 
         public MainWindowViewModel()
         {
+            _testViewModel = ContainerHelper.Container.Resolve<TestViewModel>();
+            _addEditTestViewModel = ContainerHelper.Container.Resolve<AddEditTestViewModel>();
             NavCommand = new RelayCommand<string>(OnNav);
             _testViewModel.AddTestRequested += NavToAddTest;
             _testViewModel.EditTestRequested += NavToEditTest;
+            _addEditTestViewModel.Done += NavToTestList;
         }
 
-        public GraphicFrontEnd.BaseViewModel CurrentViewModel
+        public Presentation.BaseViewModel CurrentViewModel
         {
             get { return _currentViewModel; }
             set { SetProperty(ref _currentViewModel, value); }
@@ -39,14 +43,14 @@ namespace StudentTestReporting
         {
             //_ChartViewModel.Test = test;
             //CurrentViewModel = _ChartViewModel;
-            _addEditTestViewModel.Mode = AddEditTestViewModel.AddEditMode.AddMode;
+            _addEditTestViewModel.EditMode = false;
             _addEditTestViewModel.SetTest(test);
             CurrentViewModel = _addEditTestViewModel;
         }
 
         private void NavToEditTest(Test test)
         {
-            _addEditTestViewModel.Mode = AddEditTestViewModel.AddEditMode.EditMode;
+            _addEditTestViewModel.EditMode = true;
             _addEditTestViewModel.SetTest(test);
             CurrentViewModel = _addEditTestViewModel; 
         }
@@ -73,6 +77,12 @@ namespace StudentTestReporting
                     break;
 
             }
+        }
+
+        private void NavToTestList()
+        {
+            CurrentViewModel = _testViewModel;
+
         }
 
 

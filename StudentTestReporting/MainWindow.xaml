@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:StudentTestReporting"
-        xmlns:g="clr-namespace:StudentTestReporting.GraphicFrontEnd"
+        xmlns:g="clr-namespace:StudentTestReporting.Presentation"
         xmlns:c="clr-namespace:StudentTestReporting.Charts"
         xmlns:t="clr-namespace:StudentTestReporting.Tests"
         xmlns:oxy="http://oxyplot.org/wpf"
