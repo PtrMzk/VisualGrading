@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,7 +72,7 @@ namespace StudentTestReporting
                 case "charts":
                     CurrentViewModel = _ChartViewModel;
                     break;
-                case "tests":
+                case "ObservableTests":
                 default:
                     CurrentViewModel = _testViewModel;
                     break;
@@ -81,8 +82,9 @@ namespace StudentTestReporting
 
         private void NavToTestList()
         {
+            //TODO: Hack to get test lists to refresh with changes
+            _testViewModel.LoadTests();
             CurrentViewModel = _testViewModel;
-
         }
 
 

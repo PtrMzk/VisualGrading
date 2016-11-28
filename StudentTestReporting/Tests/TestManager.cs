@@ -1,12 +1,14 @@
 ﻿using StudentTestReporting.Grades;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using StudentTestReporting.Helpers;
 
 namespace StudentTestReporting.Tests
 {
@@ -18,12 +20,12 @@ namespace StudentTestReporting.Tests
 
         static TestManager()
         {
-            //TODO change this to read a list of tests
-            //tests = new List<Test>();
+            //TODO change this to read a list of ObservableTests
+            //ObservableTests = new List<Test>();
             try
             {
                 //TODO: Make this not use the the TestManager name
-                //GradeManager.GenerateGrades(StudentManager.students, TestManager.tests);
+                //GradeManager.GenerateGrades(StudentManager.students, TestManager.ObservableTests);
             }
             catch
             {
@@ -41,18 +43,20 @@ namespace StudentTestReporting.Tests
         }
         #endregion
 
+        private List<Test> _testList;
+
         public List<Test> TestList
         {
             get
             {
-                return TestList;
+                return _testList;
             }
             set
             {
-                if (TestList != value)
+                if (_testList != value)
                 {
-                    TestList = value;
-                    Instance.PropertyChanged(this, new PropertyChangedEventArgs("TestList"));
+                    _testList = value;
+                    Instance.PropertyChanged(null, new PropertyChangedEventArgs("TestList"));
                 }
 
             }
@@ -60,13 +64,19 @@ namespace StudentTestReporting.Tests
 
         //public static List<Test> GetTestsCopy()
         //{
-        //    List<Test> testsCopy = new List<Test>(tests);
+        //    List<Test> testsCopy = new List<Test>(ObservableTests);
         //    return testsCopy;
         //}
         
 
         public async Task<List<Test>> GetTestsAsync(string fileLocation)
         {
+            //TODO: This whole method needs a rewrite
+            if (TestList != null && TestList.Count > 0)
+            {
+                return TestList;
+            }
+
             List<Test> tests = new List<Test>();
 
             //TODO: Make this file location dependent on a setting
@@ -88,25 +98,47 @@ namespace StudentTestReporting.Tests
             if (tests == null || tests.Count == 0)
             {
                 tests = new List<Test>();
-                //tests = new List<Test>();
+                //ObservableTests = new List<Test>();
                 Test test = new Test() { Subject = "Test Test", TestNumber = 1 };
-                //test = BinarySerialization.ReadFromBinaryFile<Test>(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.bin");
+                //test = BinarySerialization.ReadFromBinaryFile<Test>(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json");
                 tests.Add(test);
+            }
 
+            //TODO: Come up with a better design for keeping TestManager in line with wherever else needs this information
+            if (TestList == null)
+            {
+                TestList = tests; 
             }
 
             return tests;
         }
 
+        public async void UpdateTestAsync(Test updatedTest)
+        {
+            foreach (Test currentTest in TestList)
+            {
+                if (currentTest.TestID == updatedTest.TestID)
+                {
+                    TestList.Remove(currentTest);
+                    TestList.Add(updatedTest);
+                    break;
+                }
+            }
+            GradeManager.GenerateGrades(TestList);
+            await JSONSerialization.SerializeJSONAsync(
+    @"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json", TestList);
+        }
 
-
-        public void Add(Test test)
+        public async void AddTestAsync(Test test)
         {
             TestList.Add(test);
             GradeManager.GenerateGrades(TestList);
+            await JSONSerialization.SerializeJSONAsync(
+                @"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json", TestList);
+
         }
 
-        public void Remove(Test test)
+        public void RemoveTest(Test test)
         {
         }
 

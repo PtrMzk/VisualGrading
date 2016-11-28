@@ -128,7 +128,7 @@
 //            List<object> objHeaders = new List<object>();
 //            for (int n = 0; n < headerInfo.Length; n++)
 //            {
-//                objHeaders.Add(headerInfo[n].Name);
+//                objHeaders.AddTest(headerInfo[n].Name);
 //            }
 
 //            var headerToAdd = objHeaders.ToArray();
@@ -166,7 +166,7 @@
 //        {
 //            _excelApp = new Excel.Application();
 //            _books = (Excel.Workbooks)_excelApp.Workbooks;
-//            _book = (Excel._Workbook)(_books.Add(_optionalValue));
+//            _book = (Excel._Workbook)(_books.AddTest(_optionalValue));
 //            _sheets = (Excel.Sheets)_book.Worksheets;
 //            _sheet = (Excel._Worksheet)(_sheets.get_Item(1));
 //        }

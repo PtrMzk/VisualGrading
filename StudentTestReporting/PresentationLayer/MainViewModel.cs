@@ -122,7 +122,7 @@ namespace StudentTestReporting.Presentation
 
 
                 //
-                //insert blank tests so each subject has same number of tests
+                //insert blank ObservableTests so each subject has same number of ObservableTests
                 foreach (DistinctSubject subject in distinctSubjectList)
                 {
                     if (subject.maxTestNumber < maxTestNumber)
@@ -161,7 +161,7 @@ namespace StudentTestReporting.Presentation
 
 
 
-                //populate subjects up to the max number of tests
+                //populate subjects up to the max number of ObservableTests
 
                 var gradesOrderBySubject = tempGradesAveraged.OrderBy(x => x.Subject).ToList();
 

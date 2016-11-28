@@ -34,7 +34,7 @@
             </Grid.ColumnDefinitions>
             <Button Content ="Tests"
                 Command="{Binding NavCommand}"
-                CommandParameter="tests"
+                CommandParameter="ObservableTests"
                 Grid.Column ="0">
             </Button>
             <Button Content ="Grades"

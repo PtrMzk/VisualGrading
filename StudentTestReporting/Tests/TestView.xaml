@@ -30,15 +30,28 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width ="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Button Content="Add Test"
                     Command="{Binding AddTestCommand}"
+                    Grid.Column="0"
                     HorizontalAlignment="Left">
             </Button>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1">
+            <Label Content="Search:"/>
+            <TextBox Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
+                     Width="150"/>
+            <Button Content="X"
+                    Command="{Binding ClearSearchCommand}"/>
+            </StackPanel>
         </Grid>
-        <DataGrid ItemsSource="{Binding tests}"
+        <DataGrid ItemsSource="{Binding ObservableTests}"
 			AutoGenerateColumns ="False"
-			CanUserAddRows="False"
-			Grid.Row="1">
+			CanUserAddRows="False" Margin="10,-225,-10,251" Grid.RowSpan="2">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Subject}"
 					Width="*"/>

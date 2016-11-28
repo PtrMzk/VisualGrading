@@ -11,8 +11,10 @@ namespace StudentTestReporting.Tests
     {
         List<Test> TestList { get; set; }
         Task<List<Test>> GetTestsAsync(string fileLocation);
-        void Add(Test test);
-        void Remove(Test test);
+        void AddTestAsync(Test test);
+        void RemoveTest(Test test);
+        void UpdateTestAsync(Test test);
+
         event PropertyChangedEventHandler PropertyChanged;
     }
 }

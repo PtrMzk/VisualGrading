@@ -18,7 +18,7 @@ namespace StudentTestReporting.Tests
 
         public AddEditTestViewModel(ITestManager manager)
         {
-            _manager = manager; 
+            _manager = manager;
             CancelCommand = new RelayCommand(OnCancel);
             SaveCommand = new RelayCommand(OnSave, CanSave);
         }
@@ -77,6 +77,14 @@ namespace StudentTestReporting.Tests
             SaveCommand.RaiseCanExecuteChanged();
         }
 
+        private void UpdateTest(SimpleEditableTest source, Test destination)
+        {
+            destination.Subject = source.Subject;
+            destination.TestID = source.TestID;
+            destination.TestNumber = source.TestNumber;
+
+        }
+
         private void CopyTest(Test source, SimpleEditableTest target)
         {
             target.TestID = source.TestID;
@@ -95,6 +103,15 @@ namespace StudentTestReporting.Tests
 
         private async void OnSave()
         {
+            UpdateTest(Test, _editingTest);
+            if (EditMode)
+            {
+                _manager.UpdateTestAsync(_editingTest);
+            }
+            else
+            {
+                _manager.AddTestAsync(_editingTest);
+            }
             Done();
         }
 

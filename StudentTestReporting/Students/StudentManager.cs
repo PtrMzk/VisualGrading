@@ -24,7 +24,7 @@ namespace StudentTestReporting.Students
                 //student = BinarySerialization.ReadFromBinaryFile<Student>(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\student.bin");
                 students.Add(student);
                 //TODO: Make not use TestManager 
-                //GradeManager.GenerateGrades(StudentManager.students, TestManager.tests);
+                //GradeManager.GenerateGrades(StudentManager.students, TestManager.ObservableTests);
             }
             catch
             {

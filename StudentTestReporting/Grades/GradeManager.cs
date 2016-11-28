@@ -45,7 +45,7 @@ namespace StudentTestReporting.Grades
         public static void GenerateGrades(List<Student> students)
         {
             //TODO: Make this not use the TestManager instance
-            //GenerateGrades(students, TestManager.tests);
+            //GenerateGrades(students, TestManager.ObservableTests);
         }
            
 

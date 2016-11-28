@@ -38,27 +38,29 @@ namespace StudentTestReporting.Tests
 
         public TestViewModel(ITestManager manager)
         {
-            _manager = manager; 
-            DeleteCommand = new RelayCommand(OnDelete, CanDelete);
+            _manager = manager;
+            DeleteTestCommand = new RelayCommand(OnDelete, CanDelete);
             AddTestCommand = new RelayCommand(OnAddTest);
             EditTestCommand = new RelayCommand<Test>(OnEditTest);
+            ClearSearchCommand = new RelayCommand(OnClearSearch);
+
 
             //TODO: delete the below if not needed, clean this up to set the private variable test
-            //var _tests = new ObservableCollection<Test>();
-            //this._tests = new ObservableCollection<Test>();
+            //var _observableTests = new ObservableCollection<Test>();
+            //this._observableTests = new ObservableCollection<Test>();
 
-            //this._tests.Add(new Test()
+            //this._observableTests.AddTest(new Test()
             //{
             //    Subject = "Computer Programming",
             //    TestNumber = 1
             //});
-            //this._tests.Add(new Test()
+            //this._observableTests.AddTest(new Test()
             //{
 
             //    Subject = "Computer Programming",
             //    TestNumber = 2
             //});
-            //this._tests.Add(new Test()
+            //this._observableTests.AddTest(new Test()
             //{
 
             //    Subject = "Science",
@@ -74,6 +76,23 @@ namespace StudentTestReporting.Tests
 
         private ITestManager _manager;
 
+        private ObservableCollection<Test> _observableTests;
+
+        public ObservableCollection<Test> ObservableTests
+        {
+            get
+            {
+                return _observableTests;
+            }
+            set
+            {
+                SetProperty(ref _observableTests, value);
+                //PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
+            }
+        }
+
+        private List<Test> _allTests;
+
         private Test _selectedTest { get; set; }
 
         public Test SelectedTest
@@ -87,32 +106,37 @@ namespace StudentTestReporting.Tests
                 if (_selectedTest != value)
                 {
                     _selectedTest = value;
-                    DeleteCommand.RaiseCanExecuteChanged();
+                    DeleteTestCommand.RaiseCanExecuteChanged();
                     PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
                 }
             }
         }
 
-        public RelayCommand DeleteCommand { get; private set; }
+        public RelayCommand DeleteTestCommand { get; private set; }
 
         public RelayCommand AddTestCommand { get; private set; }
 
         public RelayCommand<Test> EditTestCommand { get; private set; }
 
-        private ObservableCollection<Test> _tests;
+        public RelayCommand ClearSearchCommand { get; private set; }
 
-        public ObservableCollection<Test> tests
+        private string _searchInput;
+
+        public string SearchInput
         {
             get
             {
-                return _tests;
+                return _searchInput;
+
             }
             set
             {
-                SetProperty(ref _tests, value);
-                //PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
+                SetProperty(ref _searchInput, value);
+                FilterTests(_searchInput);
+
             }
         }
+
 
         #endregion
 
@@ -122,25 +146,43 @@ namespace StudentTestReporting.Tests
         {
             if (DesignerProperties.GetIsInDesignMode(
                new System.Windows.DependencyObject())) return;
-            //var tests = new List<Test>();
-            tests = new ObservableCollection<Test>(await _manager.GetTestsAsync(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json"));
-            //if (tests == null || tests.Count == 0)
+            //var ObservableTests = new List<Test>();
+            _allTests =
+                await
+                    _manager.GetTestsAsync(
+                        @"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json");
+            ObservableTests = new ObservableCollection<Test>(_allTests);
+            //if (ObservableTests == null || ObservableTests.Count == 0)
             //{
             //    Test test = new Test();
             //    test.TestList();
-            //    tests.Add(test);
-            PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
+            //    ObservableTests.AddTest(test);
+
+            PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
             //}
+        }
+
+        private void FilterTests(string searchInput)
+        {
+            if (string.IsNullOrWhiteSpace(searchInput))
+            {
+                ObservableTests = new ObservableCollection<Test>(_allTests);
+                return;
+            }
+            else
+            {
+                ObservableTests = new ObservableCollection<Test>(_allTests.Where(t => t.Subject.ToLower().Contains(searchInput.ToLower())));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         private void OnDelete()
         {
-            tests.Remove(SelectedTest);
+            ObservableTests.Remove(SelectedTest);
         }
 
-        //TODO: Remove below method - its a temp method for the Add Test > Charting workflow
+        //TODO: RemoveTest below method - its a temp method for the AddTest Test > Charting workflow
         //private void OnAddTest(Test test)
         //{
         //    test.TestNumber += 1;
@@ -170,13 +212,11 @@ namespace StudentTestReporting.Tests
             return SelectedTest != null;
         }
 
+        private void OnClearSearch()
+        {
+            SearchInput = null;
+        }
+
         #endregion
-
-
-
-
-
-
-
     }
 }
