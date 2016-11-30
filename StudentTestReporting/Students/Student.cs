@@ -19,8 +19,6 @@ namespace StudentTestReporting.Students
         }
         public string Nickname { get; set; }
 
-
-
         #region StudentRefreshEvent
         public delegate void StudentRefreshEventHandler(object sender, EventArgs args);
 
@@ -57,8 +55,6 @@ namespace StudentTestReporting.Students
                 }
                 );
             }
-
-
             return students;
         }
 

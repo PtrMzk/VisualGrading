@@ -16,7 +16,7 @@ namespace StudentTestReporting.Tests
     {
         #region Singleton Implementation
 
-        static readonly TestManager instance = new TestManager();
+        private static readonly TestManager _instance = new TestManager();
 
         static TestManager()
         {
@@ -26,19 +26,18 @@ namespace StudentTestReporting.Tests
             {
                 //TODO: Make this not use the the TestManager name
                 //GradeManager.GenerateGrades(StudentManager.students, TestManager.ObservableTests);
-            }
+            } 
             catch
             {
 
             }
-
         }
 
         public static TestManager Instance
         {
             get
             {
-                return instance;
+                return _instance;
             }
         }
         #endregion
@@ -69,8 +68,10 @@ namespace StudentTestReporting.Tests
         //}
         
 
-        public async Task<List<Test>> GetTestsAsync(string fileLocation)
+        public async Task<List<Test>> GetTestsAsync()
         {
+            string testFileLocation = SettingManager.Instance.TestFileLocation;
+
             //TODO: This whole method needs a rewrite
             if (TestList != null && TestList.Count > 0)
             {
@@ -84,12 +85,12 @@ namespace StudentTestReporting.Tests
 
             try
             {
-                if (!File.Exists(fileLocation))
+                if (!File.Exists(testFileLocation))
                 {
-                    await Helpers.JSONSerialization.SerializeJSONAsync(fileLocation, tests);
+                    await Helpers.JSONSerialization.SerializeJSONAsync(testFileLocation, tests);
                 }
 
-                tests = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Test>>(fileLocation);
+                tests = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Test>>(testFileLocation);
             }
             catch
             {
@@ -126,7 +127,7 @@ namespace StudentTestReporting.Tests
             }
             GradeManager.GenerateGrades(TestList);
             await JSONSerialization.SerializeJSONAsync(
-    @"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json", TestList);
+            SettingManager.Instance.TestFileLocation, TestList);
         }
 
         public async void AddTestAsync(Test test)
@@ -134,8 +135,7 @@ namespace StudentTestReporting.Tests
             TestList.Add(test);
             GradeManager.GenerateGrades(TestList);
             await JSONSerialization.SerializeJSONAsync(
-                @"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json", TestList);
-
+                SettingManager.Instance.TestFileLocation, TestList);
         }
 
         public void RemoveTest(Test test)

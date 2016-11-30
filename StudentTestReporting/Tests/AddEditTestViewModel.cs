@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows;
-using StudentTestReporting.Presentation;
 using StudentTestReporting.Helpers;
+using StudentTestReporting.Presentation;
 
 namespace StudentTestReporting.Tests
 {
-    public class AddEditTestViewModel : StudentTestReporting.Presentation.BaseViewModel
+    public class AddEditTestViewModel : BaseViewModel
     {
         #region Constructor
 
@@ -27,9 +19,9 @@ namespace StudentTestReporting.Tests
 
         #region Properties
 
-        private ITestManager _manager;
+        private readonly ITestManager _manager;
 
-        private Test _editingTest = null;
+        private Test _editingTest;
 
         public SimpleEditableTest Test
         {
@@ -47,15 +39,9 @@ namespace StudentTestReporting.Tests
             set { SetProperty(ref _editMode, value); }
         }
 
-        public RelayCommand CancelCommand
-        {
-            get; private set;
-        }
+        public RelayCommand CancelCommand { get; private set; }
 
-        public RelayCommand SaveCommand
-        {
-            get; private set;
-        }
+        public RelayCommand SaveCommand { get; }
 
         public event Action Done = delegate { };
 
@@ -82,14 +68,13 @@ namespace StudentTestReporting.Tests
             destination.Subject = source.Subject;
             destination.TestID = source.TestID;
             destination.TestNumber = source.TestNumber;
-
         }
 
         private void CopyTest(Test source, SimpleEditableTest target)
         {
             target.TestID = source.TestID;
 
-            if (EditMode == true)
+            if (EditMode)
             {
                 target.Subject = source.Subject;
                 target.TestNumber = source.TestNumber;
@@ -105,22 +90,17 @@ namespace StudentTestReporting.Tests
         {
             UpdateTest(Test, _editingTest);
             if (EditMode)
-            {
                 _manager.UpdateTestAsync(_editingTest);
-            }
             else
-            {
                 _manager.AddTestAsync(_editingTest);
-            }
             Done();
         }
 
         private void OnCancel()
         {
             Done();
-
         }
-        #endregion
 
+        #endregion
     }
 }

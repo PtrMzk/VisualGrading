@@ -149,8 +149,7 @@ namespace StudentTestReporting.Tests
             //var ObservableTests = new List<Test>();
             _allTests =
                 await
-                    _manager.GetTestsAsync(
-                        @"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json");
+                    _manager.GetTestsAsync();
             ObservableTests = new ObservableCollection<Test>(_allTests);
             //if (ObservableTests == null || ObservableTests.Count == 0)
             //{

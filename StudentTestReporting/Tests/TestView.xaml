@@ -12,9 +12,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              help:MVVMBehaviors.LoadedMethodName="LoadTests">
-    <!--<UserControl.DataContext>
-        <vm:TestViewModel />
-    </UserControl.DataContext>-->
     <UserControl.InputBindings>
         <KeyBinding Key="D"
                     Command="{Binding DeleteCommand}" />
@@ -42,16 +39,16 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         Grid.Column="1">
-            <Label Content="Search:"/>
-            <TextBox Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
+                <Label Content="Search:"/>
+                <TextBox Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
                      Width="150"/>
-            <Button Content="X"
+                <Button Content="X"
                     Command="{Binding ClearSearchCommand}"/>
             </StackPanel>
         </Grid>
         <DataGrid ItemsSource="{Binding ObservableTests}"
 			AutoGenerateColumns ="False"
-			CanUserAddRows="False" Margin="10,-225,-10,251" Grid.RowSpan="2">
+			CanUserAddRows="False" Grid.Row="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Subject}"
 					Width="*"/>

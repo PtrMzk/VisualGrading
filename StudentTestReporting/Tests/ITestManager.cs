@@ -10,7 +10,7 @@ namespace StudentTestReporting.Tests
     public interface ITestManager
     {
         List<Test> TestList { get; set; }
-        Task<List<Test>> GetTestsAsync(string fileLocation);
+        Task<List<Test>> GetTestsAsync();
         void AddTestAsync(Test test);
         void RemoveTest(Test test);
         void UpdateTestAsync(Test test);

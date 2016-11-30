@@ -98,6 +98,7 @@
     </ApplicationDefinition>
     <Compile Include="Helpers\ContainerHelper.cs" />
     <Compile Include="Helpers\NegateBooleanVisibilityConverter.cs" />
+    <Compile Include="Helpers\SettingManager.cs" />
     <Compile Include="Helpers\ValidateBaseViewModel.cs" />
     <Compile Include="Tests\AddEditTestView.xaml.cs">
       <DependentUpon>AddEditTestView.xaml</DependentUpon>
