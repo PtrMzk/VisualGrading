@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace StudentTestReporting.Tests
+namespace VisualGrading.Tests
 {
     /// <summary>
     /// Interaction logic for AddEditTestView.xaml

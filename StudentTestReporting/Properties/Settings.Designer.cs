@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace StudentTestReporting.Properties
+namespace VisualGrading.Properties
 {
 
 

@@ -1,4 +1,4 @@
-﻿using StudentTestReporting.Grades;
+﻿using VisualGrading.Grades;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,10 +8,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Helpers;
-using StudentTestReporting;
+using VisualGrading.Helpers;
+using VisualGrading;
 
-namespace StudentTestReporting.Students
+namespace VisualGrading.Students
 {
     public sealed class StudentManager : INotifyPropertyChanged, IStudentManager
     {
@@ -78,7 +78,7 @@ namespace StudentTestReporting.Students
                 Student jack = new Student() { FirstName = "Jack", LastName = "Dawson",  EmailAddress = "PokerMaster@gmail.com", OverallGrade = 95.7m};
                 Student rose = new Student() { FirstName = "Rose DeWitt", LastName = "Buktater", Nickname = "Rose", EmailAddress = "IllNeverLetGo@hotmail.com", ParentEmailAddress = "CalFanz@yahoo.com", OverallGrade = 93.4m};
                 Student cal = new Student() { FirstName = "Cal", LastName = "Hockley",  EmailAddress = "LeftHeartOfTheOceanInMyJacketPocket@hotmail.com", OverallGrade = 78.3m};
-                //Student = BinarySerialization.ReadFromBinaryFile<Student>(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\Student.json");
+                //Student = BinarySerialization.ReadFromBinaryFile<Student>(@"C:\Visual Studio Code\VisualGrading\VisualGrading\SaveFiles\Student.json");
                 Students.Add(jack);
                 Students.Add(rose);
                 Students.Add(cal);

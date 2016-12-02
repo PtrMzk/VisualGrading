@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace StudentTestReporting.Presentation
+namespace VisualGrading.Presentation
 {
     using Grades;
     using OxyPlot;

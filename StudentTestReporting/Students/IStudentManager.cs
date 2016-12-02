@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 
-namespace StudentTestReporting.Students
+namespace VisualGrading.Students
 {
     public interface IStudentManager
     {

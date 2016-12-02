@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
-using StudentTestReporting;
-using StudentTestReporting.Charts;
-using StudentTestReporting.Grades;
-using StudentTestReporting.Tests;
-using StudentTestReporting.Helpers;
-using StudentTestReporting.Students;
+using VisualGrading;
+using VisualGrading.Charts;
+using VisualGrading.Grades;
+using VisualGrading.Tests;
+using VisualGrading.Helpers;
+using VisualGrading.Students;
 
-namespace StudentTestReporting
+namespace VisualGrading
 {
     class MainWindowViewModel : Presentation.BaseViewModel
     {
@@ -34,10 +34,14 @@ namespace StudentTestReporting
             _studentViewModel = ContainerHelper.Container.Resolve<StudentViewModel>();
             _addEditStudentViewModel = ContainerHelper.Container.Resolve<AddEditStudentViewModel>();
             NavCommand = new RelayCommand<string>(OnNav);
+
             _testViewModel.AddRequested += NavToAddTest;
             _testViewModel.AddSeriesRequested += NavToAddTestSeries;
+            _studentViewModel.AddRequested += NavToAddStudent;
             _testViewModel.EditRequested += NavToEditTest;
+            _studentViewModel.EditRequested += NavToEditStudent;
             _addEditTestViewModel.Done += NavToTestList;
+            _addEditStudentViewModel.Done += NavToStudentList;
             _addEditTestSeriesViewModel.Done += NavToTestList;
 
         }
@@ -61,7 +65,23 @@ namespace StudentTestReporting
         {
             _addEditTestViewModel.EditMode = true;
             _addEditTestViewModel.SetTest(test);
-            CurrentViewModel = _addEditTestViewModel; 
+            CurrentViewModel = _addEditTestViewModel;
+        }
+
+        private void NavToAddStudent(Student student)
+        {
+            //_ChartViewModel.Test = test;
+            //CurrentViewModel = _ChartViewModel;
+            _addEditStudentViewModel.EditMode = false;
+            _addEditStudentViewModel.SetStudent(student);
+            CurrentViewModel = _addEditStudentViewModel;
+        }
+
+        private void NavToEditStudent(Student student)
+        {
+            _addEditStudentViewModel.EditMode = true;
+            _addEditStudentViewModel.SetStudent(student);
+            CurrentViewModel = _addEditStudentViewModel;
         }
 
         public RelayCommand<string> NavCommand { get; private set; }
@@ -93,6 +113,13 @@ namespace StudentTestReporting
             //TODO: Hack to get test lists to refresh with changes
             _testViewModel.LoadTests();
             CurrentViewModel = _testViewModel;
+        }
+
+        private void NavToStudentList()
+        {
+            //TODO: Hack to get students lists to refresh with changes
+            _studentViewModel.LoadStudents();
+            CurrentViewModel = _studentViewModel;
         }
 
         private void NavToAddTestSeries(TestSeries testSeries)

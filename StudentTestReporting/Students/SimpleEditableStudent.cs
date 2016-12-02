@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Helpers;
+using VisualGrading.Helpers;
 
-namespace StudentTestReporting.Students
+namespace VisualGrading.Students
 {
     public class SimpleEditableStudent : ValidatableBaseViewModel
     {
@@ -30,6 +30,12 @@ namespace StudentTestReporting.Students
             set { SetProperty(ref _lastName, value); }
         }
 
+        public string Nickname
+        {
+            get { return _nickname; }
+            set { SetProperty(ref _nickname, value); }
+        }
+
         public string EmailAddress
         {
             get { return _emailAddress; }
@@ -49,6 +55,7 @@ namespace StudentTestReporting.Students
         private Guid _studentID;
         private string _firstName;
         private string _lastName;
+        private string _nickname;
         private string _emailAddress;
         private string _parentEmailAddress;
         

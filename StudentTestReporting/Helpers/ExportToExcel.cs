@@ -17,7 +17,7 @@
 //using System.ComponentModel;
 
 
-//namespace StudentTestReporting.Helpers
+//namespace VisualGrading.Helpers
 //{
 //    public class ExportToExcel<T, U>
 //           where T : class

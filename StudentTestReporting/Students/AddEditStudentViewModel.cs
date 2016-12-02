@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Presentation;
+using VisualGrading.Helpers;
+using VisualGrading.Presentation;
 
-namespace StudentTestReporting.Students
+namespace VisualGrading.Students
 {
     public class AddEditStudentViewModel : BaseViewModel
     {
@@ -26,7 +27,7 @@ namespace StudentTestReporting.Students
 
         private Student _editingStudent;
 
-        public SimpleEditableStudent Student
+        public SimpleEditableStudent EditingStudent
         {
             get { return _Student; }
             set { SetProperty(ref _Student, value); }
@@ -52,13 +53,13 @@ namespace StudentTestReporting.Students
 
         #region Methods
 
-        public void SetStudent(Student Student)
+        public void SetStudent(Student student)
         {
-            _editingStudent = Student;
-            if (Student != null) Student.ErrorsChanged -= RaiseCanExecuteChanged;
-            Student = new SimpleEditableStudent();
-            Student.ErrorsChanged += RaiseCanExecuteChanged;
-            CopyStudent(Student, Student);
+            _editingStudent = student;
+            if (EditingStudent != null) EditingStudent.ErrorsChanged -= RaiseCanExecuteChanged;
+            EditingStudent = new SimpleEditableStudent();
+            EditingStudent.ErrorsChanged += RaiseCanExecuteChanged;
+            CopyStudent(student, EditingStudent);
         }
 
         private void RaiseCanExecuteChanged(object sender, EventArgs e)
@@ -68,12 +69,13 @@ namespace StudentTestReporting.Students
 
         private void UpdateStudent(SimpleEditableStudent source, Student destination)
         {
-            destination.Subject = source.Subject;
             destination.StudentID = source.StudentID;
-            destination.SeriesNumber = source.SeriesNumber;
-            destination.Date = source.Date;
-            destination.Name = source.Name;
-            destination.SubCategory = source.SubCategory;
+            destination.FirstName = source.FirstName;
+            destination.LastName = source.LastName;
+            destination.Nickname = source.Nickname;
+            destination.EmailAddress = source.EmailAddress;
+            destination.ParentEmailAddress = source.ParentEmailAddress;
+
         }
 
         private void CopyStudent(Student source, SimpleEditableStudent destination)
@@ -82,22 +84,24 @@ namespace StudentTestReporting.Students
 
             if (EditMode)
             {
-                destination.Subject = source.Subject;
-                destination.SeriesNumber = source.SeriesNumber;
-                destination.Date = source.Date;
-                destination.Name = source.Name;
-                destination.SubCategory = source.SubCategory;
+                destination.StudentID = source.StudentID;
+                destination.FirstName = source.FirstName;
+                destination.LastName = source.LastName;
+                destination.Nickname = source.Nickname;
+                destination.EmailAddress = source.EmailAddress;
+                destination.ParentEmailAddress = source.ParentEmailAddress;
+
             }
         }
 
         private bool CanSave()
         {
-            return !Student.HasErrors;
+            return !EditingStudent.HasErrors;
         }
 
         private async void OnSave()
         {
-            UpdateStudent(Student, _editingStudent);
+            UpdateStudent(EditingStudent, _editingStudent);
             if (EditMode)
                 _manager.UpdateStudentAsync(_editingStudent);
             else

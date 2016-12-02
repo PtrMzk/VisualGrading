@@ -5,11 +5,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using StudentTestReporting.Students;
-using StudentTestReporting.Tests;
-using StudentTestReporting.Grades;
+using VisualGrading.Students;
+using VisualGrading.Tests;
+using VisualGrading.Grades;
 
-namespace StudentTestReporting
+namespace VisualGrading
 {
     public partial class MainWindow : Window
     {

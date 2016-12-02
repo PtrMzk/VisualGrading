@@ -1,5 +1,5 @@
-﻿using StudentTestReporting.Presentation;
-using StudentTestReporting.Students;
+﻿using VisualGrading.Presentation;
+using VisualGrading.Students;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,9 +7,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Helpers;
+using VisualGrading.Helpers;
 
-namespace StudentTestReporting.Students
+namespace VisualGrading.Students
 {
     public class StudentViewModel : BaseViewModel
     {

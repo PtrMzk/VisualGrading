@@ -6,9 +6,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Presentation;
+using VisualGrading.Presentation;
 
-namespace StudentTestReporting.Helpers
+namespace VisualGrading.Helpers
 {
     public class ValidatableBaseViewModel : BaseViewModel, INotifyDataErrorInfo
     {

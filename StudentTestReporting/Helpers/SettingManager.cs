@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudentTestReporting.Helpers
+namespace VisualGrading.Helpers
 {
     public sealed class SettingManager
     {

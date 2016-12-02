@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:StudentTestReporting.Tests"
-             x:Class="StudentTestReporting.Tests.AddEditTestSeriesView"
-             xmlns:h="clr-namespace:StudentTestReporting.Helpers"
+             xmlns:local="clr-namespace:VisualGrading.Tests"
+             x:Class="VisualGrading.Tests.AddEditTestSeriesView"
+             xmlns:h="clr-namespace:VisualGrading.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -25,7 +25,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="grid1" DataContext="{Binding TestSeries}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
+        <Grid x:Name="grid1" DataContext="{Binding EditingTestSeries}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

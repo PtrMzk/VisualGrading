@@ -1,13 +1,13 @@
-﻿using StudentTestReporting.Helpers;
-using StudentTestReporting.Students;
-using StudentTestReporting.Tests;
+﻿using VisualGrading.Helpers;
+using VisualGrading.Students;
+using VisualGrading.Tests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudentTestReporting.Grades
+namespace VisualGrading.Grades
 {
     public sealed class GradeManager
     {
@@ -18,7 +18,7 @@ namespace StudentTestReporting.Grades
         {
             try
             {
-                grades = BinarySerialization.ReadFromBinaryFile<List<Grade>>(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\grade.bin");
+                grades = BinarySerialization.ReadFromBinaryFile<List<Grade>>(@"C:\Visual Studio Code\VisualGrading\VisualGrading\SaveFiles\grade.bin");
             }
             catch
             {

@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VisualGrading.Tests"
-             x:Class="VisualGrading.Tests.AddEditTestView"
+             x:Class="VisualGrading.Students.AddEditStudentView"
              xmlns:h="clr-namespace:VisualGrading.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -20,7 +19,7 @@
                             Value="{Binding RelativeSource={x:Static RelativeSource.Self},
                         Path=(Validation.Errors).CurrentItem.ErrorContent}"/>
                 </Trigger>
-             
+
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
@@ -29,8 +28,9 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="grid1" DataContext="{Binding EditingTest}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
+        <Grid x:Name="grid1" DataContext="{Binding EditingStudent}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -40,14 +40,16 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
-            <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding Name, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
-            <Label Content="Subject:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center"/>
-            <TextBox x:Name="subjectTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" Text="{Binding Subject, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
-            <Label Content="SubCategory:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center"/>
-            <TextBox x:Name="subCategoryTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding SubCategory, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
-            <Label Content="Date:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center"/>
-            <TextBox x:Name="dateTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" Text="{Binding Date, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="First Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
+            <TextBox x:Name="firstNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding FirstName, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="Last Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center"/>
+            <TextBox x:Name="lastNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" Text="{Binding LastName, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="Nickname:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center"/>
+            <TextBox x:Name="nicknameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding Nickname, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="Email:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center"/>
+            <TextBox x:Name="emailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" Text="{Binding EmailAddress, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="Parent Email:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4" VerticalAlignment="Center"/>
+            <TextBox x:Name="parentEmailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="4" Text="{Binding ParentEmailAddress, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
         </Grid>
         <Grid Grid.Row="1">
             <Button Content ="Save"

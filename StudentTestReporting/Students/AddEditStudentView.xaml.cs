@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace VisualGrading.Tests
+namespace VisualGrading.Students
 {
     /// <summary>
-    /// Interaction logic for AddEditTestSeriesView.xaml
+    /// Interaction logic for AddEditStudentView.xaml
     /// </summary>
-    public partial class AddEditTestSeriesView : UserControl
+    public partial class AddEditStudentView : UserControl
     {
-        public AddEditTestSeriesView()
+        public AddEditStudentView()
         {
             InitializeComponent();
         }

@@ -100,6 +100,9 @@
     <Compile Include="Helpers\NegateBooleanVisibilityConverter.cs" />
     <Compile Include="Helpers\SettingManager.cs" />
     <Compile Include="Helpers\ValidateBaseViewModel.cs" />
+    <Compile Include="Students\AddEditStudentView.xaml.cs">
+      <DependentUpon>AddEditStudentView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Students\AddEditStudentViewModel.cs" />
     <Compile Include="Students\IStudentManager.cs" />
     <Compile Include="Students\SimpleEditableStudent.cs" />
@@ -146,6 +149,10 @@
     <Compile Include="Grades\GradeViewModel.cs" />
     <Compile Include="Students\StudentViewModel.cs" />
     <Compile Include="Tests\TestViewModel.cs" />
+    <Page Include="Students\AddEditStudentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Tests\AddEditTestSeriesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

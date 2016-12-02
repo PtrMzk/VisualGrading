@@ -4,10 +4,10 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Students;
-using StudentTestReporting.Tests;
+using VisualGrading.Students;
+using VisualGrading.Tests;
 
-namespace StudentTestReporting.Grades
+namespace VisualGrading.Grades
 {
     [Serializable]
     public class Grades : List<Grade> { }

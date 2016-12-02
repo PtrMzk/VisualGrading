@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
-namespace StudentTestReporting.Helpers
+namespace VisualGrading.Helpers
 {
     public class NegatableBooleanToVisibilityConverter : IValueConverter
     {

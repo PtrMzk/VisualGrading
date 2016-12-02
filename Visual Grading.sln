@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentTestReporting", "StudentTestReporting\StudentTestReporting.csproj", "{425DB637-EBC7-4C56-8094-B95B15B86537}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visual Grading", "StudentTestReporting\Visual Grading.csproj", "{425DB637-EBC7-4C56-8094-B95B15B86537}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

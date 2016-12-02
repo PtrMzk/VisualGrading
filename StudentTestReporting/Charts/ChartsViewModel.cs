@@ -5,14 +5,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Tests;
-using StudentTestReporting.Grades;
-using StudentTestReporting.Helpers;
-using StudentTestReporting.Presentation;
+using VisualGrading.Tests;
+using VisualGrading.Grades;
+using VisualGrading.Helpers;
+using VisualGrading.Presentation;
 
-namespace StudentTestReporting.Charts
+namespace VisualGrading.Charts
 {
-    public class ChartViewModel : StudentTestReporting.Presentation.BaseViewModel
+    public class ChartViewModel : VisualGrading.Presentation.BaseViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

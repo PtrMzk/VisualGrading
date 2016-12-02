@@ -7,13 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
-using StudentTestReporting.Tests;
-using StudentTestReporting.Helpers;
-using StudentTestReporting.Presentation;
+using VisualGrading.Tests;
+using VisualGrading.Helpers;
+using VisualGrading.Presentation;
 
-namespace StudentTestReporting.Tests
+namespace VisualGrading.Tests
 {
-    public class TestViewModel : StudentTestReporting.Presentation.BaseViewModel
+    public class TestViewModel : VisualGrading.Presentation.BaseViewModel
     {
         #region Constructor
 

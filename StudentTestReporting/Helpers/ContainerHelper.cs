@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
-using StudentTestReporting.Students;
-using StudentTestReporting.Tests;
+using VisualGrading.Students;
+using VisualGrading.Tests;
 
-namespace StudentTestReporting.Helpers
+namespace VisualGrading.Helpers
 {
     public static class ContainerHelper
     {

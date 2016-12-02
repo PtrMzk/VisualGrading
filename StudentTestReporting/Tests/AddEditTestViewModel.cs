@@ -1,8 +1,8 @@
 ﻿using System;
-using StudentTestReporting.Helpers;
-using StudentTestReporting.Presentation;
+using VisualGrading.Helpers;
+using VisualGrading.Presentation;
 
-namespace StudentTestReporting.Tests
+namespace VisualGrading.Tests
 {
     public class AddEditTestViewModel : BaseViewModel
     {
@@ -23,7 +23,7 @@ namespace StudentTestReporting.Tests
 
         private Test _editingTest;
 
-        public SimpleEditableTest Test
+        public SimpleEditableTest EditingTest
         {
             get { return _test; }
             set { SetProperty(ref _test, value); }
@@ -52,10 +52,10 @@ namespace StudentTestReporting.Tests
         public void SetTest(Test test)
         {
             _editingTest = test;
-            if (Test != null) Test.ErrorsChanged -= RaiseCanExecuteChanged;
-            Test = new SimpleEditableTest();
-            Test.ErrorsChanged += RaiseCanExecuteChanged;
-            CopyTest(test, Test);
+            if (EditingTest != null) EditingTest.ErrorsChanged -= RaiseCanExecuteChanged;
+            EditingTest = new SimpleEditableTest();
+            EditingTest.ErrorsChanged += RaiseCanExecuteChanged;
+            CopyTest(test, EditingTest);
         }
 
         private void RaiseCanExecuteChanged(object sender, EventArgs e)
@@ -89,12 +89,12 @@ namespace StudentTestReporting.Tests
 
         private bool CanSave()
         {
-            return !Test.HasErrors;
+            return !EditingTest.HasErrors;
         }
 
         private async void OnSave()
         {
-            UpdateTest(Test, _editingTest);
+            UpdateTest(EditingTest, _editingTest);
             if (EditMode)
                 _manager.UpdateTestAsync(_editingTest);
             else

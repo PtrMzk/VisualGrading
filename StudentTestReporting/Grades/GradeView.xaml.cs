@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace StudentTestReporting.Grades
+namespace VisualGrading.Grades
 {
     /// <summary>
     /// Interaction logic for GradesView.xaml

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace StudentTestReporting.Presentation
+namespace VisualGrading.Presentation
 {
     public static class ViewModelLocator
     {

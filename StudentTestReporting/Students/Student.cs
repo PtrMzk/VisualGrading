@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 
 
-namespace StudentTestReporting.Students
+namespace VisualGrading.Students
 {
     [Serializable]
     public class Student
@@ -19,7 +19,7 @@ namespace StudentTestReporting.Students
         public Guid StudentID { get; set; }
         public string FirstName {get; set; }
         public string LastName { get; set; }
-        public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); }} 
+        public string FullName { get { return string.Format("{0} {1}", !string.IsNullOrEmpty(Nickname) ? Nickname : FirstName, LastName); }} 
         public string Nickname { get; set; }
         public string EmailAddress { get; set; }
         public string ParentEmailAddress { get; set; }

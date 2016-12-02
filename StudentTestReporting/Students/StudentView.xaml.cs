@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace StudentTestReporting.Students
+namespace VisualGrading.Students
 {
     /// <summary>
     /// Interaction logic for StudentsView.xaml

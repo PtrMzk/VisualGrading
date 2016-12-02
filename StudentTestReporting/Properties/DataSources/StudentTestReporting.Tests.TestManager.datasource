@@ -8,7 +8,7 @@
 <GenericObjectDataSource DisplayName="TestManager" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
    <Children>
       <GenericObjectDataSource DisplayName="TestList" Version="1.0">
-         <TypeInfo>StudentTestReporting.Tests.Test, StudentTestReporting, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
+         <TypeInfo>VisualGrading.Tests.Test, VisualGrading, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
          <TypeUISetting>
             <PropertyUISettings>
                <PropertyUISetting Name="Subject">
@@ -22,5 +22,5 @@
          </TypeUISetting>
       </GenericObjectDataSource>
    </Children>
-   <TypeInfo>StudentTestReporting.Tests.TestManager, StudentTestReporting, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>VisualGrading.Tests.TestManager, VisualGrading, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

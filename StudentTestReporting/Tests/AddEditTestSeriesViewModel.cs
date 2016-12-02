@@ -1,8 +1,8 @@
 ﻿using System;
-using StudentTestReporting.Helpers;
-using StudentTestReporting.Presentation;
+using VisualGrading.Helpers;
+using VisualGrading.Presentation;
 
-namespace StudentTestReporting.Tests
+namespace VisualGrading.Tests
 {
     public class AddEditTestSeriesViewModel : BaseViewModel
     {
@@ -23,7 +23,7 @@ namespace StudentTestReporting.Tests
 
         private TestSeries _editingTestSeries;
 
-        public SimpleEditableTestSeries TestSeries
+        public SimpleEditableTestSeries EditingTestSeries
         {
             get { return _testSeries; }
             set { SetProperty(ref _testSeries, value); }
@@ -44,10 +44,10 @@ namespace StudentTestReporting.Tests
         public void SetTestSeries(TestSeries testSeries)
         {
             _editingTestSeries = testSeries;
-            if (TestSeries != null) TestSeries.ErrorsChanged -= RaiseCanExecuteChanged;
-            TestSeries = new SimpleEditableTestSeries();
-            TestSeries.ErrorsChanged += RaiseCanExecuteChanged;
-            CopyTestSeries(testSeries, TestSeries);
+            if (EditingTestSeries != null) EditingTestSeries.ErrorsChanged -= RaiseCanExecuteChanged;
+            EditingTestSeries = new SimpleEditableTestSeries();
+            EditingTestSeries.ErrorsChanged += RaiseCanExecuteChanged;
+            CopyTestSeries(testSeries, EditingTestSeries);
         }
 
         private void RaiseCanExecuteChanged(object sender, EventArgs e)
@@ -76,12 +76,12 @@ namespace StudentTestReporting.Tests
 
         private bool CanSave()
         {
-            return !TestSeries.HasErrors;
+            return !EditingTestSeries.HasErrors;
         }
 
         private async void OnSave()
         {
-            UpdateTestSeries(TestSeries, _editingTestSeries);
+            UpdateTestSeries(EditingTestSeries, _editingTestSeries);
                 _manager.AddTestSeriesAsync(_editingTestSeries);
             Done();
         }

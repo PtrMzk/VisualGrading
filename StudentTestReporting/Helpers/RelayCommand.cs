@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace StudentTestReporting.Helpers
+namespace VisualGrading.Helpers
 {
     public class RelayCommand : ICommand
     {

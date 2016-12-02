@@ -1,4 +1,4 @@
-﻿using StudentTestReporting.Presentation;
+﻿using VisualGrading.Presentation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,9 +6,9 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Helpers;
+using VisualGrading.Helpers;
 
-namespace StudentTestReporting.Tests
+namespace VisualGrading.Tests
 {
     public class SimpleEditableTestSeries : ValidatableBaseViewModel
     {

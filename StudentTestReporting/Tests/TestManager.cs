@@ -1,4 +1,4 @@
-﻿using StudentTestReporting.Grades;
+﻿using VisualGrading.Grades;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,9 +8,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using StudentTestReporting.Helpers;
+using VisualGrading.Helpers;
 
-namespace StudentTestReporting.Tests
+namespace VisualGrading.Tests
 {
     public sealed class TestManager : INotifyPropertyChanged, ITestManager
     {
@@ -87,7 +87,7 @@ namespace StudentTestReporting.Tests
                 tests = new List<Test>();
                 //ObservableTests = new List<Test>();
                 Test test = new Test() { Subject = "Test Test", SeriesNumber = 1 };
-                //test = BinarySerialization.ReadFromBinaryFile<Test>(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json");
+                //test = BinarySerialization.ReadFromBinaryFile<Test>(@"C:\Visual Studio Code\VisualGrading\VisualGrading\SaveFiles\test.json");
                 tests.Add(test);
             }
 

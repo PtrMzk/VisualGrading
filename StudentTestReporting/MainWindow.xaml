@@ -1,13 +1,13 @@
-﻿<Window x:Class="StudentTestReporting.MainWindow"
+﻿<Window x:Class="VisualGrading.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:StudentTestReporting"
-        xmlns:g="clr-namespace:StudentTestReporting.Presentation"
-        xmlns:c="clr-namespace:StudentTestReporting.Charts"
-        xmlns:t="clr-namespace:StudentTestReporting.Tests"
-        xmlns:s="clr-namespace:StudentTestReporting.Students"
+        xmlns:local="clr-namespace:VisualGrading"
+        xmlns:g="clr-namespace:VisualGrading.Presentation"
+        xmlns:c="clr-namespace:VisualGrading.Charts"
+        xmlns:t="clr-namespace:VisualGrading.Tests"
+        xmlns:s="clr-namespace:VisualGrading.Students"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
         Title="Visual Grading" Height="650" Width="650">
@@ -26,6 +26,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type s:StudentViewModel}">
             <s:StudentView></s:StudentView>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type s:AddEditStudentViewModel}">
+            <s:AddEditStudentView></s:AddEditStudentView>
         </DataTemplate>
     </Window.Resources>
     <Grid>
