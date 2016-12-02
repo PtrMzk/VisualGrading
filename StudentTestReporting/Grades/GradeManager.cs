@@ -39,7 +39,7 @@ namespace StudentTestReporting.Grades
        
         public static void GenerateGrades(List<Test> tests)
         {
-            GenerateGrades(StudentManager.students, tests);
+            //GenerateGrades(StudentManager.students, tests);
         }
 
         public static void GenerateGrades(List<Student> students)
@@ -49,48 +49,48 @@ namespace StudentTestReporting.Grades
         }
            
 
-        public static void GenerateGrades(List<Student> students, List<Test> tests)
-        {
-            {
-                var crossJoin = (from a in students
-                                 from b in tests
-                                     //from c in grades
-                                 select new
-                                 {
-                                     Name = a.Name,
-                                     Nickname = a.Nickname,
-                                     Subject = b.Subject,
-                                     TestNumber = b.TestNumber,
-                                     Grades = 0
-                                 }).ToList();
+        //public static void GenerateGrades(List<Student> students, List<Test> tests)
+        //{
+        //    {
+        //        var crossJoin = (from a in students
+        //                         from b in tests
+        //                             //from c in grades
+        //                         select new
+        //                         {
+        //                             Name = a.Name,
+        //                             Nickname = a.Nickname,
+        //                             Subject = b.Subject,
+        //                             TestNumber = b.SeriesNumber,
+        //                             Grades = 0
+        //                         }).ToList();
 
-                //Anonymous types cannot be edited in datagridview. Need to add results to a List<Grade> so we can edit the grades. 
-                foreach (var item in crossJoin)
-                {
-                    //first check if the entry already exists
-                    int inList = -1;
+        //        //Anonymous types cannot be edited in datagridview. Need to add results to a List<Grade> so we can edit the grades. 
+        //        foreach (var item in crossJoin)
+        //        {
+        //            //first check if the entry already exists
+        //            int inList = -1;
 
-                    inList = grades.FindIndex(g => g.Name + "||" + g.Subject + "||" + g.TestNumber == item.Name + "||" + item.Subject + "||" + item.TestNumber);
+        //            inList = grades.FindIndex(g => g.Name + "||" + g.Subject + "||" + g.TestNumber == item.Name + "||" + item.Subject + "||" + item.TestNumber);
 
-                    if (inList == -1)
-                    {
-                        grades.Add(new Grade()
-                        {
-                            Name = item.Name
-                            ,
-                            Nickname = item.Nickname
-                            ,
-                            Subject = item.Subject
-                            ,
-                            TestNumber = item.TestNumber
-                            ,
-                            Grades = item.Grades
-                        }
-                        );
-                    }
-                }
-            }
-        }
+        //            if (inList == -1)
+        //            {
+        //                grades.Add(new Grade()
+        //                {
+        //                    Name = item.Name
+        //                    ,
+        //                    Nickname = item.Nickname
+        //                    ,
+        //                    Subject = item.Subject
+        //                    ,
+        //                    TestNumber = item.TestNumber
+        //                    ,
+        //                    Grades = item.Grades
+        //                }
+        //                );
+        //            }
+        //        }
+        //    }
+        //}
 
 
 

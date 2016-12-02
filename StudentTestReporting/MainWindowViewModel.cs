@@ -17,10 +17,12 @@ namespace StudentTestReporting
     class MainWindowViewModel : Presentation.BaseViewModel
     {
         private TestViewModel _testViewModel;
-        private StudentViewModel _StudentViewModel = new StudentViewModel();
+        private StudentViewModel _studentViewModel;
         private GradeViewModel _gradesViewModel = new GradeViewModel();
         private ChartViewModel _ChartViewModel = new ChartViewModel();
         private AddEditTestViewModel _addEditTestViewModel;
+        private AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
+        private AddEditStudentViewModel _addEditStudentViewModel;
 
         private Presentation.BaseViewModel _currentViewModel;
 
@@ -28,10 +30,16 @@ namespace StudentTestReporting
         {
             _testViewModel = ContainerHelper.Container.Resolve<TestViewModel>();
             _addEditTestViewModel = ContainerHelper.Container.Resolve<AddEditTestViewModel>();
+            _addEditTestSeriesViewModel = ContainerHelper.Container.Resolve<AddEditTestSeriesViewModel>();
+            _studentViewModel = ContainerHelper.Container.Resolve<StudentViewModel>();
+            _addEditStudentViewModel = ContainerHelper.Container.Resolve<AddEditStudentViewModel>();
             NavCommand = new RelayCommand<string>(OnNav);
-            _testViewModel.AddTestRequested += NavToAddTest;
-            _testViewModel.EditTestRequested += NavToEditTest;
+            _testViewModel.AddRequested += NavToAddTest;
+            _testViewModel.AddSeriesRequested += NavToAddTestSeries;
+            _testViewModel.EditRequested += NavToEditTest;
             _addEditTestViewModel.Done += NavToTestList;
+            _addEditTestSeriesViewModel.Done += NavToTestList;
+
         }
 
         public Presentation.BaseViewModel CurrentViewModel
@@ -64,7 +72,7 @@ namespace StudentTestReporting
             {
 
                 case "students":
-                    CurrentViewModel = _StudentViewModel;
+                    CurrentViewModel = _studentViewModel;
                     break;
                 case "grades":
                     CurrentViewModel = _gradesViewModel;
@@ -72,7 +80,7 @@ namespace StudentTestReporting
                 case "charts":
                     CurrentViewModel = _ChartViewModel;
                     break;
-                case "ObservableTests":
+                case "tests":
                 default:
                     CurrentViewModel = _testViewModel;
                     break;
@@ -85,6 +93,12 @@ namespace StudentTestReporting
             //TODO: Hack to get test lists to refresh with changes
             _testViewModel.LoadTests();
             CurrentViewModel = _testViewModel;
+        }
+
+        private void NavToAddTestSeries(TestSeries testSeries)
+        {
+            _addEditTestSeriesViewModel.SetTestSeries(testSeries);
+            CurrentViewModel = _addEditTestSeriesViewModel;
         }
 
 

@@ -1,14 +1,17 @@
 ﻿using System;
-using StudentTestReporting.Helpers;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using StudentTestReporting.Presentation;
 
-namespace StudentTestReporting.Tests
+namespace StudentTestReporting.Students
 {
-    public class AddEditTestViewModel : BaseViewModel
+    public class AddEditStudentViewModel : BaseViewModel
     {
         #region Constructor
 
-        public AddEditTestViewModel(ITestManager manager)
+        public AddEditStudentViewModel(IStudentManager manager)
         {
             _manager = manager;
             CancelCommand = new RelayCommand(OnCancel);
@@ -19,17 +22,17 @@ namespace StudentTestReporting.Tests
 
         #region Properties
 
-        private readonly ITestManager _manager;
+        private readonly IStudentManager _manager;
 
-        private Test _editingTest;
+        private Student _editingStudent;
 
-        public SimpleEditableTest Test
+        public SimpleEditableStudent Student
         {
-            get { return _test; }
-            set { SetProperty(ref _test, value); }
+            get { return _Student; }
+            set { SetProperty(ref _Student, value); }
         }
 
-        private SimpleEditableTest _test;
+        private SimpleEditableStudent _Student;
 
         private bool _editMode;
 
@@ -49,13 +52,13 @@ namespace StudentTestReporting.Tests
 
         #region Methods
 
-        public void SetTest(Test test)
+        public void SetStudent(Student Student)
         {
-            _editingTest = test;
-            if (Test != null) Test.ErrorsChanged -= RaiseCanExecuteChanged;
-            Test = new SimpleEditableTest();
-            Test.ErrorsChanged += RaiseCanExecuteChanged;
-            CopyTest(test, Test);
+            _editingStudent = Student;
+            if (Student != null) Student.ErrorsChanged -= RaiseCanExecuteChanged;
+            Student = new SimpleEditableStudent();
+            Student.ErrorsChanged += RaiseCanExecuteChanged;
+            CopyStudent(Student, Student);
         }
 
         private void RaiseCanExecuteChanged(object sender, EventArgs e)
@@ -63,19 +66,19 @@ namespace StudentTestReporting.Tests
             SaveCommand.RaiseCanExecuteChanged();
         }
 
-        private void UpdateTest(SimpleEditableTest source, Test destination)
+        private void UpdateStudent(SimpleEditableStudent source, Student destination)
         {
             destination.Subject = source.Subject;
-            destination.TestID = source.TestID;
+            destination.StudentID = source.StudentID;
             destination.SeriesNumber = source.SeriesNumber;
             destination.Date = source.Date;
             destination.Name = source.Name;
             destination.SubCategory = source.SubCategory;
         }
 
-        private void CopyTest(Test source, SimpleEditableTest destination)
+        private void CopyStudent(Student source, SimpleEditableStudent destination)
         {
-            destination.TestID = source.TestID;
+            destination.StudentID = source.StudentID;
 
             if (EditMode)
             {
@@ -89,16 +92,16 @@ namespace StudentTestReporting.Tests
 
         private bool CanSave()
         {
-            return !Test.HasErrors;
+            return !Student.HasErrors;
         }
 
         private async void OnSave()
         {
-            UpdateTest(Test, _editingTest);
+            UpdateStudent(Student, _editingStudent);
             if (EditMode)
-                _manager.UpdateTestAsync(_editingTest);
+                _manager.UpdateStudentAsync(_editingStudent);
             else
-                _manager.AddTestAsync(_editingTest);
+                _manager.AddStudentAsync(_editingStudent);
             Done();
         }
 

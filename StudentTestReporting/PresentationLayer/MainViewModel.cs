@@ -20,8 +20,6 @@ namespace StudentTestReporting.Presentation
 
         }
 
-
-
         public void PlotGrades(List<Grade> Grades, string graphGrouping)
         {
             TestModel = new PlotModel

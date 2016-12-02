@@ -4,14 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using StudentTestReporting.Presentation;
 
 
 public class Test
 {
-    #region Constructor
+    #region Constructors
     public Test()
     {
         this.TestID = Guid.NewGuid();
+    }
+
+    public Test(string name, string subject, string subCategory, int seriesNumber)
+    {
+        this.TestID = Guid.NewGuid();
+        this.Name = name;
+        this.Subject = subject;
+        this.SubCategory = subCategory;
+        this.SeriesNumber = seriesNumber;
+
     }
     #endregion
 

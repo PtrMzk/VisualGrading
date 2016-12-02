@@ -100,6 +100,13 @@
     <Compile Include="Helpers\NegateBooleanVisibilityConverter.cs" />
     <Compile Include="Helpers\SettingManager.cs" />
     <Compile Include="Helpers\ValidateBaseViewModel.cs" />
+    <Compile Include="Students\AddEditStudentViewModel.cs" />
+    <Compile Include="Students\IStudentManager.cs" />
+    <Compile Include="Students\SimpleEditableStudent.cs" />
+    <Compile Include="Tests\AddEditTestSeriesView.xaml.cs">
+      <DependentUpon>AddEditTestSeriesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\AddEditTestSeriesViewModel.cs" />
     <Compile Include="Tests\AddEditTestView.xaml.cs">
       <DependentUpon>AddEditTestView.xaml</DependentUpon>
     </Compile>
@@ -124,19 +131,25 @@
     <Compile Include="Students\StudentManager.cs" />
     <Compile Include="Tests\ITestManager.cs" />
     <Compile Include="Tests\SimpleEditableTest.cs" />
+    <Compile Include="Tests\SimpleEditableTestSeries.cs" />
     <Compile Include="Tests\Test.cs" />
     <Compile Include="Tests\TestManager.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Students\StudentView.xaml.cs">
       <DependentUpon>StudentView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tests\TestSeries.cs" />
     <Compile Include="Tests\TestView.xaml.cs">
       <DependentUpon>TestView.xaml</DependentUpon>
     </Compile>
     <Compile Include="PresentationLayer\ViewModelLocator.cs" />
     <Compile Include="Grades\GradeViewModel.cs" />
-    <Compile Include="Students\StudentsViewModel.cs" />
+    <Compile Include="Students\StudentViewModel.cs" />
     <Compile Include="Tests\TestViewModel.cs" />
+    <Page Include="Tests\AddEditTestSeriesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Tests\AddEditTestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

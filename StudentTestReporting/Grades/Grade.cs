@@ -35,52 +35,52 @@ namespace StudentTestReporting.Grades
 
         List<Grade> grades = new List<Grade>();
 
-        public List<Grade> crossJoinLists(List<Student> List1, List<Test> List2)
-        {
-            //int grade = 0;
-            //List<int> grades = new List<int>(grade);
+        //public List<Grade> crossJoinLists(List<Student> List1, List<Test> List2)
+        //{
+        //    //int grade = 0;
+        //    //List<int> grades = new List<int>(grade);
 
-            var crossJoin = (from a in List1
-                             from b in List2
-                                 //from c in grades
-                             select new
-                             {
-                                 Name = a.Name,
-                                 Nickname = a.Nickname,
-                                 Subject = b.Subject,
-                                 TestNumber = b.TestNumber,
-                                 Grades = 0
-                             }).ToList();
+        //    var crossJoin = (from a in List1
+        //                     from b in List2
+        //                         //from c in grades
+        //                     select new
+        //                     {
+        //                         Name = a.Name,
+        //                         Nickname = a.Nickname,
+        //                         Subject = b.Subject,
+        //                         TestNumber = b.SeriesNumber,
+        //                         Grades = 0
+        //                     }).ToList();
 
-            //Anonymous types cannot be edited in datagridview. Need to add results to a List<Grade> so we can edit the grades. 
-            foreach (var item in crossJoin)
-            {
-                //first check if the entry already exists
-                int inList = -1;
+        //    //Anonymous types cannot be edited in datagridview. Need to add results to a List<Grade> so we can edit the grades. 
+        //    foreach (var item in crossJoin)
+        //    {
+        //        //first check if the entry already exists
+        //        int inList = -1;
 
-                inList = grades.FindIndex(g => g.Name + "||" + g.Subject + "||" + g.TestNumber == item.Name + "||" + item.Subject + "||" + item.TestNumber);
+        //        inList = grades.FindIndex(g => g.Name + "||" + g.Subject + "||" + g.TestNumber == item.Name + "||" + item.Subject + "||" + item.TestNumber);
 
-                if (inList == -1)
-                {
-                    grades.Add(new Grade()
-                    {
-                        Name = item.Name
-                        ,
-                        Nickname = item.Nickname
-                        ,
-                        Subject = item.Subject
-                        ,
-                        TestNumber = item.TestNumber
-                        ,
-                        Grades = item.Grades
-                    }
-                    );
-                }
-            }
+        //        if (inList == -1)
+        //        {
+        //            grades.Add(new Grade()
+        //            {
+        //                Name = item.Name
+        //                ,
+        //                Nickname = item.Nickname
+        //                ,
+        //                Subject = item.Subject
+        //                ,
+        //                TestNumber = item.TestNumber
+        //                ,
+        //                Grades = item.Grades
+        //            }
+        //            );
+        //        }
+        //    }
 
-            return grades;
+        //    return grades;
 
-        }
+        //}
 
     }
 }

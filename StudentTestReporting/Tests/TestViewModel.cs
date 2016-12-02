@@ -15,35 +15,17 @@ namespace StudentTestReporting.Tests
 {
     public class TestViewModel : StudentTestReporting.Presentation.BaseViewModel
     {
-
-        #region Singleton Implementation
-        //TODO: Is Singleton even needed here? 
-        //static readonly TestViewModel instance = new TestViewModel(ITestManager);
-
-        //static TestViewModel()
-        //{
-
-        //}
-
-        //public static TestViewModel Instance
-        //{
-        //    get
-        //    {
-        //        return instance;
-        //    }
-        //}
-        #endregion
-
         #region Constructor
 
         public TestViewModel(ITestManager manager)
         {
             _manager = manager;
-            DeleteTestCommand = new RelayCommand(OnDelete, CanDelete);
-            AddTestCommand = new RelayCommand(OnAddTest);
-            EditTestCommand = new RelayCommand<Test>(OnEditTest);
+            DeleteCommand = new RelayCommand<Test>(OnDelete, CanDelete);
+            AddCommand = new RelayCommand(OnAddTest);
+            AddSeriesCommand = new RelayCommand(OnAddTestSeries);
+            EditCommand = new RelayCommand<Test>(OnEditTest);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
-
+            DeleteRequested += RemoveTestFromPresentationAndManager; 
 
             //TODO: delete the below if not needed, clean this up to set the private variable test
             //var _observableTests = new ObservableCollection<Test>();
@@ -106,19 +88,28 @@ namespace StudentTestReporting.Tests
                 if (_selectedTest != value)
                 {
                     _selectedTest = value;
-                    DeleteTestCommand.RaiseCanExecuteChanged();
-                    PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
+                    DeleteCommand.RaiseCanExecuteChanged();
+                    PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
                 }
             }
         }
 
-        public RelayCommand DeleteTestCommand { get; private set; }
+        public RelayCommand<Test> DeleteCommand { get; private set; }
 
-        public RelayCommand AddTestCommand { get; private set; }
+        public RelayCommand AddCommand { get; private set; }
 
-        public RelayCommand<Test> EditTestCommand { get; private set; }
+        public RelayCommand AddSeriesCommand { get; private set; }
+
+        public RelayCommand<Test> EditCommand { get; private set; }
 
         public RelayCommand ClearSearchCommand { get; private set; }
+        
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        
+        public event Action<Test> AddRequested = delegate { };
+        public event Action<TestSeries> AddSeriesRequested = delegate { };
+        public event Action<Test> EditRequested = delegate { };
+        public event Action<Test> DeleteRequested = delegate { };
 
         private string _searchInput;
 
@@ -174,11 +165,15 @@ namespace StudentTestReporting.Tests
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        private void OnDelete()
+        private void RemoveTestFromPresentationAndManager(Test test)
         {
-            ObservableTests.Remove(SelectedTest);
+            ObservableTests.Remove(test);
+            _manager.RemoveTest(test);
+        }
+
+        private void OnDelete(Test test)
+        {
+            DeleteRequested(test);
         }
 
         //TODO: RemoveTest below method - its a temp method for the AddTest Test > Charting workflow
@@ -193,22 +188,26 @@ namespace StudentTestReporting.Tests
         {
             //place holder for the actual on add test command for the actual on add test button
             //the one above is linked to the chart button i believe...
-            AddTestRequested(new Test { TestID = Guid.NewGuid() });
+            AddRequested(new Test());
+        }
+
+        private void OnAddTestSeries()
+        {
+            AddSeriesRequested(new TestSeries());
         }
 
         private void OnEditTest(Test test)
         {
-            EditTestRequested(test);
+            EditRequested(test);
         }
-
-        public event Action<Test> AddTestRequested = delegate { };
-        public event Action<Test> EditTestRequested = delegate { };
 
 
         //FIXME: THIS IS NEVER FALSE
-        private bool CanDelete()
+        private bool CanDelete(Test test)
         {
-            return SelectedTest != null;
+            //TODO: Selected test doesn't seem to work here, and this isn't really needed...
+            //return SelectedTest != null;
+            return true;
         }
 
         private void OnClearSearch()

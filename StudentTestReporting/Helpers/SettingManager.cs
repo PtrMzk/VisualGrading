@@ -30,7 +30,6 @@ namespace StudentTestReporting.Helpers
 
         #endregion
 
-
         #region Properties
 
         private const string SLASH = "/";

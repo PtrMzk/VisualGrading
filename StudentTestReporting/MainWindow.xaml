@@ -7,9 +7,10 @@
         xmlns:g="clr-namespace:StudentTestReporting.Presentation"
         xmlns:c="clr-namespace:StudentTestReporting.Charts"
         xmlns:t="clr-namespace:StudentTestReporting.Tests"
+        xmlns:s="clr-namespace:StudentTestReporting.Students"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="Scholastic Notation Bookkeeping App" Height="506.522" Width="517.113">
+        Title="Visual Grading" Height="650" Width="650">
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
@@ -19,6 +20,12 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type t:AddEditTestViewModel}">
             <t:AddEditTestView></t:AddEditTestView>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type t:AddEditTestSeriesViewModel}">
+            <t:AddEditTestSeriesView></t:AddEditTestSeriesView>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type s:StudentViewModel}">
+            <s:StudentView></s:StudentView>
         </DataTemplate>
     </Window.Resources>
     <Grid>
@@ -34,8 +41,13 @@
             </Grid.ColumnDefinitions>
             <Button Content ="Tests"
                 Command="{Binding NavCommand}"
-                CommandParameter="ObservableTests"
+                CommandParameter="tests"
                 Grid.Column ="0">
+            </Button>
+            <Button Content ="Students"
+                Command="{Binding NavCommand}"
+                CommandParameter="students"
+                Grid.Column ="1">
             </Button>
             <Button Content ="Grades"
                 Command="{Binding NavCommand}"

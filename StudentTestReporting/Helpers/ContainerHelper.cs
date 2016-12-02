@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
+using StudentTestReporting.Students;
 using StudentTestReporting.Tests;
 
 namespace StudentTestReporting.Helpers
@@ -15,6 +16,7 @@ namespace StudentTestReporting.Helpers
         {
             _container = new UnityContainer();
             _container.RegisterType<ITestManager, TestManager>(new ContainerControlledLifetimeManager());
+            _container.RegisterType<IStudentManager, StudentManager>(new ContainerControlledLifetimeManager());
         }
 
         public static IUnityContainer Container

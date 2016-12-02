@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,15 +10,22 @@ using StudentTestReporting.Helpers;
 
 namespace StudentTestReporting.Tests
 {
-    public class SimpleEditableTest : ValidatableBaseViewModel
+    public class SimpleEditableTestSeries : ValidatableBaseViewModel
     {
 
         #region Public Properties
         [Required]
-        public Guid TestID
+        public Guid SeriesID
         {
-            get { return _testID; } 
-            set { SetProperty(ref _testID, value); }
+            get { return _seriesID; }
+            set { SetProperty(ref _seriesID, value); }
+        }
+
+        [Required]
+        public string Name
+        {
+            get { return _name; }
+            set { SetProperty(ref _name, value); }
         }
 
         [Required]
@@ -35,35 +43,22 @@ namespace StudentTestReporting.Tests
         }
 
         [Required]
-        public string Name
+        public int Length
         {
-            get { return _name; }
-            set { SetProperty(ref _name, value); }
+            get { return _length; }
+            set { SetProperty(ref _length, value); }
         }
 
-        [Required]
-        public int SeriesNumber 
-        {
-            get { return _seriesNumber; }
-            set { SetProperty(ref _seriesNumber, value); }
-        }
-
-        [Required]
-        public DateTime Date
-        {
-            get { return _date; }
-            set { SetProperty(ref _date, value); }
-        }
         #endregion
 
         #region Private Properties
 
-        private Guid _testID;
+        private Guid _seriesID;
+        private string _name; 
         private string _subject;
         private string _subCategory;
-        private string _name;
-        private DateTime _date;
-        private int _seriesNumber;
+        private int _length;
+
 
         #endregion
     }

@@ -16,21 +16,10 @@ namespace StudentTestReporting.Tests
     {
         #region Singleton Implementation
 
-        private static readonly TestManager _instance = new TestManager();
+        private static TestManager _instance = new TestManager();
 
         static TestManager()
         {
-            //TODO change this to read a list of ObservableTests
-            //ObservableTests = new List<Test>();
-            try
-            {
-                //TODO: Make this not use the the TestManager name
-                //GradeManager.GenerateGrades(StudentManager.students, TestManager.ObservableTests);
-            } 
-            catch
-            {
-
-            }
         }
 
         public static TestManager Instance
@@ -41,6 +30,8 @@ namespace StudentTestReporting.Tests
             }
         }
         #endregion
+
+        #region Properties
 
         private List<Test> _testList;
 
@@ -60,14 +51,9 @@ namespace StudentTestReporting.Tests
 
             }
         }
+        #endregion
 
-        //public static List<Test> GetTestsCopy()
-        //{
-        //    List<Test> testsCopy = new List<Test>(ObservableTests);
-        //    return testsCopy;
-        //}
-        
-
+        #region Methods
         public async Task<List<Test>> GetTestsAsync()
         {
             string testFileLocation = SettingManager.Instance.TestFileLocation;
@@ -100,7 +86,7 @@ namespace StudentTestReporting.Tests
             {
                 tests = new List<Test>();
                 //ObservableTests = new List<Test>();
-                Test test = new Test() { Subject = "Test Test", TestNumber = 1 };
+                Test test = new Test() { Subject = "Test Test", SeriesNumber = 1 };
                 //test = BinarySerialization.ReadFromBinaryFile<Test>(@"C:\Visual Studio Code\StudentTestReporting\StudentTestReporting\SaveFiles\test.json");
                 tests.Add(test);
             }
@@ -108,7 +94,7 @@ namespace StudentTestReporting.Tests
             //TODO: Come up with a better design for keeping TestManager in line with wherever else needs this information
             if (TestList == null)
             {
-                TestList = tests; 
+                TestList = tests;
             }
 
             return tests;
@@ -138,8 +124,35 @@ namespace StudentTestReporting.Tests
                 SettingManager.Instance.TestFileLocation, TestList);
         }
 
-        public void RemoveTest(Test test)
+        public async void AddTestSeriesAsync(TestSeries testSeries)
         {
+            var newTests = new List<Test>();
+            for (int i = 0; i < testSeries.Length; i++)
+            {
+                int seriesNumber = i + 1;
+                string testName = string.Format("{0}{1}", testSeries.Name, seriesNumber);
+                var test = new Test(testName, testSeries.Subject, testSeries.SubCategory, seriesNumber);
+                newTests.Add(test);
+            }
+            TestList.AddRange(newTests);
+            GradeManager.GenerateGrades(TestList);
+            await JSONSerialization.SerializeJSONAsync(
+                SettingManager.Instance.TestFileLocation, TestList);
+        }
+
+        public async void RemoveTest(Test testToDelete)
+        {
+            foreach (Test currentTest in TestList)
+            {
+                if (currentTest.TestID == testToDelete.TestID)
+                {
+                    TestList.Remove(currentTest);
+                    break;
+                }
+            }
+            GradeManager.GenerateGrades(TestList);
+            await JSONSerialization.SerializeJSONAsync(
+            SettingManager.Instance.TestFileLocation, TestList);
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -148,5 +161,7 @@ namespace StudentTestReporting.Tests
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
     }
 }

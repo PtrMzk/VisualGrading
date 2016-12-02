@@ -11,64 +11,34 @@ namespace StudentTestReporting.Students
     [Serializable]
     public class Student
     {
-        public string Name
+        public Student()
         {
-            get;
-            set;
-
+            this.StudentID = Guid.NewGuid();
         }
+
+        public Guid StudentID { get; set; }
+        public string FirstName {get; set; }
+        public string LastName { get; set; }
+        public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); }} 
         public string Nickname { get; set; }
+        public string EmailAddress { get; set; }
+        public string ParentEmailAddress { get; set; }
+        public decimal OverallGrade { get; set; }
 
         #region StudentRefreshEvent
-        public delegate void StudentRefreshEventHandler(object sender, EventArgs args);
+        //TODO: is this event needed? 
+        //public delegate void StudentRefreshEventHandler(object sender, EventArgs args);
 
-        public event StudentRefreshEventHandler StudentRefreshing;
+        //public event StudentRefreshEventHandler StudentRefreshing;
 
-
-        protected virtual void OnStudentRefreshing()
-        {
-            if (StudentRefreshing != null)
-            {
-                StudentRefreshing(this, EventArgs.Empty);
-            }
-        }
+        //protected virtual void OnStudentRefreshing()
+        //{
+        //    if (StudentRefreshing != null)
+        //    {
+        //        StudentRefreshing(this, EventArgs.Empty);
+        //    }
+        //}
         #endregion
 
-        List<Student> students = new List<Student>();
-
-        public List<Student> StudentList()
-        {
-
-            if (students.Count == 0)
-            {
-                students.Add(new Student()
-                {
-                    Name = "Piotr Mikolajczyk",
-                    Nickname = "Piotr the Great"
-                }
-                );
-
-                students.Add(new Student()
-                {
-                    Name = "Liz Lipman",
-                    Nickname = "Cool Liz"
-                }
-                );
-            }
-            return students;
-        }
-
-        public List<Student> StudentList(string newName, string newNickname)
-        {
-
-            students.Add(new Student()
-            {
-                Name = newName,
-                Nickname = newNickname
-            }
-            );
-            OnStudentRefreshing();
-            return students;
-        }
-    }
+      }
 }

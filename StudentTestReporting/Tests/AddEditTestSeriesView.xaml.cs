@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace StudentTestReporting.Students
+namespace StudentTestReporting.Tests
 {
     /// <summary>
-    /// Interaction logic for StudentsView.xaml
+    /// Interaction logic for AddEditTestSeriesView.xaml
     /// </summary>
-    public partial class StudentView : UserControl
+    public partial class AddEditTestSeriesView : UserControl
     {
-        public StudentView()
+        public AddEditTestSeriesView()
         {
             InitializeComponent();
         }

@@ -4,14 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StudentTestReporting.Tests"
-             x:Class="StudentTestReporting.Tests.AddEditTestView"
+             x:Class="StudentTestReporting.Tests.AddEditTestSeriesView"
              xmlns:h="clr-namespace:StudentTestReporting.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <h:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
-        <h:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
-                                                 Negate="True" />
         <Style TargetType="TextBox">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError"
@@ -20,7 +17,6 @@
                             Value="{Binding RelativeSource={x:Static RelativeSource.Self},
                         Path=(Validation.Errors).CurrentItem.ErrorContent}"/>
                 </Trigger>
-             
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
@@ -29,7 +25,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="grid1" DataContext="{Binding Test}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
+        <Grid x:Name="grid1" DataContext="{Binding TestSeries}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -40,27 +36,18 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
+            <Label Content="Series Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
             <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding Name, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
             <Label Content="Subject:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center"/>
             <TextBox x:Name="subjectTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" Text="{Binding Subject, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
             <Label Content="SubCategory:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center"/>
             <TextBox x:Name="subCategoryTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding SubCategory, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
-            <Label Content="Date:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center"/>
-            <TextBox x:Name="dateTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" Text="{Binding Date, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="Amount of Tests:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center"/>
+            <TextBox x:Name="dateTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" Text="{Binding Length, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
         </Grid>
         <Grid Grid.Row="1">
-            <Button Content ="Save"
-                    Command ="{Binding SaveCommand}"
-                    Visibility ="{Binding EditMode, Converter={StaticResource VisConverter}}"
-                    HorizontalAlignment="Left"
-                    Margin="25,5,0,0"
-                    VerticalAlignment="Top"
-                    Width="75">
-            </Button>
             <Button Content ="Add"
                     Command ="{Binding SaveCommand}"
-                    Visibility ="{Binding EditMode, Converter={StaticResource NegVisConverter}}"
                     HorizontalAlignment="Left"
                     Margin="25,5,0,0"
                     VerticalAlignment="Top"

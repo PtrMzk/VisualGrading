@@ -14,7 +14,7 @@ namespace StudentTestReporting.Tests
         void AddTestAsync(Test test);
         void RemoveTest(Test test);
         void UpdateTestAsync(Test test);
-
+        void AddTestSeriesAsync(TestSeries testSeries);
         event PropertyChangedEventHandler PropertyChanged;
     }
 }
