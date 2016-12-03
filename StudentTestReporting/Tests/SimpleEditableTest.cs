@@ -54,6 +54,13 @@ namespace VisualGrading.Tests
             get { return _date; }
             set { SetProperty(ref _date, value); }
         }
+
+        [Required]
+        public int MaximumPoints
+        {
+            get { return _maximumPoints; }
+            set { SetProperty(ref _maximumPoints, value); }
+        }
         #endregion
 
         #region Private Properties
@@ -64,6 +71,7 @@ namespace VisualGrading.Tests
         private string _name;
         private DateTime _date;
         private int _seriesNumber;
+        private int _maximumPoints;
 
         #endregion
     }

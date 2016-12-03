@@ -13,28 +13,10 @@ namespace VisualGrading
 {
     public partial class MainWindow : Window
     {
-
-        string defaultNameEntry = string.Empty;
-        string defaultNicknameEntry = string.Empty;
-
-
-        string defaultTestEntry = string.Empty;
-
-
-        Student student = new Student();
-        Test test = new Test();
-        Grade grades2 = new Grade();
-
         public MainWindow()
         {
-            new GradeManager();
-            new StudentManager();
-            new TestManager();
-            InitializeComponent();
+
         }
-
-   
-
     }
 }
 

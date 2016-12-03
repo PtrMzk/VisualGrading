@@ -23,16 +23,27 @@ namespace VisualGrading
         private AddEditTestViewModel _addEditTestViewModel;
         private AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
         private AddEditStudentViewModel _addEditStudentViewModel;
+        private ITestManager _testManager;
+        private IStudentManager _studentManager;
+        private IGradeManager _gradeManager;
 
         private Presentation.BaseViewModel _currentViewModel;
 
         public MainWindowViewModel()
         {
+            //ensure all managers are created when application starts
+            //though they may not be used by this class at all
+            _testManager = ContainerHelper.Container.Resolve<ITestManager>();
+            _studentManager = ContainerHelper.Container.Resolve<IStudentManager>();
+            //_gradeManager = ContainerHelper.Container.Resolve<IGradeManager>();
+            _gradeManager = new GradeManager();
+
             _testViewModel = ContainerHelper.Container.Resolve<TestViewModel>();
             _addEditTestViewModel = ContainerHelper.Container.Resolve<AddEditTestViewModel>();
             _addEditTestSeriesViewModel = ContainerHelper.Container.Resolve<AddEditTestSeriesViewModel>();
             _studentViewModel = ContainerHelper.Container.Resolve<StudentViewModel>();
             _addEditStudentViewModel = ContainerHelper.Container.Resolve<AddEditStudentViewModel>();
+
             NavCommand = new RelayCommand<string>(OnNav);
 
             _testViewModel.AddRequested += NavToAddTest;

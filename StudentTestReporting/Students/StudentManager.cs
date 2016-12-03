@@ -22,6 +22,7 @@ namespace VisualGrading.Students
 
         static StudentManager()
         {
+            Instance.InitializeStudentList();
         }
 
         public static StudentManager Instance
@@ -41,25 +42,36 @@ namespace VisualGrading.Students
         {
             get
             {
-                return _StudentList;
+                return Instance._StudentList;
             }
             set
             {
-                if (_StudentList != value)
+                if (Instance._StudentList != value)
                 {
-                    _StudentList = value;
+                    Instance._StudentList = value;
                     Instance.PropertyChanged(null, new PropertyChangedEventArgs("StudentList"));
                 }
 
             }
         }
+
+        public string StudentFileLocation { get { return SettingManager.Instance.StudentFileLocation; } }
         #endregion
 
         #region Methods
+
+        private void InitializeStudentList()
+        {
+            if (!File.Exists(StudentFileLocation))
+            {
+                List<Student> emptyStudentList = new List<Student>();
+                Helpers.JSONSerialization.SerializeJSON(StudentFileLocation, emptyStudentList);
+            }
+            StudentList = Helpers.JSONSerialization.DeserializeJSON<List<Student>>(StudentFileLocation);
+        }
+
         public async Task<List<Student>> GetStudentsAsync()
         {
-            string StudentFileLocation = SettingManager.Instance.StudentFileLocation;
-
             //TODO: This whole method needs a rewrite
             if (StudentList != null && StudentList.Count > 0)
             {
@@ -75,22 +87,17 @@ namespace VisualGrading.Students
             {
                 Students = new List<Student>();
                 //ObservableStudents = new List<Student>();
-                Student jack = new Student() { FirstName = "Jack", LastName = "Dawson",  EmailAddress = "PokerMaster@gmail.com", OverallGrade = 95.7m};
-                Student rose = new Student() { FirstName = "Rose DeWitt", LastName = "Buktater", Nickname = "Rose", EmailAddress = "IllNeverLetGo@hotmail.com", ParentEmailAddress = "CalFanz@yahoo.com", OverallGrade = 93.4m};
-                Student cal = new Student() { FirstName = "Cal", LastName = "Hockley",  EmailAddress = "LeftHeartOfTheOceanInMyJacketPocket@hotmail.com", OverallGrade = 78.3m};
+                Student jack = new Student() { FirstName = "Jack", LastName = "Dawson", EmailAddress = "PokerMaster@gmail.com", OverallGrade = 95.7m };
+                Student rose = new Student() { FirstName = "Rose DeWitt", LastName = "Buktater", Nickname = "Rose", EmailAddress = "IllNeverLetGo@hotmail.com", ParentEmailAddress = "CalFanz@yahoo.com", OverallGrade = 93.4m };
+                Student cal = new Student() { FirstName = "Cal", LastName = "Hockley", EmailAddress = "LeftHeartOfTheOceanInMyJacketPocket@hotmail.com", OverallGrade = 78.3m };
                 //Student = BinarySerialization.ReadFromBinaryFile<Student>(@"C:\Visual Studio Code\VisualGrading\VisualGrading\SaveFiles\Student.json");
                 Students.Add(jack);
                 Students.Add(rose);
                 Students.Add(cal);
-               }
+            }
 
             try
             {
-                if (!File.Exists(StudentFileLocation))
-                {
-                    await Helpers.JSONSerialization.SerializeJSONAsync(StudentFileLocation, Students);
-                }
-
                 Students = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Student>>(StudentFileLocation);
             }
             catch
@@ -108,41 +115,52 @@ namespace VisualGrading.Students
 
         public async void UpdateStudentAsync(Student updatedStudent)
         {
-            foreach (Student currentStudent in StudentList)
+            foreach (Student cachedStudent in StudentList)
             {
-                if (currentStudent.StudentID == updatedStudent.StudentID)
+                if (cachedStudent.StudentID == updatedStudent.StudentID)
                 {
-                    StudentList.Remove(currentStudent);
+                    StudentList.Remove(cachedStudent);
                     StudentList.Add(updatedStudent);
                     break;
                 }
             }
-            GradeManager.GenerateGrades(StudentList);
             await JSONSerialization.SerializeJSONAsync(
             SettingManager.Instance.StudentFileLocation, StudentList);
         }
 
-        public async void AddStudentAsync(Student Student)
+        public async void AddStudentAsync(Student student)
         {
-            StudentList.Add(Student);
-            GradeManager.GenerateGrades(StudentList);
+            StudentList.Add(student);
+
+            if (StudentAdded != null)
+                StudentAdded(student);
+
             await JSONSerialization.SerializeJSONAsync(
                 SettingManager.Instance.StudentFileLocation, StudentList);
         }
 
-       public async void RemoveStudent(Student StudentToDelete)
+        public async void RemoveStudent(Student studentToDelete)
         {
-            foreach (Student currentStudent in StudentList)
+            foreach (Student cachedStudent in StudentList)
             {
-                if (currentStudent.StudentID == StudentToDelete.StudentID)
+                if (cachedStudent.StudentID == studentToDelete.StudentID)
                 {
-                    StudentList.Remove(currentStudent);
+                    StudentList.Remove(cachedStudent);
                     break;
                 }
             }
-            GradeManager.GenerateGrades(StudentList);
             await JSONSerialization.SerializeJSONAsync(
             SettingManager.Instance.StudentFileLocation, StudentList);
+        }
+
+        public Student GetStudentByID(Guid studentID)
+        {
+            foreach (var cachedStudent in StudentList)
+            {
+                if (cachedStudent.StudentID == studentID)
+                    return cachedStudent;
+            }
+            return null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -154,5 +172,19 @@ namespace VisualGrading.Students
 
         #endregion
 
+        #region Delegates
+        public delegate void OnStudentChangedEventHandler(Student source);
+        #endregion
+
+
+        #region Events
+
+        public event Action OnStudentUpdate = delegate { };
+
+        public event Action OnStudentDelete = delegate { };
+
+        public event OnStudentChangedEventHandler StudentAdded;
+
+        #endregion
     }
 }

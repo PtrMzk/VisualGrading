@@ -66,11 +66,11 @@ namespace VisualGrading.Tests
         private void UpdateTest(SimpleEditableTest source, Test destination)
         {
             destination.Subject = source.Subject;
-            destination.TestID = source.TestID;
             destination.SeriesNumber = source.SeriesNumber;
             destination.Date = source.Date;
             destination.Name = source.Name;
             destination.SubCategory = source.SubCategory;
+            destination.MaximumPoints = source.MaximumPoints;
         }
 
         private void CopyTest(Test source, SimpleEditableTest destination)
@@ -84,6 +84,7 @@ namespace VisualGrading.Tests
                 destination.Date = source.Date;
                 destination.Name = source.Name;
                 destination.SubCategory = source.SubCategory;
+                destination.MaximumPoints = source.MaximumPoints;
             }
         }
 

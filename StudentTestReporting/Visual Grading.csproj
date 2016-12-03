@@ -96,6 +96,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Grades\IGradeManager.cs" />
     <Compile Include="Helpers\ContainerHelper.cs" />
     <Compile Include="Helpers\NegateBooleanVisibilityConverter.cs" />
     <Compile Include="Helpers\SettingManager.cs" />

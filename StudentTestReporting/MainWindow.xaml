@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VisualGrading"
-        xmlns:g="clr-namespace:VisualGrading.Presentation"
+        xmlns:g="clr-namespace:VisualGrading.Grades"
+        xmlns:p="clr-namespace:VisualGrading.Presentation"
         xmlns:c="clr-namespace:VisualGrading.Charts"
         xmlns:t="clr-namespace:VisualGrading.Tests"
         xmlns:s="clr-namespace:VisualGrading.Students"
@@ -28,6 +29,9 @@
             <s:StudentView></s:StudentView>
         </DataTemplate>
         <DataTemplate DataType="{x:Type s:AddEditStudentViewModel}">
+            <s:AddEditStudentView></s:AddEditStudentView>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type g:GradeViewModel}">
             <s:AddEditStudentView></s:AddEditStudentView>
         </DataTemplate>
     </Window.Resources>

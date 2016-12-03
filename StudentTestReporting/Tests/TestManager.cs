@@ -20,6 +20,7 @@ namespace VisualGrading.Tests
 
         static TestManager()
         {
+            Instance.InitializeTestList();
         }
 
         public static TestManager Instance
@@ -33,19 +34,21 @@ namespace VisualGrading.Tests
 
         #region Properties
 
+        private string TestFileLocation { get { return SettingManager.Instance.TestFileLocation; } }
+
         private List<Test> _testList;
 
         public List<Test> TestList
         {
             get
             {
-                return _testList;
+                return Instance._testList;
             }
             set
             {
-                if (_testList != value)
+                if (Instance._testList != value)
                 {
-                    _testList = value;
+                    Instance._testList = value;
                     Instance.PropertyChanged(null, new PropertyChangedEventArgs("TestList"));
                 }
 
@@ -54,9 +57,20 @@ namespace VisualGrading.Tests
         #endregion
 
         #region Methods
+
+        private async void InitializeTestList()
+        {
+            if (!File.Exists(TestFileLocation))
+            {
+                List<Test> emptyTestList= new List<Test>();
+                await Helpers.JSONSerialization.SerializeJSONAsync(TestFileLocation, emptyTestList);
+            }
+
+            TestList = Helpers.JSONSerialization.DeserializeJSON<List<Test>>(TestFileLocation);
+        }
+
         public async Task<List<Test>> GetTestsAsync()
         {
-            string testFileLocation = SettingManager.Instance.TestFileLocation;
 
             //TODO: This whole method needs a rewrite
             if (TestList != null && TestList.Count > 0)
@@ -71,12 +85,7 @@ namespace VisualGrading.Tests
 
             try
             {
-                if (!File.Exists(testFileLocation))
-                {
-                    await Helpers.JSONSerialization.SerializeJSONAsync(testFileLocation, tests);
-                }
-
-                tests = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Test>>(testFileLocation);
+                tests = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Test>>(TestFileLocation);
             }
             catch
             {
@@ -102,16 +111,15 @@ namespace VisualGrading.Tests
 
         public async void UpdateTestAsync(Test updatedTest)
         {
-            foreach (Test currentTest in TestList)
+            foreach (Test cachedTest in TestList)
             {
-                if (currentTest.TestID == updatedTest.TestID)
+                if (cachedTest.TestID == updatedTest.TestID)
                 {
-                    TestList.Remove(currentTest);
+                    TestList.Remove(cachedTest);
                     TestList.Add(updatedTest);
                     break;
                 }
             }
-            GradeManager.GenerateGrades(TestList);
             await JSONSerialization.SerializeJSONAsync(
             SettingManager.Instance.TestFileLocation, TestList);
         }
@@ -119,7 +127,6 @@ namespace VisualGrading.Tests
         public async void AddTestAsync(Test test)
         {
             TestList.Add(test);
-            GradeManager.GenerateGrades(TestList);
             await JSONSerialization.SerializeJSONAsync(
                 SettingManager.Instance.TestFileLocation, TestList);
         }
@@ -135,24 +142,34 @@ namespace VisualGrading.Tests
                 newTests.Add(test);
             }
             TestList.AddRange(newTests);
-            GradeManager.GenerateGrades(TestList);
             await JSONSerialization.SerializeJSONAsync(
                 SettingManager.Instance.TestFileLocation, TestList);
         }
 
         public async void RemoveTest(Test testToDelete)
         {
-            foreach (Test currentTest in TestList)
+            foreach (Test cachedTest in TestList)
             {
-                if (currentTest.TestID == testToDelete.TestID)
+                if (cachedTest.TestID == testToDelete.TestID)
                 {
-                    TestList.Remove(currentTest);
+                    TestList.Remove(cachedTest);
                     break;
                 }
             }
-            GradeManager.GenerateGrades(TestList);
             await JSONSerialization.SerializeJSONAsync(
             SettingManager.Instance.TestFileLocation, TestList);
+        }
+
+        public Test GetTestByID(Guid testID)
+        {
+            foreach (Test cachedTest in TestList)
+            {
+                if (cachedTest.TestID == testID)
+                {
+                    return cachedTest;
+                }
+            }
+            return null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };

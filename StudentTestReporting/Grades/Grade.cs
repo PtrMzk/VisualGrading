@@ -10,30 +10,34 @@ using VisualGrading.Tests;
 namespace VisualGrading.Grades
 {
     [Serializable]
-    public class Grades : List<Grade> { }
-    [Serializable]
     public class Grade
     {
-        public string Name { get; set; }
-        public string Nickname { get; set; }
-        public string Subject { get; set; }
-        public int TestNumber { get; set; }
-        private int gradesSafe;
-        public int Grades
+        #region Constructors
+        public Grade()
         {
-            get { return gradesSafe; }
-            set
-            {
-                if (value > 100)
-                    gradesSafe = 100;
-                else if (value < 0)
-                    gradesSafe = 0;
-                else
-                    gradesSafe = value;
-            }
+            this.GradeID = Guid.NewGuid();
         }
 
-        List<Grade> grades = new List<Grade>();
+        public Grade(Student student, Test test)
+        {
+            this.Student = student;
+            this.Test = test;
+            this.GradeID = Guid.NewGuid();
+        }
+
+        public Grade(Student student, Test test, int points)
+        {
+            this.Student = student;
+            this.Test = test;
+            this.Points = points;
+            this.GradeID = Guid.NewGuid();
+        }
+        #endregion  
+
+        public Guid GradeID { get; private set; }
+        public int Points { get; set; }
+        public Test Test { get; set; }
+        public Student Student { get; set; }
 
         //public List<Grade> crossJoinLists(List<Student> List1, List<Test> List2)
         //{

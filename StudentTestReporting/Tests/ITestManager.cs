@@ -16,5 +16,7 @@ namespace VisualGrading.Tests
         void UpdateTestAsync(Test test);
         void AddTestSeriesAsync(TestSeries testSeries);
         event PropertyChangedEventHandler PropertyChanged;
+        Test GetTestByID(Guid testID);
+
     }
 }

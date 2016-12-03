@@ -11,13 +11,28 @@ namespace VisualGrading.Helpers
     public static class JSONSerialization
     {
 
+        public static T DeserializeJSON<T>(string fileLocation)
+        {
+            string JSONstring = string.Empty;
+            try
+            {
+                JSONstring = File.ReadAllText(fileLocation);
+            }
+            catch
+            {
+
+            }
+            return JsonConvert.DeserializeObject<T>(JSONstring);
+        }
+
         public static async Task<T> DeserializeJSONAsync<T>(string fileLocation)
         {
             var result = await Task.Factory.StartNew(
                 () =>
-                
+
                 {
-                    string JSONstring = string.Empty; 
+                    //TODO: this is exact same as the nonAsync method. see if we can jsut call the method without a 'void' error
+                    string JSONstring = string.Empty;
                     try
                     {
                         JSONstring = File.ReadAllText(fileLocation);
@@ -26,11 +41,18 @@ namespace VisualGrading.Helpers
                     {
 
                     }
-                        return JsonConvert.DeserializeObject<T>(JSONstring);
+                    return JsonConvert.DeserializeObject<T>(JSONstring);
                 }
-                
+
             );
+
             return result;
+        }
+
+        public static void SerializeJSON(string fileLocation, object objectToSerialize)
+        {
+            string serializedObject = JsonConvert.SerializeObject(objectToSerialize);
+            File.WriteAllText(fileLocation, serializedObject);
         }
 
         public static async Task SerializeJSONAsync(string fileLocation, object objectToSerialize)
@@ -38,8 +60,7 @@ namespace VisualGrading.Helpers
             await Task.Factory.StartNew(
             () =>
                 {
-                    string serializedObject = JsonConvert.SerializeObject(objectToSerialize);
-                    File.WriteAllText(fileLocation, serializedObject);
+                    SerializeJSON( fileLocation, objectToSerialize);
                 }
             );
         }

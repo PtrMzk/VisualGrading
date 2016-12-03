@@ -69,13 +69,11 @@ namespace VisualGrading.Students
 
         private void UpdateStudent(SimpleEditableStudent source, Student destination)
         {
-            destination.StudentID = source.StudentID;
             destination.FirstName = source.FirstName;
             destination.LastName = source.LastName;
             destination.Nickname = source.Nickname;
             destination.EmailAddress = source.EmailAddress;
             destination.ParentEmailAddress = source.ParentEmailAddress;
-
         }
 
         private void CopyStudent(Student source, SimpleEditableStudent destination)
@@ -84,7 +82,6 @@ namespace VisualGrading.Students
 
             if (EditMode)
             {
-                destination.StudentID = source.StudentID;
                 destination.FirstName = source.FirstName;
                 destination.LastName = source.LastName;
                 destination.Nickname = source.Nickname;

@@ -27,12 +27,13 @@ public class Test
     #endregion
 
     #region Properties
-    public Guid TestID {get; set;}
+    public Guid TestID {get; private set;}
     public string Name { get; set; }
     public string Subject { get; set; }
     public string SubCategory { get; set; }
     public DateTime Date { get; set; }
     public int SeriesNumber { get; set; }
+    public int MaximumPoints { get; set; }
     #endregion
 }
 

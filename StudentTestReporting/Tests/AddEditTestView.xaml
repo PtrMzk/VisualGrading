@@ -35,6 +35,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -48,6 +49,8 @@
             <TextBox x:Name="subCategoryTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding SubCategory, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
             <Label Content="Date:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center"/>
             <TextBox x:Name="dateTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" Text="{Binding Date, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="Point Value:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4" VerticalAlignment="Center"/>
+            <TextBox x:Name="maxPointsTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="4" Text="{Binding MaximumPoints, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
         </Grid>
         <Grid Grid.Row="1">
             <Button Content ="Save"

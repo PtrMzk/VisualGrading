@@ -16,7 +16,7 @@ namespace VisualGrading.Students
             this.StudentID = Guid.NewGuid();
         }
 
-        public Guid StudentID { get; set; }
+        public Guid StudentID { get; private set; }
         public string FirstName {get; set; }
         public string LastName { get; set; }
         public string FullName { get { return string.Format("{0} {1}", !string.IsNullOrEmpty(Nickname) ? Nickname : FirstName, LastName); }} 
