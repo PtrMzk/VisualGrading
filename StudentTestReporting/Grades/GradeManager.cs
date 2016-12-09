@@ -11,23 +11,32 @@ using System.Text;
 using System.Threading.Tasks;
 using VisualGrading.Tests;
 using Microsoft.Practices.Unity;
+using StudentTestReporting.DataAccess;
+using StudentTestReporting.Helpers;
 
 namespace VisualGrading.Grades
 {
     //TODO: Update Interface
-    public sealed class GradeManager : INotifyPropertyChanged, IGradeManager
+    public sealed class GradeManager : AbstractManager, INotifyPropertyChanged, IGradeManager
     {
         #region Singleton Implementation
 
         private static GradeManager _instance = new GradeManager();
 
+        //need static constructor to avoid dependency issues
         static GradeManager()
         {
-            Instance._testManager = ContainerHelper.Container.Resolve<ITestManager>();
-            Instance._studentManager = ContainerHelper.Container.Resolve<IStudentManager>();
-            Instance._studentManager.StudentAdded += Instance.AddGradeByStudentAsync;
+            
+        }
 
-            Instance.InitializeGradeList();
+        private GradeManager()
+        {
+            _testManager = ContainerHelper.Container.Resolve<ITestManager>();
+            _studentManager = ContainerHelper.Container.Resolve<IStudentManager>();
+            _dataManager= ContainerHelper.Container.Resolve<IDataManager>();
+            _studentManager.StudentAdded += AddGradesByStudentAsync;
+
+            InitializeGradeList();
         }
 
         public static GradeManager Instance
@@ -44,20 +53,19 @@ namespace VisualGrading.Grades
         #region Properties
         private ITestManager _testManager;
         private IStudentManager _studentManager;
-
-        public string GradeFileLocation { get { return SettingManager.Instance.GradeFileLocation;} }
-
+        private IDataManager _dataManager;
+        
         private List<Grade> _GradeList;
 
         public List<Grade> GradeList
         {
-            get { return Instance._GradeList; }
+            get { return _GradeList; }
             set
             {
-                if (Instance._GradeList != value)
+                if (_GradeList != value)
                 {
-                    Instance._GradeList = value;
-                    Instance.PropertyChanged(null, new PropertyChangedEventArgs("GradeList"));
+                    _GradeList = value;
+                    PropertyChanged(null, new PropertyChangedEventArgs("GradeList"));
                 }
 
             }
@@ -69,14 +77,19 @@ namespace VisualGrading.Grades
 
         private void InitializeGradeList()
         {
-            if (!File.Exists(GradeFileLocation))
+            //TODO: This logic can be improved
+            if (!File.Exists(settingManager.GetFileLocationByType<List<Grade>>()))
             {
-                var grades = GenerateGrades(_studentManager.StudentList, _testManager.TestList);
-
-                Helpers.JSONSerialization.SerializeJSON(GradeFileLocation, grades);
+                GenerateAndSaveGrades();
             }
 
-            List<Grade> tempGradeList = JSONSerialization.DeserializeJSON<List<Grade>>(GradeFileLocation);
+            List<Grade> tempGradeList = _dataManager.Load<List<Grade>>();
+
+            //file can be created but grades are empty...need to regenerate in such a case
+            if (tempGradeList == null || tempGradeList.Count == 0)
+                GenerateAndSaveGrades();
+
+            tempGradeList = _dataManager.Load<List<Grade>>();
 
             //TODO: See if this is the correct way to do this
             //replace every test and student with a reference
@@ -85,37 +98,50 @@ namespace VisualGrading.Grades
                 var testID = grade.Test.TestID;
                 var studentID = grade.Student.StudentID;
 
-                grade.Test = _testManager.GetTestByID(testID);
-                grade.Student = _studentManager.GetStudentByID(studentID);
-
+                try
+                {
+                    grade.Test = _testManager.GetTestByID(testID);
+                    grade.Student = _studentManager.GetStudentByID(studentID);
+                }
+                catch
+                {
+                    
+                }
             }
 
             GradeList = tempGradeList;
         }
 
+        private void GenerateAndSaveGrades()
+        {
+            var grades = GenerateGrades(_studentManager.StudentList, _testManager.TestList);
+
+            _dataManager.Save<List<Grade>>(grades);
+        }
+
+
+        //TODO: All these objects should return in-memory grades first, if they exist. Otherwise they can load from file. 
         public async Task<List<Grade>> GetGradesAsync()
         {
-            string GradeFileLocation = SettingManager.Instance.GradeFileLocation;
-
             //TODO: This whole method needs a rewrite
             if (GradeList != null && GradeList.Count > 0)
             {
                 return GradeList;
             }
 
-            List<Grade> Grades = new List<Grade>();
+            List<Grade> grades = new List<Grade>();
 
             //TODO: Make this file location dependent on a setting
             //TODO: Grade when the file and/or folder don't exist - causes issues
 
             try
             {
-                if (!File.Exists(GradeFileLocation))
+                if (!File.Exists(settingManager.GetFileLocationByType<List<Grade>>()))
                 {
-                    await Helpers.JSONSerialization.SerializeJSONAsync(GradeFileLocation, Grades);
+                    await _dataManager.SaveAsync<List<Grade>>(grades);
                 }
 
-                Grades = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Grade>>(GradeFileLocation);
+                grades = await _dataManager.LoadAsync<List<Grade>>();
             }
             catch
             {
@@ -124,56 +150,50 @@ namespace VisualGrading.Grades
             //TODO: Come up with a better design for keeping GradeManager in line with wherever else needs this information
             if (GradeList == null)
             {
-                GradeList = Grades;
+                GradeList = grades;
             }
 
-            return Grades;
+            return grades;
         }
 
 
         public async void UpdateGradeAsync(Grade updatedGrade)
         {
-            foreach (Grade currentGrade in GradeList)
-            {
+            GradeList.Select(g => g = updatedGrade).Where(g => g.GradeID == updatedGrade.GradeID);
 
-            }
-            await JSONSerialization.SerializeJSONAsync(
-                SettingManager.Instance.GradeFileLocation, GradeList);
+            await _dataManager.SaveAsync<List<Grade>>(GradeList);
         }
 
-        public async void AddGradeByTestAsync(Test test)
+        public async void AddGradesByTestAsync(Test test)
         {
 
         }
 
-        public async void AddGradeByStudentAsync(Student student)
+        public async void AddGradesByStudentAsync(Student student)
         {
             foreach (var test in _testManager.TestList)
             {
                 GradeList.Add(new Grade(student, test));
             }
 
-            await JSONSerialization.SerializeJSONAsync(
-    SettingManager.Instance.GradeFileLocation, GradeList);
+            await _dataManager.SaveAsync<List<Grade>>(GradeList);
         }
 
         public async void AddGradeAsync(Grade Grade)
         {
             GradeList.Add(Grade);
-            await JSONSerialization.SerializeJSONAsync(
-                SettingManager.Instance.GradeFileLocation, GradeList);
+            await _dataManager.SaveAsync<List<Grade>>(GradeList);
         }
 
-        public async void RemoveGradeByStudentAsync(Student studentToRemove)
+        public async void RemoveGradesByStudentAsync(Student studentToRemove)
         {
 
-            await JSONSerialization.SerializeJSONAsync(
-                SettingManager.Instance.GradeFileLocation, GradeList);
+            await _dataManager.SaveAsync<List<Grade>>(GradeList);
         }
 
-        public async void RemoveGradeByTestAsync(Test testToRemove)
+        public async void RemoveGradesByTestAsync(Test testToRemove)
         {
-
+            await _dataManager.SaveAsync<List<Grade>>(GradeList);
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -185,17 +205,15 @@ namespace VisualGrading.Grades
 
         #endregion
 
-        public List<Grade> GenerateGrades(List<Student> students, List<Test> tests )
+        public List<Grade> GenerateGrades(List<Student> students, List<Test> tests)
         {
             {
                 var grades = (from student in students
-                                from test in tests
-                                 select new Grade
-                                 (
-                                    student, test
-                                 )
-                                 
-                                    
+                              from test in tests
+                              select new Grade
+                              (
+                                 student, test
+                              )
                                  ).ToList();
 
                 return grades;

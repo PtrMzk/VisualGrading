@@ -49,17 +49,26 @@
         </Grid>
         <DataGrid ItemsSource="{Binding ObservableStudents}"
 			AutoGenerateColumns ="False"
-			CanUserAddRows="False" Grid.Row="1">
+			CanUserAddRows="False" 
+            Grid.Row="1"
+            HeadersVisibility="Column"
+            AlternatingRowBackground="WhiteSmoke" >
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="RowEditEnding">
+                    --><!--<ei:CallMethodAction  TargetObject="{Binding}" MethodName="OnStudentRowEdit"/>--><!--
+                    <i:InvokeCommandAction Command="{Binding AutoSaveCommand"></i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding FullName}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding Nickname}"
+                <DataGridTextColumn Binding="{Binding Nickname, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding EmailAddress}"
+                <DataGridTextColumn Binding="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding ParentEmailAddress}"
+                <DataGridTextColumn Binding="{Binding ParentEmailAddress, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding OverallGrade}"
+                <DataGridTextColumn Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
                 <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>

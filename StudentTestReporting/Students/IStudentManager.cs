@@ -18,7 +18,7 @@ namespace VisualGrading.Students
 
         void AddStudentAsync(Student Student);
         Task<List<Student>> GetStudentsAsync();
-        void RemoveStudent(Student StudentToDelete);
+        void RemoveStudent(Student student);
         void UpdateStudentAsync(Student updatedStudent);
         Student GetStudentByID(Guid studentID);
         

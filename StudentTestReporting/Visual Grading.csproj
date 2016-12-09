@@ -96,11 +96,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataAccess\DataManager.cs" />
+    <Compile Include="DataAccess\IDataManager.cs" />
     <Compile Include="Grades\IGradeManager.cs" />
+    <Compile Include="Helpers\AbstractManager.cs" />
     <Compile Include="Helpers\ContainerHelper.cs" />
     <Compile Include="Helpers\NegateBooleanVisibilityConverter.cs" />
+    <Compile Include="Helpers\ObservableCollectionExtended.cs" />
     <Compile Include="Helpers\SettingManager.cs" />
     <Compile Include="Helpers\ValidateBaseViewModel.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Students\AddEditStudentView.xaml.cs">
       <DependentUpon>AddEditStudentView.xaml</DependentUpon>
     </Compile>
@@ -120,7 +125,7 @@
     <Compile Include="Grades\GradeView.xaml.cs">
       <DependentUpon>GradeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\JSONSerialization.cs" />
+    <Compile Include="DataAccess\JSONSerialization.cs" />
     <Compile Include="Helpers\MVVMBehaviors.cs" />
     <Compile Include="Tests\AddEditTestViewModel.cs" />
     <Compile Include="PresentationLayer\BaseViewModel.cs" />

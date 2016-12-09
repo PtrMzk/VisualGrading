@@ -13,7 +13,7 @@ using VisualGrading.Presentation;
 
 namespace VisualGrading.Tests
 {
-    public class TestViewModel : VisualGrading.Presentation.BaseViewModel
+    public class TestViewModel : BaseViewModel
     {
         #region Constructor
 
@@ -69,7 +69,7 @@ namespace VisualGrading.Tests
             set
             {
                 SetProperty(ref _observableTests, value);
-                //PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
+                PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
             }
         }
 
@@ -89,7 +89,7 @@ namespace VisualGrading.Tests
                 {
                     _selectedTest = value;
                     DeleteCommand.RaiseCanExecuteChanged();
-                    PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("SelectTest"));
                 }
             }
         }
@@ -188,7 +188,7 @@ namespace VisualGrading.Tests
         {
             //place holder for the actual on add test command for the actual on add test button
             //the one above is linked to the chart button i believe...
-            AddRequested(new Test());
+            AddRequested(new Test() {TestID = Guid.NewGuid()});
         }
 
         private void OnAddTestSeries()

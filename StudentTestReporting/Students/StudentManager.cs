@@ -8,21 +8,32 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using StudentTestReporting.DataAccess;
 using VisualGrading.Helpers;
 using VisualGrading;
+using VisualGrading.DataAccess;
+using Microsoft.Practices.Unity;
+using StudentTestReporting.Helpers;
 
 namespace VisualGrading.Students
 {
-    public sealed class StudentManager : INotifyPropertyChanged, IStudentManager
+    public sealed class StudentManager : AbstractManager, INotifyPropertyChanged, IStudentManager
     {
-
         #region Singleton Implementation
 
         private static StudentManager _instance = new StudentManager();
 
+        private StudentManager()
+        {
+            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+            //_gradeManager = ContainerHelper.Container.Resolve<IGradeManager>();
+            InitializeStudentList();
+        }
+
+        //need static constructor to avoid dependency issues
         static StudentManager()
         {
-            Instance.InitializeStudentList();
+            
         }
 
         public static StudentManager Instance
@@ -36,38 +47,40 @@ namespace VisualGrading.Students
 
         #region Properties
 
+        private IDataManager _dataManager;
+        private IGradeManager _gradeManager;
+
         private List<Student> _StudentList;
 
         public List<Student> StudentList
         {
             get
             {
-                return Instance._StudentList;
+                return _StudentList;
             }
             set
             {
-                if (Instance._StudentList != value)
+                if (_StudentList != value)
                 {
-                    Instance._StudentList = value;
-                    Instance.PropertyChanged(null, new PropertyChangedEventArgs("StudentList"));
+                    _StudentList = value;
+                    PropertyChanged(null, new PropertyChangedEventArgs("StudentList"));
                 }
-
             }
         }
 
-        public string StudentFileLocation { get { return SettingManager.Instance.StudentFileLocation; } }
+        //public string StudentFileLocation { get { return settingManager.StudentFileLocation; } }
         #endregion
 
         #region Methods
 
         private void InitializeStudentList()
         {
-            if (!File.Exists(StudentFileLocation))
+            if (!File.Exists(settingManager.GetFileLocationByType<List<Student>>()))
             {
                 List<Student> emptyStudentList = new List<Student>();
-                Helpers.JSONSerialization.SerializeJSON(StudentFileLocation, emptyStudentList);
+                _dataManager.Save<List<Student>>(emptyStudentList);
             }
-            StudentList = Helpers.JSONSerialization.DeserializeJSON<List<Student>>(StudentFileLocation);
+            StudentList = _dataManager.Load<List<Student>>();
         }
 
         public async Task<List<Student>> GetStudentsAsync()
@@ -83,6 +96,7 @@ namespace VisualGrading.Students
             //TODO: Make this file location dependent on a setting
             //TODO: Student when the file and/or folder don't exist - causes issues
 
+            //TODO: just test students for now...
             if (Students == null || Students.Count == 0)
             {
                 Students = new List<Student>();
@@ -95,14 +109,9 @@ namespace VisualGrading.Students
                 Students.Add(rose);
                 Students.Add(cal);
             }
-
-            try
-            {
-                Students = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Student>>(StudentFileLocation);
-            }
-            catch
-            {
-            }
+            else
+                Students = await _dataManager.LoadAsync<List<Student>>();
+            
 
             //TODO: Come up with a better design for keeping StudentManager in line with wherever else needs this information
             if (StudentList == null)
@@ -124,8 +133,7 @@ namespace VisualGrading.Students
                     break;
                 }
             }
-            await JSONSerialization.SerializeJSONAsync(
-            SettingManager.Instance.StudentFileLocation, StudentList);
+            await _dataManager.SaveAsync<List<Student>>(StudentList);
         }
 
         public async void AddStudentAsync(Student student)
@@ -135,22 +143,25 @@ namespace VisualGrading.Students
             if (StudentAdded != null)
                 StudentAdded(student);
 
-            await JSONSerialization.SerializeJSONAsync(
-                SettingManager.Instance.StudentFileLocation, StudentList);
+            _gradeManager.AddGradesByStudentAsync(student);
+
+            await _dataManager.SaveAsync<List<Student>>(StudentList);
         }
 
-        public async void RemoveStudent(Student studentToDelete)
+        public async void RemoveStudent(Student student)
         {
             foreach (Student cachedStudent in StudentList)
             {
-                if (cachedStudent.StudentID == studentToDelete.StudentID)
+                if (cachedStudent.StudentID == student.StudentID)
                 {
                     StudentList.Remove(cachedStudent);
                     break;
                 }
             }
-            await JSONSerialization.SerializeJSONAsync(
-            SettingManager.Instance.StudentFileLocation, StudentList);
+
+            //_gradeManager.RemoveGradesByStudentAsync(student);
+
+            await _dataManager.SaveAsync<List<Student>>(StudentList);
         }
 
         public Student GetStudentByID(Guid studentID)

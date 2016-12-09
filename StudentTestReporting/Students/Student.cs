@@ -1,28 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using StudentTestReporting.Annotations;
 
 
 namespace VisualGrading.Students
 {
     [Serializable]
-    public class Student
+    public class Student : INotifyPropertyChanged
     {
+        private string _emailAddress;
+        private string _nickname;
+        private string _firstName;
+        private string _lastName;
+        private string _parentEmailAddress;
+
         public Student()
         {
-            this.StudentID = Guid.NewGuid();
+            //this.StudentID = Guid.NewGuid();
         }
 
-        public Guid StudentID { get; private set; }
-        public string FirstName {get; set; }
-        public string LastName { get; set; }
-        public string FullName { get { return string.Format("{0} {1}", !string.IsNullOrEmpty(Nickname) ? Nickname : FirstName, LastName); }} 
-        public string Nickname { get; set; }
-        public string EmailAddress { get; set; }
-        public string ParentEmailAddress { get; set; }
+        public Guid StudentID { get; set; }
+
+        public string FirstName
+        {
+            get { return _firstName; }
+            set
+            {
+                if (value == _firstName) return;
+                _firstName = value;
+                OnPropertyChanged();
+                //OnPropertyChanged(nameof(FullName));
+            }
+        }
+
+        public string LastName
+        {
+            get { return _lastName; }
+            set
+            {
+                if (value == _lastName) return;
+                _lastName = value;
+                OnPropertyChanged();
+                //OnPropertyChanged(nameof(FullName));
+            }
+        }
+
+        public string FullName { get { return string.Format("{0} {1}", !string.IsNullOrEmpty(Nickname) ? Nickname : FirstName, LastName); }}
+
+        public string Nickname
+        {
+            get { return _nickname; }
+            set
+            {
+                if (value == _nickname) return;
+                _nickname = value;
+                OnPropertyChanged();
+                //OnPropertyChanged(nameof(FullName));
+            }
+        }
+
+        public string EmailAddress  
+        {
+            get { return _emailAddress; }
+            set
+            {
+                if (value == _emailAddress) return;
+                _emailAddress = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        public string ParentEmailAddress
+        {
+            get { return _parentEmailAddress; }
+            set
+            {
+                if (value == _parentEmailAddress) return;
+                _parentEmailAddress = value;
+                OnPropertyChanged();
+            }
+        }
+
         public decimal OverallGrade { get; set; }
 
         #region StudentRefreshEvent
@@ -40,5 +105,12 @@ namespace VisualGrading.Students
         //}
         #endregion
 
-      }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
 }

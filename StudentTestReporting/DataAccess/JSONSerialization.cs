@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace VisualGrading.Helpers
+namespace VisualGrading.DataAccess
 {
     public static class JSONSerialization
     {
@@ -52,6 +52,7 @@ namespace VisualGrading.Helpers
         public static void SerializeJSON(string fileLocation, object objectToSerialize)
         {
             string serializedObject = JsonConvert.SerializeObject(objectToSerialize);
+
             File.WriteAllText(fileLocation, serializedObject);
         }
 
@@ -60,7 +61,7 @@ namespace VisualGrading.Helpers
             await Task.Factory.StartNew(
             () =>
                 {
-                    SerializeJSON( fileLocation, objectToSerialize);
+                    SerializeJSON(fileLocation, objectToSerialize);
                 }
             );
         }

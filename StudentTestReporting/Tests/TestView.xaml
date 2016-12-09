@@ -55,7 +55,9 @@
         </Grid>
         <DataGrid ItemsSource="{Binding ObservableTests}"
 			AutoGenerateColumns ="False"
-			CanUserAddRows="False" Grid.Row="1">
+			CanUserAddRows="False" Grid.Row="1"
+                  HeadersVisibility="Column"
+                  AlternatingRowBackground="WhiteSmoke">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}"
 					Width="*"/>

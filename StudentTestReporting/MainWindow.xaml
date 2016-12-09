@@ -32,7 +32,7 @@
             <s:AddEditStudentView></s:AddEditStudentView>
         </DataTemplate>
         <DataTemplate DataType="{x:Type g:GradeViewModel}">
-            <s:AddEditStudentView></s:AddEditStudentView>
+            <g:GradeView></g:GradeView>
         </DataTemplate>
     </Window.Resources>
     <Grid>

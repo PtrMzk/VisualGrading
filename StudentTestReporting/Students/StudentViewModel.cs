@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using VisualGrading.Helpers;
 
 namespace VisualGrading.Students
@@ -22,42 +23,17 @@ namespace VisualGrading.Students
             AddCommand = new RelayCommand(OnAddStudent);
             EditCommand = new RelayCommand<Student>(OnEditStudent);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
+            //AutoSaveCommand = new RelayCommand(OnRowEdit);
             DeleteRequested += RemoveStudentFromPresentationAndManager;
-
-            //TODO: delete the below if not needed, clean this up to set the private variable Student
-            //var _observableStudents = new ObservableCollection<Student>();
-            //this._observableStudents = new ObservableCollection<Student>();
-
-            //this._observableStudents.AddStudent(new Student()
-            //{
-            //    Subject = "Computer Programming",
-            //    StudentNumber = 1
-            //});
-            //this._observableStudents.AddStudent(new Student()
-            //{
-
-            //    Subject = "Computer Programming",
-            //    StudentNumber = 2
-            //});
-            //this._observableStudents.AddStudent(new Student()
-            //{
-
-            //    Subject = "Science",
-            //    StudentNumber = 1
-            //});
-            //PropertyChanged(this, new PropertyChangedEventArgs("Students"));
-
         }
-
         #endregion
 
         #region Properties
-
         private IStudentManager _manager;
 
-        private ObservableCollection<Student> _observableStudents;
+        private ObservableCollectionExtended<Student> _observableStudents;
 
-        public ObservableCollection<Student> ObservableStudents
+        public ObservableCollectionExtended<Student> ObservableStudents
         {
             get
             {
@@ -65,8 +41,12 @@ namespace VisualGrading.Students
             }
             set
             {
+                if (_observableStudents!= null && value != _observableStudents)
+                    _observableStudents.CollectionPropertyChanged -= ObservableStudents_CollectionChanged;
+
                 SetProperty(ref _observableStudents, value);
-                //PropertyChanged(this, new PropertyChangedEventArgs("Students"));
+                PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
+                _observableStudents.CollectionPropertyChanged += ObservableStudents_CollectionChanged;
             }
         }
 
@@ -86,7 +66,7 @@ namespace VisualGrading.Students
                 {
                     _selectedStudent = value;
                     DeleteCommand.RaiseCanExecuteChanged();
-                    PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("SelectedStudents"));
                 }
             }
         }
@@ -100,6 +80,8 @@ namespace VisualGrading.Students
         public RelayCommand<Student> EditCommand { get; private set; }
 
         public RelayCommand ClearSearchCommand { get; private set; }
+
+        public RelayCommand AutoSaveCommand { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
@@ -124,6 +106,11 @@ namespace VisualGrading.Students
             }
         }
 
+        public void OnRowEdit(object sender, PropertyChangedEventArgs e)
+        {
+            _manager.UpdateStudentAsync((Student)sender);
+        }
+
 
         #endregion
 
@@ -133,31 +120,30 @@ namespace VisualGrading.Students
         {
             if (DesignerProperties.GetIsInDesignMode(
                new System.Windows.DependencyObject())) return;
-            //var ObservableStudents = new List<Student>();
+
             _allStudents =
                 await
                     _manager.GetStudentsAsync();
-            ObservableStudents = new ObservableCollection<Student>(_allStudents);
-            //if (ObservableStudents == null || ObservableStudents.Count == 0)
-            //{
-            //    Student Student = new Student();
-            //    Student.StudentList();
-            //    ObservableStudents.AddStudent(Student);
+            ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
 
             PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
-            //}
+        }
+
+        private void ObservableStudents_CollectionChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            _manager.UpdateStudentAsync((Student)sender); ;
         }
 
         private void FilterStudents(string searchInput)
         {
             if (string.IsNullOrWhiteSpace(searchInput))
             {
-                ObservableStudents = new ObservableCollection<Student>(_allStudents);
+                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
                 return;
             }
             else
             {
-                ObservableStudents = new ObservableCollection<Student>(_allStudents.Where(t => t.FullName.ToLower().Contains(searchInput.ToLower())));
+                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents.Where(t => t.FullName.ToLower().Contains(searchInput.ToLower())));
             }
         }
 
@@ -167,9 +153,9 @@ namespace VisualGrading.Students
             _manager.RemoveStudent(Student);
         }
 
-        private void OnDelete(Student Student)
+        private void OnDelete(Student student)
         {
-            DeleteRequested(Student);
+            DeleteRequested(student);
         }
 
         //TODO: RemoveStudent below method - its a temp method for the AddStudent Student > Charting workflow
@@ -184,17 +170,17 @@ namespace VisualGrading.Students
         {
             //place holder for the actual on add Student command for the actual on add Student button
             //the one above is linked to the chart button i believe...
-            AddRequested(new Student());
+            AddRequested(new Student() { StudentID = Guid.NewGuid() });
         }
 
-        private void OnEditStudent(Student Student)
+        private void OnEditStudent(Student student)
         {
-            EditRequested(Student);
+            EditRequested(student);
         }
 
 
         //FIXME: THIS IS NEVER FALSE
-        private bool CanDelete(Student Student)
+        private bool CanDelete(Student student)
         {
             //TODO: Selected Student doesn't seem to work here, and this isn't really needed...
             //return SelectedStudent != null;

@@ -18,9 +18,9 @@ namespace VisualGrading.Grades
     /// <summary>
     /// Interaction logic for GradesView.xaml
     /// </summary>
-    public partial class GradesView : UserControl
+    public partial class GradeView : UserControl
     {
-        public GradesView()
+        public GradeView()
         {
             InitializeComponent();
         }

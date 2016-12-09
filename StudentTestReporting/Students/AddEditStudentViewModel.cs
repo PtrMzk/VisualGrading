@@ -69,6 +69,7 @@ namespace VisualGrading.Students
 
         private void UpdateStudent(SimpleEditableStudent source, Student destination)
         {
+            destination.StudentID = source.StudentID;
             destination.FirstName = source.FirstName;
             destination.LastName = source.LastName;
             destination.Nickname = source.Nickname;

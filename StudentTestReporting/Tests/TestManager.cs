@@ -8,19 +8,24 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using StudentTestReporting.DataAccess;
+using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
+using Microsoft.Practices.Unity;
+using StudentTestReporting.Helpers;
 
 namespace VisualGrading.Tests
 {
-    public sealed class TestManager : INotifyPropertyChanged, ITestManager
+    public sealed class TestManager : AbstractManager, INotifyPropertyChanged, ITestManager
     {
         #region Singleton Implementation
 
         private static TestManager _instance = new TestManager();
 
-        static TestManager()
+        private TestManager()
         {
-            Instance.InitializeTestList();
+            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+            InitializeTestList();
         }
 
         public static TestManager Instance
@@ -34,7 +39,9 @@ namespace VisualGrading.Tests
 
         #region Properties
 
-        private string TestFileLocation { get { return SettingManager.Instance.TestFileLocation; } }
+        private IDataManager _dataManager;
+
+        //private string TestFileLocation { get { return SettingManager.TestFileLocation; } }
 
         private List<Test> _testList;
 
@@ -42,14 +49,14 @@ namespace VisualGrading.Tests
         {
             get
             {
-                return Instance._testList;
+                return _testList;
             }
             set
             {
-                if (Instance._testList != value)
+                if (_testList != value)
                 {
-                    Instance._testList = value;
-                    Instance.PropertyChanged(null, new PropertyChangedEventArgs("TestList"));
+                    _testList = value;
+                    PropertyChanged(null, new PropertyChangedEventArgs("TestList"));
                 }
 
             }
@@ -60,13 +67,13 @@ namespace VisualGrading.Tests
 
         private async void InitializeTestList()
         {
-            if (!File.Exists(TestFileLocation))
+            if (!File.Exists(settingManager.GetFileLocationByType<List<Test>>()))
             {
                 List<Test> emptyTestList= new List<Test>();
-                await Helpers.JSONSerialization.SerializeJSONAsync(TestFileLocation, emptyTestList);
+                _dataManager.Save<List<Test>>(emptyTestList);
             }
 
-            TestList = Helpers.JSONSerialization.DeserializeJSON<List<Test>>(TestFileLocation);
+            TestList = _dataManager.Load<List<Test>>();
         }
 
         public async Task<List<Test>> GetTestsAsync()
@@ -85,7 +92,7 @@ namespace VisualGrading.Tests
 
             try
             {
-                tests = await Helpers.JSONSerialization.DeserializeJSONAsync<List<Test>>(TestFileLocation);
+                tests = await _dataManager.LoadAsync<List<Test>>();
             }
             catch
             {
@@ -120,15 +127,13 @@ namespace VisualGrading.Tests
                     break;
                 }
             }
-            await JSONSerialization.SerializeJSONAsync(
-            SettingManager.Instance.TestFileLocation, TestList);
+            await _dataManager.SaveAsync<List<Test>>(TestList);
         }
 
         public async void AddTestAsync(Test test)
         {
             TestList.Add(test);
-            await JSONSerialization.SerializeJSONAsync(
-                SettingManager.Instance.TestFileLocation, TestList);
+            await _dataManager.SaveAsync<List<Test>>(TestList);
         }
 
         public async void AddTestSeriesAsync(TestSeries testSeries)
@@ -142,8 +147,7 @@ namespace VisualGrading.Tests
                 newTests.Add(test);
             }
             TestList.AddRange(newTests);
-            await JSONSerialization.SerializeJSONAsync(
-                SettingManager.Instance.TestFileLocation, TestList);
+            await _dataManager.SaveAsync<List<Test>>(TestList);
         }
 
         public async void RemoveTest(Test testToDelete)
@@ -156,8 +160,7 @@ namespace VisualGrading.Tests
                     break;
                 }
             }
-            await JSONSerialization.SerializeJSONAsync(
-            SettingManager.Instance.TestFileLocation, TestList);
+            await _dataManager.SaveAsync<List<Test>>(TestList);
         }
 
         public Test GetTestByID(Guid testID)

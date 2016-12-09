@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
+using StudentTestReporting.DataAccess;
 using VisualGrading;
 using VisualGrading.Charts;
 using VisualGrading.Grades;
@@ -18,7 +19,7 @@ namespace VisualGrading
     {
         private TestViewModel _testViewModel;
         private StudentViewModel _studentViewModel;
-        private GradeViewModel _gradesViewModel = new GradeViewModel();
+        private GradeViewModel _gradeViewModel;
         private ChartViewModel _ChartViewModel = new ChartViewModel();
         private AddEditTestViewModel _addEditTestViewModel;
         private AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
@@ -26,6 +27,8 @@ namespace VisualGrading
         private ITestManager _testManager;
         private IStudentManager _studentManager;
         private IGradeManager _gradeManager;
+        private IDataManager _dataManager;
+
 
         private Presentation.BaseViewModel _currentViewModel;
 
@@ -33,16 +36,19 @@ namespace VisualGrading
         {
             //ensure all managers are created when application starts
             //though they may not be used by this class at all
+            
+            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+            _gradeManager = ContainerHelper.Container.Resolve<IGradeManager>();
             _testManager = ContainerHelper.Container.Resolve<ITestManager>();
             _studentManager = ContainerHelper.Container.Resolve<IStudentManager>();
-            //_gradeManager = ContainerHelper.Container.Resolve<IGradeManager>();
-            _gradeManager = new GradeManager();
+            
 
             _testViewModel = ContainerHelper.Container.Resolve<TestViewModel>();
             _addEditTestViewModel = ContainerHelper.Container.Resolve<AddEditTestViewModel>();
             _addEditTestSeriesViewModel = ContainerHelper.Container.Resolve<AddEditTestSeriesViewModel>();
             _studentViewModel = ContainerHelper.Container.Resolve<StudentViewModel>();
             _addEditStudentViewModel = ContainerHelper.Container.Resolve<AddEditStudentViewModel>();
+            _gradeViewModel = ContainerHelper.Container.Resolve<GradeViewModel>();
 
             NavCommand = new RelayCommand<string>(OnNav);
 
@@ -106,7 +112,7 @@ namespace VisualGrading
                     CurrentViewModel = _studentViewModel;
                     break;
                 case "grades":
-                    CurrentViewModel = _gradesViewModel;
+                    CurrentViewModel = _gradeViewModel;
                     break;
                 case "charts":
                     CurrentViewModel = _ChartViewModel;

@@ -59,5 +59,12 @@ namespace VisualGrading.Helpers
         }
 
         #endregion
+
+        #region Methods
+        public string GetFileLocationByType<T>()
+        {
+             return string.Format(APPEND_STRING, SaveFileFolder,(typeof(T).ToString().ToLower())); 
+        }
+        #endregion
     }
 }
