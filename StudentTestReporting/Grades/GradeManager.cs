@@ -31,10 +31,10 @@ namespace VisualGrading.Grades
 
         private GradeManager()
         {
-            _testManager = ContainerHelper.Container.Resolve<ITestManager>();
-            _studentManager = ContainerHelper.Container.Resolve<IStudentManager>();
+            //_testManager = ContainerHelper.Container.Resolve<ITestManager>();
+            //_studentManager = ContainerHelper.Container.Resolve<IStudentManager>();
             _dataManager= ContainerHelper.Container.Resolve<IDataManager>();
-            _studentManager.StudentAdded += AddGradesByStudentAsync;
+            //_studentManager.StudentAdded += AddGradesByStudentAsync;
 
             InitializeGradeList();
         }
@@ -91,34 +91,8 @@ namespace VisualGrading.Grades
 
             tempGradeList = _dataManager.Load<List<Grade>>();
 
-            //TODO: See if this is the correct way to do this
-            //replace every test and student with a reference
-            foreach (var grade in tempGradeList)
-            {
-                var testID = grade.Test.TestID;
-                var studentID = grade.Student.StudentID;
-
-                try
-                {
-                    grade.Test = _testManager.GetTestByID(testID);
-                    grade.Student = _studentManager.GetStudentByID(studentID);
-                }
-                catch
-                {
-                    
-                }
-            }
-
             GradeList = tempGradeList;
         }
-
-        private void GenerateAndSaveGrades()
-        {
-            var grades = GenerateGrades(_studentManager.StudentList, _testManager.TestList);
-
-            _dataManager.Save<List<Grade>>(grades);
-        }
-
 
         //TODO: All these objects should return in-memory grades first, if they exist. Otherwise they can load from file. 
         public async Task<List<Grade>> GetGradesAsync()
@@ -205,20 +179,7 @@ namespace VisualGrading.Grades
 
         #endregion
 
-        public List<Grade> GenerateGrades(List<Student> students, List<Test> tests)
-        {
-            {
-                var grades = (from student in students
-                              from test in tests
-                              select new Grade
-                              (
-                                 student, test
-                              )
-                                 ).ToList();
 
-                return grades;
-            }
-        }
     }
 }
 
