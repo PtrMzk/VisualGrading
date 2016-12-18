@@ -11,7 +11,7 @@
              x:Class="VisualGrading.Grades.GradeView"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="600"
-             help:MVVMBehaviors.LoadedMethodName="LoadGrades">
+    >
     <UserControl.InputBindings>
         <!--<KeyBinding Key="D"
                     Command="{Binding DeleteCommand}" />-->

@@ -83,15 +83,15 @@ namespace VisualGrading.Grades
                 //GenerateAndSaveGrades();
             }
 
-            List<Grade> tempGradeList = (List<Grade>) _dataManager.Load<Grade>();
+           //List<Grade> tempGradeList = (List<Grade>) _dataManager.Load<Grade>();
 
-            //file can be created but grades are empty...need to regenerate in such a case
-            if (tempGradeList == null || tempGradeList.Count == 0)
-                //GenerateAndSaveGrades();
+           // //file can be created but grades are empty...need to regenerate in such a case
+           // if (tempGradeList == null || tempGradeList.Count == 0)
+           //     //GenerateAndSaveGrades();
 
-            //tempGradeList = _dataManager.Load<List<Grade>>();
+           // //tempGradeList = _dataManager.Load<List<GradeDTO>>();
 
-            GradeList = tempGradeList;
+           // GradeList = tempGradeList;
         }
 
         //TODO: All these objects should return in-memory grades first, if they exist. Otherwise they can load from file. 
@@ -106,7 +106,7 @@ namespace VisualGrading.Grades
             List<Grade> grades = new List<Grade>();
 
             //TODO: Make this file location dependent on a setting
-            //TODO: Grade when the file and/or folder don't exist - causes issues
+            //TODO: GradeDTO when the file and/or folder don't exist - causes issues
 
             try
             {

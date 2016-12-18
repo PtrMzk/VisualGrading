@@ -15,10 +15,10 @@ namespace VisualGrading.Tests
 
         #region Public Properties
         [Required]
-        public Guid SeriesID
+        public int ID
         {
-            get { return _seriesID; }
-            set { SetProperty(ref _seriesID, value); }
+            get { return _id; }
+            set { SetProperty(ref _id, value); }
         }
 
         [Required]
@@ -53,7 +53,7 @@ namespace VisualGrading.Tests
 
         #region Private Properties
 
-        private Guid _seriesID;
+        private int _id;
         private string _name; 
         private string _subject;
         private string _subCategory;

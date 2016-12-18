@@ -1,15 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using VisualGrading.Presentation;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using StudentTestReporting.Annotations;
 
 namespace VisualGrading.Tests
 {
-    public class Test
+    public class Test : INotifyPropertyChanged
     {
+        private DateTime _date;
+        private int _maximumPoints;
+        private string _name;
+        private int _seriesNumber;
+        private string _subCategory;
+        private string _subject;
+
         #region Constructors
 
         public Test()
@@ -19,27 +23,93 @@ namespace VisualGrading.Tests
 
         public Test(string name, string subject, string subCategory, int seriesNumber)
         {
-            this.TestID = Guid.NewGuid();
-            this.Name = name;
-            this.Subject = subject;
-            this.SubCategory = subCategory;
-            this.SeriesNumber = seriesNumber;
-
+            //this.tID = Guid.NewGuid();
+            Name = name;
+            Subject = subject;
+            SubCategory = subCategory;
+            SeriesNumber = seriesNumber;
         }
 
         #endregion
 
         #region Properties
 
-        public Guid TestID { get; set; }
-        public string Name { get; set; }
-        public string Subject { get; set; }
-        public string SubCategory { get; set; }
-        public DateTime Date { get; set; }
-        public int SeriesNumber { get; set; }
-        public int MaximumPoints { get; set; }
+        public int ID { get; set; }
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (value == _name) return;
+                _name = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Subject
+        {
+            get { return _subject; }
+            set
+            {
+                if (value == _subject) return;
+                _subject = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SubCategory
+        {
+            get { return _subCategory; }
+            set
+            {
+                if (value == _subCategory) return;
+                _subCategory = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime Date
+        {
+            get { return _date; }
+            set
+            {
+                if (value.Equals(_date)) return;
+                _date = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int SeriesNumber
+        {
+            get { return _seriesNumber; }
+            set
+            {
+                if (value == _seriesNumber) return;
+                _seriesNumber = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int MaximumPoints
+        {
+            get { return _maximumPoints; }
+            set
+            {
+                if (value == _maximumPoints) return;
+                _maximumPoints = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         #endregion
     }
-
 }

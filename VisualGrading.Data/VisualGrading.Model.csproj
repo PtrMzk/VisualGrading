@@ -51,17 +51,18 @@
   <ItemGroup>
     <Compile Include="Data\EFRepository.cs" />
     <Compile Include="Data\EFUnitOfWork.cs" />
-    <Compile Include="Data\Grade.cs" />
+    <Compile Include="Data\GradeDTO.cs" />
     <Compile Include="Data\IEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Data\Student.cs" />
-    <Compile Include="Data\Test.cs" />
-    <Compile Include="Data\VisualGradingDBContext.cs" />
+    <Compile Include="Data\StudentDTO.cs" />
+    <Compile Include="Data\TestDTO.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\IUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

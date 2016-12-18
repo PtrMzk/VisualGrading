@@ -12,42 +12,54 @@ namespace VisualGrading.Model.Data
 {
    public class EFUnitOfWork : DbContext, IUnitOfWork
     {
-        private readonly EFRepository<Test> _testRepository;
-        private readonly EFRepository<Student> _studentRepository;
-        private readonly EFRepository<Grade> _gradeRepository;
+        private readonly EFRepository<TestDTO> _testRepository;
+        private readonly EFRepository<StudentDTO> _studentRepository;
+        //private readonly IRepository<IEntity> _studentRepositoryGen;
+        private readonly EFRepository<GradeDTO> _gradeRepository;
 
-        public DbSet<Test> Tests { get; set; }
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Grade> Grades { get; set; }
+        public DbSet<TestDTO> Tests { get; set; }
+        public DbSet<StudentDTO> Students { get; set; }
+        public DbSet<GradeDTO> Grades { get; set; }
 
         public EFUnitOfWork()
             : base("name=VisualGradingDBContext")
         {
-            _testRepository = new EFRepository<Test>(Tests);
-            _studentRepository = new EFRepository<Student>(Students);
-            _gradeRepository = new EFRepository<Grade>(Grades);
+            _testRepository = new EFRepository<TestDTO>(Tests);
+            _studentRepository = new EFRepository<StudentDTO>(Students);
+            _gradeRepository = new EFRepository<GradeDTO>(Grades);
+            //_studentRepositoryGen = new EFRepository<IEntity>();
         }
 
         #region IUnitOfWork Implementation
 
-        public IRepository<Test> TestRepository
+        public IRepository<TestDTO> TestRepository
         {
             get { return _testRepository; }
         }
 
-        public IRepository<Student> StudentRepository
+        public IRepository<StudentDTO> StudentRepository
         {
             get { return _studentRepository; }
         }
 
-        public IRepository<Grade> GradeRepository
+        //public IRepository<IEntity> StudentRepositoryGen
+        //{
+        //    get { return _studentRepositoryGen; }
+        //}
+
+        public IRepository<GradeDTO> GradeRepository
         {
             get { return _gradeRepository; }
         }
-
+        
         public void Commit()
         {
             this.SaveChanges();
+        }
+
+        public async Task CommitAsync()
+        {
+            await this.SaveChangesAsync();
         }
 
         #endregion

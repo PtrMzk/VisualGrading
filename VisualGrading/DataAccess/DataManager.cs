@@ -1,117 +1,319 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Practices.Unity;
-using VisualGrading.DataAccess;
+using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Model.Data;
 using VisualGrading.Model.Repositories;
+using VisualGrading.Students;
+using VisualGrading.Tests;
 
 namespace VisualGrading.DataAccess
 {
     public class DataManager : IDataManager
     {
-        #region Singleton Implementation
+        //TODO: Is singleton needed? Might give constrained life to Unit of Work without it
 
-        private static DataManager _instance = new DataManager();
+        #region Singleton Implementation
 
         private DataManager()
         {
             _unitOfWork = ContainerHelper.Container.Resolve<IUnitOfWork>();
-            //var x = _unitOfWork.StudentRepository.FirstOrDefault();
 
-            //var student = new VisualGrading.Model.Data.Student();
-            //student.FirstName = "Wayne";
-            //student.LastName = "Crosby";
-            //_unitOfWork.StudentRepository.Add(student);
+            _studentRepository = _unitOfWork.StudentRepository;
 
-            //_unitOfWork.Commit();
+            _testRepository = _unitOfWork.TestRepository;
 
-            //var y = _unitOfWork.StudentRepository.GetAll();
+            _gradeRepository = _unitOfWork.GradeRepository;
 
-            //var testStudent = new VisualGrading.Students.Student()
-            //{
-            //    FirstName = "Ted",
-            //    LastName = "Gray",
-            //    EmailAddress = "ted@ted.com"
-            //};
-
-            //var pocoStudent = Mapper.Map<VisualGrading.Model.Data.Student>(testStudent);
-
-            //_unitOfWork.StudentRepository.Add(pocoStudent);
-            //_unitOfWork.Commit();
-            //var tempList = y.ToList();
-
-            var a = FindCorrespondingTypeForAutoMapper<VisualGrading.Model.Data.Student>();
-            var c = Type.GetType("VisualGrading.Model.Data.Student, VisualGrading.Model");
-
-            var b = FindCorrespondingTypeForAutoMapper<VisualGrading.Students.Student>();
-
+            //_studentRepositoryGen = _unitOfWork.StudentRepositoryGen;
         }
 
+        public static DataManager Instance { get; } = new DataManager();
 
-        public static DataManager Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
         #endregion
 
         #region Properties
 
-        private IUnitOfWork _unitOfWork;
+        private readonly AutoMapperProfile _autoMapperProfile = new AutoMapperProfile();
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        private readonly IRepository<StudentDTO> _studentRepository;
+
+        // private readonly IRepository<IEntity> _studentRepositoryGen;
+
+        private readonly IRepository<TestDTO> _testRepository;
+
+        private readonly IRepository<GradeDTO> _gradeRepository;
 
         private SettingRepository _settingRepository => SettingRepository.Instance;
+
         #endregion
 
         #region Methods
-        //private IList GenerateListByType(Type type)
+
+        #region Generic Methods
+
+        //private Type FindCorrespondingType<T>(T businessObject)
         //{
-        //    Type listType = typeof(List<>).MakeGenericType(type);
-        //    return (IList)Activator.CreateInstance(listType);
+        //    return _autoMapperProfile.MappingDictionary[typeof(T)];
         //}
 
-        private Type GetCorrespondingTypeForAutoMapper<T>()
+        //private IRepository<IEntity> FindRepository<T>(T businessObject) where T : class
+        //{
+        //    IRepository<IEntity> repository = null;
+
+        //    switch (businessObject.GetType().Name)
+        //    {
+        //        case "StudentDTO":
+        //            repository = _studentRepositoryGen;
+        //            break;
+        //        case "TestDTO":
+        //            //return (IRepository<IEntity>)unitOfWork.TestRepository;
+        //            break;
+        //        case "GradeDTO":
+        //            //return (IRepository<IEntity>)unitOfWork.GradeRepository;
+        //            break;
+        //    }
+
+        //    return repository;
+        //}
+
+        //public async Task UpdateAsync<T>(T businessObject)
+        //{
+        //    UpdateRepository<T>(businessObject);
+        //    await _unitOfWork.CommitAsync();
+        //}
+
+        //private void UpdateRepository<T>(T businessObject)
+        //{
+
+        //    var DTOType = FindCorrespondingType<T>(businessObject);
+        //    //var testDTO = new TestDTO();
+
+        //    var newDTO = (IEntity)Activator.CreateInstance(DTOType);
+
+        //    IRepository<IEntity> repository = FindRepository(newDTO);
+
+        //    Mapper.Map(businessObject, newDTO);
+
+        //    var existingEntity = repository.Single(x => x.ID == newDTO.ID);
+
+        //    if (existingEntity != null)
+        //        _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(newDTO);
+        //}
+
+        #endregion
+
+        #region Public DataManager Methods
+
+        public void CommitChanges()
         {
-            string typeNameForConversion;
-            if (typeof(T).Namespace.StartsWith("VisualGrading.Model"))
-            {
-                typeNameForConversion = "VisualGrading." + typeof(T).Name + "s." + typeof(T).Name;
-            }
+            _unitOfWork.Commit();
+        }
+
+        public async Task CommitChangesAsync()
+        {
+            await _unitOfWork.CommitAsync();
+        }
+
+        #endregion
+
+        #region Public Student Methods
+
+        public async Task<List<Student>> GetStudentsAsync()
+        {
+            var studentDTOs = await _studentRepository.GetAllAsync();
+
+            return ConvertStudentDTOsToStudents(studentDTOs);
+        }
+
+        public List<Student> GetStudents()
+        {
+            var studentDTOs = _studentRepository.GetAll();
+
+            return ConvertStudentDTOsToStudents(studentDTOs);
+        }
+
+        public void SaveStudent(Student student)
+        {
+            var studentDTO = new StudentDTO();
+            StudentDTO existingEntity = null;
+
+            Mapper.Map(student, studentDTO);
+
+            if (studentDTO.ID != null && studentDTO.ID != 0)
+                existingEntity = _studentRepository.Single(x => x.ID == studentDTO.ID);
+
+            if (existingEntity != null)
+                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(studentDTO);
             else
-            {
-                typeNameForConversion = "VisualGrading.Model.Data." + typeof(T).Name + ", VisualGrading.Model";
-            }
-
-            var type = Type.GetType(typeNameForConversion);
-
-            return type;
+                _studentRepository.Add(studentDTO);
         }
 
-        private IRepository<> GetRepositoryForType<T>(IUnitOfWork _unitOfWork) where T : class, IEntity
+        public void DeleteStudent(Student student)
         {
-            switch (typeof(T).Name)
-            {
-                case "Student":
-                    return (EFRepository<X>)_unitOfWork.StudentRepository;
-                case "Test":
-                    return (EFRepository<T>)_unitOfWork.TestRepository;
-                case "Grade":
-                    return (EFRepository<T>)_unitOfWork.GradeRepository;
-            }
-            return null;
+            var studentDTO = new StudentDTO();
+
+            Mapper.Map(student, studentDTO);
+
+            var existingEntity = _studentRepository.Single(x => x.ID == studentDTO.ID);
+
+            if (existingEntity != null)
+                _studentRepository.Delete(existingEntity);
         }
+
+        #endregion
+
+        #region Private Student Methods
+
+        private List<Student> ConvertStudentDTOsToStudents(List<StudentDTO> studentDTOs)
+        {
+            var students = new List<Student>();
+
+            foreach (var studentDTO in studentDTOs)
+            {
+                var student = new Student();
+                Mapper.Map(studentDTO, student);
+                students.Add(student);
+            }
+
+            return students;
+        }
+
+        #endregion
+
+        #region Public Test Methods 
+
+        public async Task<List<Test>> GetTestsAsync()
+        {
+            var testDTOs = await _testRepository.GetAllAsync();
+
+            return ConvertTestDTOsToTests(testDTOs);
+        }
+
+        public List<Test> GetTests()
+        {
+            var testDTOs = _testRepository.GetAll();
+
+            return ConvertTestDTOsToTests(testDTOs);
+        }
+
+        public void DeleteTest(Test test)
+        {
+            var testDTO = new TestDTO();
+
+            Mapper.Map(test, testDTO);
+
+            var existingEntity = _testRepository.Single(x => x.ID == testDTO.ID);
+            if (existingEntity != null)
+                _testRepository.Delete(existingEntity);
+        }
+
+        public void SaveTest(Test test)
+        {
+            var testDTO = new TestDTO();
+            TestDTO existingEntity = null;
+
+            Mapper.Map(test, testDTO);
+
+            if (testDTO.ID != null && testDTO.ID != 0)
+                existingEntity = _testRepository.Single(x => x.ID == testDTO.ID);
+            if (existingEntity != null)
+                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(testDTO);
+            else
+                _testRepository.Add(testDTO);
+        }
+
+        #endregion
+
+        #region Private Test Methods
+
+        private List<Test> ConvertTestDTOsToTests(List<TestDTO> testDTOs)
+        {
+            var tests = new List<Test>();
+
+            foreach (var testDTO in testDTOs)
+            {
+                var test = new Test();
+                Mapper.Map(testDTO, test);
+                tests.Add(test);
+            }
+
+            return tests;
+        }
+
+        #endregion
+
+        #region Public Grade Methods 
+
+        public async Task<List<Grade>> GetGradesAsync()
+        {
+            var gradeDTOs = await _gradeRepository.GetAllAsync();
+
+            return ConvertGradeDTOsToGrades(gradeDTOs);
+        }
+
+        public List<Grade> GetGrades()
+        {
+            var gradeDTOs = _gradeRepository.GetAll();
+
+            return ConvertGradeDTOsToGrades(gradeDTOs);
+        }
+
+        public void DeleteGrade(Grade grade)
+        {
+            var gradeDTO = new GradeDTO();
+
+            Mapper.Map(grade, gradeDTO);
+
+            var existingEntity = _gradeRepository.Single(x => x.ID == gradeDTO.ID);
+            if (existingEntity != null)
+                _gradeRepository.Delete(existingEntity);
+        }
+
+        public void SaveGrade(Grade grade)
+        {
+            var gradeDTO = new GradeDTO();
+            GradeDTO existingEntity = null;
+
+            Mapper.Map(grade, gradeDTO);
+
+            if (gradeDTO.ID != null && gradeDTO.ID != 0)
+                existingEntity = _gradeRepository.Single(x => x.ID == gradeDTO.ID);
+            if (existingEntity != null)
+                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(gradeDTO);
+            else
+                _gradeRepository.Add(gradeDTO);
+        }
+
+        #endregion
+
+        #region Private Grade Methods
+
+        private List<Grade> ConvertGradeDTOsToGrades(List<GradeDTO> gradeDTOs)
+        {
+            var grades = new List<Grade>();
+
+            foreach (var gradeDTO in gradeDTOs)
+            {
+                var grade = new Grade();
+                Mapper.Map(gradeDTO, grade);
+                grades.Add(grade);
+            }
+
+            return grades;
+        }
+
+        #endregion
+
+        #region Old JSON Methods...left for compatability..for now..
 
         public void Save<T>(object objectToSave)
         {
-
+            JSONSerialization.SerializeJSON(_settingRepository.GetFileLocationByType<T>(), objectToSave);
         }
 
         public async Task SaveAsync<T>(object objectToSave)
@@ -119,23 +321,9 @@ namespace VisualGrading.DataAccess
             await JSONSerialization.SerializeJSONAsync(_settingRepository.GetFileLocationByType<T>(), objectToSave);
         }
 
-        public List<T> Load<T>()
+        public T Load<T>()
         {
-            Type correspondingType = GetCorrespondingTypeForAutoMapper<T>();
-
-            var repository = GetRepositoryForType<correspondingType.GetType()>
-
-            var dbObjectsList = _unitOfWork..GetAll().ToList();
-
-            var convertedList = new List<T>();
-
-            foreach (var dbObject in dbObjectsList)
-            {
-                T convertedObject = (T)Mapper.Map(dbObject, dbObject.GetType(), typeof(T));
-                convertedList.Add(convertedObject);
-            }
-
-            return convertedList;
+            return JSONSerialization.DeserializeJSON<T>(_settingRepository.GetFileLocationByType<T>());
         }
 
         public async Task<T> LoadAsync<T>()
@@ -143,29 +331,8 @@ namespace VisualGrading.DataAccess
             return await JSONSerialization.DeserializeJSONAsync<T>(_settingRepository.GetFileLocationByType<T>());
         }
 
-        //public void Save<T>(object objectToSave)
-        //{
-        //    JSONSerialization.SerializeJSON(_settingRepository.GetFileLocationByType<T>(), objectToSave);
-        //}
-
-        //public async Task SaveAsync<T>(object objectToSave)
-        //{
-        //    await JSONSerialization.SerializeJSONAsync(_settingRepository.GetFileLocationByType<T>(), objectToSave);
-        //}
-
-        //public T Load<T>()
-        //{
-        //    return JSONSerialization.DeserializeJSON<T>(_settingRepository.GetFileLocationByType<T>());
-        //}
-
-        //public async Task<T> LoadAsync<T>()
-        //{
-        //    return await JSONSerialization.DeserializeJSONAsync<T>(_settingRepository.GetFileLocationByType<T>());
-        //}
-
-
-
         #endregion
 
+        #endregion
     }
 }

@@ -11,7 +11,8 @@
              x:Class="VisualGrading.Students.StudentView"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="600"
-             help:MVVMBehaviors.LoadedMethodName="LoadStudents">
+             
+    >
     <UserControl.InputBindings>
         <!--<KeyBinding Key="D"
                     Command="{Binding DeleteCommand}" />-->
@@ -60,7 +61,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>-->
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding FullName}"
+                <DataGridTextColumn Binding="{Binding FullName}" IsReadOnly="True"
 					Width="*"/>
                 <DataGridTextColumn Binding="{Binding Nickname, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
@@ -68,7 +69,7 @@
 					Width="*"/>
                 <DataGridTextColumn Binding="{Binding ParentEmailAddress, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus}"
+                <DataGridTextColumn Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus}" IsReadOnly="True"
 					Width="*"/>
                 <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>

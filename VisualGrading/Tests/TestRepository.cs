@@ -73,7 +73,7 @@ namespace VisualGrading.Tests
                 _dataManager.Save<List<Test>>(emptyTestList);
             }
 
-            //TestList = _dataManager.Load<List<Test>>();
+            //TestList = _dataManager.Load<List<TestDTO>>();
         }
 
         public async Task<List<Test>> GetTestsAsync()
@@ -88,7 +88,7 @@ namespace VisualGrading.Tests
             List<Test> tests = new List<Test>();
 
             //TODO: Make this file location dependent on a setting
-            //TODO: Test when the file and/or folder don't exist - causes issues
+            //TODO: TestDTO when the file and/or folder don't exist - causes issues
 
             try
             {
@@ -101,9 +101,9 @@ namespace VisualGrading.Tests
             if (tests == null || tests.Count == 0)
             {
                 tests = new List<Test>();
-                //ObservableTests = new List<Test>();
-                Test test = new Test() { Subject = "Test Test", SeriesNumber = 1 };
-                //test = BinarySerialization.ReadFromBinaryFile<Test>(@"C:\Visual Studio Code\VisualGrading\VisualGrading\SaveFiles\test.json");
+                //ObservableTests = new List<TestDTO>();
+                Test test = new Test() { Subject = "TestDTO TestDTO", SeriesNumber = 1 };
+                //test = BinarySerialization.ReadFromBinaryFile<TestDTO>(@"C:\Visual Studio Code\VisualGrading\VisualGrading\SaveFiles\test.json");
                 tests.Add(test);
             }
 
@@ -120,7 +120,7 @@ namespace VisualGrading.Tests
         {
             foreach (Test cachedTest in TestList)
             {
-                if (cachedTest.TestID == updatedTest.TestID)
+                if (cachedTest.ID == updatedTest.ID)
                 {
                     TestList.Remove(cachedTest);
                     TestList.Add(updatedTest);
@@ -154,7 +154,7 @@ namespace VisualGrading.Tests
         {
             foreach (Test cachedTest in TestList)
             {
-                if (cachedTest.TestID == testToDelete.TestID)
+                if (cachedTest.ID == testToDelete.ID)
                 {
                     TestList.Remove(cachedTest);
                     break;
@@ -163,11 +163,11 @@ namespace VisualGrading.Tests
             await _dataManager.SaveAsync<List<Test>>(TestList);
         }
 
-        public Test GetTestByID(Guid testID)
+        public Test GetTestByID(int ID)
         {
             foreach (Test cachedTest in TestList)
             {
-                if (cachedTest.TestID == testID)
+                if (cachedTest.ID == ID)
                 {
                     return cachedTest;
                 }

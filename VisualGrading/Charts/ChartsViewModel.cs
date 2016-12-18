@@ -25,7 +25,7 @@ namespace VisualGrading.Charts
 
             //make async later
 
-            //Charts = new ObservableCollection<Grade>(GradeRepository.grades);
+            //Charts = new ObservableCollection<GradeDTO>(GradeRepository.grades);
         }
 
         //temp code for test -> charts testing

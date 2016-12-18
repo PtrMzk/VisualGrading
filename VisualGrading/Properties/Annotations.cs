@@ -37,10 +37,10 @@ namespace StudentTestReporting.Annotations
   /// so the check for <c>null</c> is necessary before its usage.
   /// </summary>
   /// <example><code>
-  /// [CanBeNull] object Test() => null;
+  /// [CanBeNull] object TestDTO() => null;
   /// 
   /// void UseTest() {
-  ///   var p = Test();
+  ///   var p = TestDTO();
   ///   var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
   /// }
   /// </code></example>
@@ -291,7 +291,7 @@ namespace StudentTestReporting.Annotations
   /// class NoEquality { }
   /// 
   /// class UsesNoEquality {
-  ///   void Test() {
+  ///   void TestDTO() {
   ///     var ca1 = new NoEquality();
   ///     var ca2 = new NoEquality();
   ///     if (ca1 != null) { // OK

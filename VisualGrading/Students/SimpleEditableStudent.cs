@@ -12,10 +12,10 @@ namespace VisualGrading.Students
     {
         #region Public Properties
         [Required]
-        public int StudentID
+        public int ID
         {
-            get { return _studentID; }
-            set { SetProperty(ref _studentID, value); }
+            get { return _id; }
+            set { SetProperty(ref _id, value); }
         }
 
         public string FirstName
@@ -52,7 +52,7 @@ namespace VisualGrading.Students
 
         #region Private Properties
 
-        private int _studentID;
+        private int _id;
         private string _firstName;
         private string _lastName;
         private string _nickname;

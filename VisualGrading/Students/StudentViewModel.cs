@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Microsoft.Practices.Unity;
+using VisualGrading.Business;
+using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
 
 namespace VisualGrading.Students
@@ -16,21 +19,29 @@ namespace VisualGrading.Students
     {
         #region Constructor
 
-        public StudentViewModel(IStudentRepository repository)
+        public StudentViewModel()
         {
-            _repository = repository;
+            //_repository = repository;
+            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+
+            _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             DeleteCommand = new RelayCommand<Student>(OnDelete, CanDelete);
             AddCommand = new RelayCommand(OnAddStudent);
             EditCommand = new RelayCommand<Student>(OnEditStudent);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
+
             //AutoSaveCommand = new RelayCommand(OnRowEdit);
-            DeleteRequested += RemoveStudentFromPresentationAndRepository;
+            DeleteRequested += DeleteStudent;
         }
         #endregion
 
         #region Properties
-        private IStudentRepository _repository;
+        //private IStudentRepository _repository;
 
+        private IDataManager _dataManager;
+
+        private IBusinessManager _businessManager;
+        
         private ObservableCollectionExtended<Student> _observableStudents;
 
         public ObservableCollectionExtended<Student> ObservableStudents
@@ -108,7 +119,7 @@ namespace VisualGrading.Students
 
         public void OnRowEdit(object sender, PropertyChangedEventArgs e)
         {
-            _repository.UpdateStudentAsync((Student)sender);
+            _dataManager.SaveStudent((Student)sender);
         }
 
 
@@ -120,10 +131,9 @@ namespace VisualGrading.Students
         {
             if (DesignerProperties.GetIsInDesignMode(
                new System.Windows.DependencyObject())) return;
+            
+            _allStudents = _dataManager.GetStudents();
 
-            _allStudents =
-                await
-                    _repository.GetStudentsAsync();
             ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
 
             PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
@@ -131,14 +141,14 @@ namespace VisualGrading.Students
 
         private void ObservableStudents_CollectionChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            _repository.UpdateStudentAsync((Student)sender); ;
+            _dataManager.SaveStudent((Student)sender);
         }
 
         private void FilterStudents(string searchInput)
         {
             if (string.IsNullOrWhiteSpace(searchInput))
             {
-                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
+               ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
                 return;
             }
             else
@@ -147,10 +157,11 @@ namespace VisualGrading.Students
             }
         }
 
-        private void RemoveStudentFromPresentationAndRepository(Student Student)
+        private void DeleteStudent(Student student)
         {
-            ObservableStudents.Remove(Student);
-            _repository.RemoveStudent(Student);
+            ObservableStudents.Remove(student);
+            _allStudents.Remove(student);
+            _dataManager.DeleteStudent(student);
         }
 
         private void OnDelete(Student student)
@@ -158,17 +169,17 @@ namespace VisualGrading.Students
             DeleteRequested(student);
         }
 
-        //TODO: RemoveStudent below method - its a temp method for the AddStudent Student > Charting workflow
-        //private void OnAddStudent(Student Student)
+        //TODO: RemoveStudent below method - its a temp method for the AddStudent StudentDTO > Charting workflow
+        //private void OnAddStudent(StudentDTO StudentDTO)
         //{
-        //    Student.StudentNumber += 1;
+        //    StudentDTO.StudentNumber += 1;
         //    PropertyChanged(this, new PropertyChangedEventArgs("Students"));
-        //    AddStudentRequested(Student);
+        //    AddStudentRequested(StudentDTO);
         //}
 
         private void OnAddStudent()
         {
-            //place holder for the actual on add Student command for the actual on add Student button
+            //place holder for the actual on add StudentDTO command for the actual on add StudentDTO button
             //the one above is linked to the chart button i believe...
             AddRequested(new Student());
         }
@@ -182,7 +193,7 @@ namespace VisualGrading.Students
         //FIXME: THIS IS NEVER FALSE
         private bool CanDelete(Student student)
         {
-            //TODO: Selected Student doesn't seem to work here, and this isn't really needed...
+            //TODO: Selected StudentDTO doesn't seem to work here, and this isn't really needed...
             //return SelectedStudent != null;
             return true;
         }

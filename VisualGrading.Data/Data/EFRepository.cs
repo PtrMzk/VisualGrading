@@ -1,10 +1,13 @@
-﻿//https://codefizzle.wordpress.com/2012/07/26/correct-use-of-repository-and-unit-of-work-patterns-in-asp-net-mvc/
+﻿// Repository based on: 
+// https://codefizzle.wordpress.com/2012/07/26/correct-use-of-repository-and-unit-of-work-patterns-in-asp-net-mvc/
 
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using VisualGrading.Model.Repositories;
@@ -28,9 +31,14 @@ namespace VisualGrading.Model.Data
             return _dbSet.AsQueryable();
         }
 
-        public IEnumerable<T> GetAll()
+        public List<T> GetAll()
         {
-            return _dbSet.Where(x => true);
+            return _dbSet.Where(x => true).ToList();
+        }
+
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _dbSet.Where(x => true).ToListAsync();
         }
 
         public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
@@ -45,12 +53,12 @@ namespace VisualGrading.Model.Data
 
         public T Single(Expression<Func<T, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return _dbSet.First(predicate);
         }
 
         public T SingleOrDefault(Expression<Func<T, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return _dbSet.FirstOrDefault(predicate);
         }
 
         public T First(Expression<Func<T, bool>> predicate)
@@ -70,12 +78,13 @@ namespace VisualGrading.Model.Data
 
         public void Delete(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Remove(entity);
+
         }
 
         public void Attach(T entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Attach(entity);
         }
 
         #endregion

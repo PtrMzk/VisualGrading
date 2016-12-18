@@ -21,6 +21,5 @@ namespace VisualGrading.Students
         void RemoveStudent(Student student);
         void UpdateStudentAsync(Student updatedStudent);
         Student GetStudentByID(int studentID);
-        
     }
 }

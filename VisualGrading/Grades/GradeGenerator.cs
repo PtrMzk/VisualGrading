@@ -9,12 +9,12 @@ namespace StudentTestReporting.Grades
     public class GradeGenerator
     {
 
-        //public List<Grade> GenerateGrades(List<Student> students, List<Test> tests)
+        //public List<GradeDTO> GenerateGrades(List<StudentDTO> students, List<TestDTO> tests)
         //{
         //    {
         //        var grades = (from student in students
         //                      from test in tests
-        //                      select new Grade
+        //                      select new GradeDTO
         //                      (
         //                         student, test
         //                      )
@@ -28,7 +28,7 @@ namespace StudentTestReporting.Grades
         //{
         //    var grades = GenerateGrades(_studentRepository.StudentList, _testRepository.TestList);
 
-        //    _dataRepository.Save<List<Grade>>(grades);
+        //    _dataRepository.Save<List<GradeDTO>>(grades);
         //}
 
     }

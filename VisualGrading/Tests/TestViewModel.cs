@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows;
-using VisualGrading.Tests;
+using Microsoft.Practices.Unity;
+using VisualGrading.Business;
+using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
 
@@ -19,59 +18,65 @@ namespace VisualGrading.Tests
 
         public TestViewModel(ITestRepository repository)
         {
-            _repository = repository;
+            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+
+            _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             DeleteCommand = new RelayCommand<Test>(OnDelete, CanDelete);
             AddCommand = new RelayCommand(OnAddTest);
             AddSeriesCommand = new RelayCommand(OnAddTestSeries);
             EditCommand = new RelayCommand<Test>(OnEditTest);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
-            DeleteRequested += RemoveTestFromPresentationAndRepository; 
+            DeleteRequested += DeleteTest;
 
             //TODO: delete the below if not needed, clean this up to set the private variable test
-            //var _observableTests = new ObservableCollection<Test>();
-            //this._observableTests = new ObservableCollection<Test>();
+            //var _observableTests = new ObservableCollection<TestDTO>();
+            //this._observableTests = new ObservableCollection<TestDTO>();
 
-            //this._observableTests.AddTest(new Test()
+            //this._observableTests.AddTest(new TestDTO()
             //{
             //    Subject = "Computer Programming",
             //    TestNumber = 1
             //});
-            //this._observableTests.AddTest(new Test()
+            //this._observableTests.AddTest(new TestDTO()
             //{
 
             //    Subject = "Computer Programming",
             //    TestNumber = 2
             //});
-            //this._observableTests.AddTest(new Test()
+            //this._observableTests.AddTest(new TestDTO()
             //{
 
             //    Subject = "Science",
             //    TestNumber = 1
             //});
             //PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
-
         }
 
         #endregion
 
         #region Properties
 
-        private ITestRepository _repository;
+        private IDataManager _dataManager;
 
-        private ObservableCollection<Test> _observableTests;
+        private IBusinessManager _businessManager;
 
-        public ObservableCollection<Test> ObservableTests
+
+        private ObservableCollectionExtended<Test> _observableTests;
+
+        public ObservableCollectionExtended<Test> ObservableTests
         {
-            get
-            {
-                return _observableTests;
-            }
+            get { return _observableTests; }
             set
             {
+                if (_observableTests != null && value != _observableTests)
+                    _observableTests.CollectionPropertyChanged -= ObservableTests_CollectionChanged;
+
                 SetProperty(ref _observableTests, value);
                 PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
+                _observableTests.CollectionPropertyChanged += ObservableTests_CollectionChanged;
             }
         }
+
 
         private List<Test> _allTests;
 
@@ -79,10 +84,7 @@ namespace VisualGrading.Tests
 
         public Test SelectedTest
         {
-            get
-            {
-                return _selectedTest;
-            }
+            get { return _selectedTest; }
             set
             {
                 if (_selectedTest != value)
@@ -94,7 +96,7 @@ namespace VisualGrading.Tests
             }
         }
 
-        public RelayCommand<Test> DeleteCommand { get; private set; }
+        public RelayCommand<Test> DeleteCommand { get; }
 
         public RelayCommand AddCommand { get; private set; }
 
@@ -103,9 +105,10 @@ namespace VisualGrading.Tests
         public RelayCommand<Test> EditCommand { get; private set; }
 
         public RelayCommand ClearSearchCommand { get; private set; }
-        
+
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-        
+
+
         public event Action<Test> AddRequested = delegate { };
         public event Action<TestSeries> AddSeriesRequested = delegate { };
         public event Action<Test> EditRequested = delegate { };
@@ -115,19 +118,13 @@ namespace VisualGrading.Tests
 
         public string SearchInput
         {
-            get
-            {
-                return _searchInput;
-
-            }
+            get { return _searchInput; }
             set
             {
                 SetProperty(ref _searchInput, value);
                 FilterTests(_searchInput);
-
             }
         }
-
 
         #endregion
 
@@ -136,15 +133,13 @@ namespace VisualGrading.Tests
         public async void LoadTests()
         {
             if (DesignerProperties.GetIsInDesignMode(
-               new System.Windows.DependencyObject())) return;
-            //var ObservableTests = new List<Test>();
-            _allTests =
-                await
-                    _repository.GetTestsAsync();
-            ObservableTests = new ObservableCollection<Test>(_allTests);
+                new DependencyObject())) return;
+            //var ObservableTests = new List<TestDTO>();
+            _allTests =_dataManager.GetTests();
+            ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
             //if (ObservableTests == null || ObservableTests.Count == 0)
             //{
-            //    Test test = new Test();
+            //    TestDTO test = new TestDTO();
             //    test.TestList();
             //    ObservableTests.AddTest(test);
 
@@ -155,20 +150,18 @@ namespace VisualGrading.Tests
         private void FilterTests(string searchInput)
         {
             if (string.IsNullOrWhiteSpace(searchInput))
-            {
-                ObservableTests = new ObservableCollection<Test>(_allTests);
-                return;
-            }
+                ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
             else
-            {
-                ObservableTests = new ObservableCollection<Test>(_allTests.Where(t => t.Subject.ToLower().Contains(searchInput.ToLower())));
-            }
+                ObservableTests =
+                    new ObservableCollectionExtended<Test>(
+                        _allTests.Where(t => t.Subject.ToLower().Contains(searchInput.ToLower())));
         }
 
-        private void RemoveTestFromPresentationAndRepository(Test test)
+        private void DeleteTest(Test test)
         {
             ObservableTests.Remove(test);
-            _repository.RemoveTest(test);
+            _allTests.Remove(test);
+            _dataManager.DeleteTest(test);
         }
 
         private void OnDelete(Test test)
@@ -176,8 +169,13 @@ namespace VisualGrading.Tests
             DeleteRequested(test);
         }
 
-        //TODO: RemoveTest below method - its a temp method for the AddTest Test > Charting workflow
-        //private void OnAddTest(Test test)
+        private async void ObservableTests_CollectionChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            _dataManager.SaveTest((Test)sender);
+        }
+
+        //TODO: RemoveTest below method - its a temp method for the AddTest TestDTO > Charting workflow
+        //private void OnAddTest(TestDTO test)
         //{
         //    test.TestNumber += 1;
         //    PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
@@ -188,7 +186,7 @@ namespace VisualGrading.Tests
         {
             //place holder for the actual on add test command for the actual on add test button
             //the one above is linked to the chart button i believe...
-            AddRequested(new Test() {TestID = Guid.NewGuid()});
+            AddRequested(new Test());
         }
 
         private void OnAddTestSeries()
@@ -200,7 +198,6 @@ namespace VisualGrading.Tests
         {
             EditRequested(test);
         }
-
 
         //FIXME: THIS IS NEVER FALSE
         private bool CanDelete(Test test)

@@ -21,7 +21,7 @@ namespace VisualGrading.Grades
         {
             this.Student = student;
             this.Test = test;
-            this.GradeID = Guid.NewGuid();
+           // this.GradeID = Guid.NewGuid();
         }
 
         public Grade(Student student, Test test, int points)
@@ -29,30 +29,30 @@ namespace VisualGrading.Grades
             this.Student = student;
             this.Test = test;
             this.Points = points;
-            this.GradeID = Guid.NewGuid();
+            //this.GradeID = Guid.NewGuid();
         }
 
-        public Grade(Guid studentID, Guid testID)
+        public Grade(int studentID, int testID)
         {
             this.StudentID = studentID;
             this.TestID = testID;
-            this.GradeID = Guid.NewGuid();
+            //this.GradeID = Guid.NewGuid();
         }
 
-        public Grade(Guid studentID, Guid testID, int points)
+        public Grade(int studentID, int testID, int points)
         {
             this.StudentID = studentID;
             this.TestID = testID;
             this.Points = points;
-            this.GradeID = Guid.NewGuid();
+            //this.GradeID = Guid.NewGuid();
         }
         #endregion
 
         #region Properties
-        public Guid GradeID { get; set; }
+        public int GradeID { get; set; }
         public int Points { get; set; }
-        public Guid StudentID { get; set; }
-        public Guid TestID { get; set; }
+        public int StudentID { get; set; }
+        public int TestID { get; set; }
 
         [NonSerialized]
         private Test _test;

@@ -12,12 +12,12 @@ namespace VisualGrading.Tests
 
         public TestSeries()
         {
-            this.SeriesID = Guid.NewGuid();
+            //this.SeriesID = Guid.NewGuid();
         }
         #endregion
 
         #region Properties
-        public Guid SeriesID { get; set; }
+        public int ID { get; set; }
         public string Name { get; set; }
         public string Subject { get; set; }
         public string SubCategory { get; set; }

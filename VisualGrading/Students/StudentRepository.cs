@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
 using VisualGrading;
-using VisualGrading.DataAccess;
 using Microsoft.Practices.Unity;
 using StudentTestReporting.Helpers;
 
@@ -80,7 +79,7 @@ namespace VisualGrading.Students
                 List<Student> emptyStudentList = new List<Student>();
                 _dataManager.Save<List<Student>>(emptyStudentList);
             }
-            StudentList = _dataManager.Load<Student>();
+            StudentList = _dataManager.GetStudents();
         }
 
         public async Task<List<Student>> GetStudentsAsync()
@@ -94,17 +93,17 @@ namespace VisualGrading.Students
             List<Student> Students = new List<Student>();
 
             //TODO: Make this file location dependent on a setting
-            //TODO: Student when the file and/or folder don't exist - causes issues
+            //TODO: StudentDTO when the file and/or folder don't exist - causes issues
 
             //TODO: just test students for now...
             if (Students == null || Students.Count == 0)
             {
                 Students = new List<Student>();
-                //ObservableStudents = new List<Student>();
+                //ObservableStudents = new List<StudentDTO>();
                 Student jack = new Student() { FirstName = "Jack", LastName = "Dawson", EmailAddress = "PokerMaster@gmail.com", OverallGrade = 95.7m };
                 Student rose = new Student() { FirstName = "Rose DeWitt", LastName = "Buktater", Nickname = "Rose", EmailAddress = "IllNeverLetGo@hotmail.com", ParentEmailAddress = "CalFanz@yahoo.com", OverallGrade = 93.4m };
                 Student cal = new Student() { FirstName = "Cal", LastName = "Hockley", EmailAddress = "LeftHeartOfTheOceanInMyJacketPocket@hotmail.com", OverallGrade = 78.3m };
-                //Student = BinarySerialization.ReadFromBinaryFile<Student>(@"C:\Visual Studio Code\VisualGrading\VisualGrading\SaveFiles\Student.json");
+                //StudentDTO = BinarySerialization.ReadFromBinaryFile<StudentDTO>(@"C:\Visual Studio Code\VisualGrading\VisualGrading\SaveFiles\StudentDTO.json");
                 Students.Add(jack);
                 Students.Add(rose);
                 Students.Add(cal);
@@ -143,7 +142,7 @@ namespace VisualGrading.Students
             if (StudentAdded != null)
                 StudentAdded(student);
 
-            _gradeRepository.AddGradesByStudentAsync(student);
+            //_gradeRepository.AddGradesByStudentAsync(student);
 
             await _dataManager.SaveAsync<List<Student>>(StudentList);
         }

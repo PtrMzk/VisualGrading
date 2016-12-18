@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Practices.Unity;
+using VisualGrading.Business;
+using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
 
@@ -12,9 +15,10 @@ namespace VisualGrading.Students
     {
         #region Constructor
 
-        public AddEditStudentViewModel(IStudentRepository repository)
+        public AddEditStudentViewModel()
         {
-            _repository = repository;
+            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+            _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             CancelCommand = new RelayCommand(OnCancel);
             SaveCommand = new RelayCommand(OnSave, CanSave);
         }
@@ -23,7 +27,10 @@ namespace VisualGrading.Students
 
         #region Properties
 
-        private readonly IStudentRepository _repository;
+        private IBusinessManager _businessManager;
+
+
+        private IDataManager _dataManager;
 
         private Student _editingStudent;
 
@@ -69,7 +76,7 @@ namespace VisualGrading.Students
 
         private void UpdateStudent(SimpleEditableStudent source, Student destination)
         {
-            destination.ID = source.StudentID;
+            destination.ID = source.ID;
             destination.FirstName = source.FirstName;
             destination.LastName = source.LastName;
             destination.Nickname = source.Nickname;
@@ -79,7 +86,7 @@ namespace VisualGrading.Students
 
         private void CopyStudent(Student source, SimpleEditableStudent destination)
         {
-            destination.StudentID = source.ID;
+            destination.ID = source.ID;
 
             if (EditMode)
             {
@@ -100,10 +107,10 @@ namespace VisualGrading.Students
         private async void OnSave()
         {
             UpdateStudent(EditingStudent, _editingStudent);
-            if (EditMode)
-                _repository.UpdateStudentAsync(_editingStudent);
-            else
-                _repository.AddStudentAsync(_editingStudent);
+            //if (EditMode)
+            //    await _dataManager.SaveStudentAsync(_editingStudent);
+            //else
+            await _businessManager.AddStudentAsync(_editingStudent);
             Done();
         }
 

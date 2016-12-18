@@ -7,7 +7,7 @@ namespace VisualGrading.Model.Data
     using System.Data.Entity.Spatial;
 
     [Table("Student")]
-    public partial class Student : IEntity
+    public partial class StudentDTO : IEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

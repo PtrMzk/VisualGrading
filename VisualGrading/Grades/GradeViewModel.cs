@@ -108,16 +108,16 @@ namespace VisualGrading.Grades
         {
             if (DesignerProperties.GetIsInDesignMode(
                new System.Windows.DependencyObject())) return;
-            //var ObservableGrades = new List<Grade>();
+            //var ObservableGrades = new List<GradeDTO>();
             _allGrades =
                 await
                     _repository.GetGradesAsync();
             ObservableGrades = new ObservableCollection<Grade>(_allGrades);
             //if (ObservableGrades == null || ObservableGrades.Count == 0)
             //{
-            //    Grade Grade = new Grade();
-            //    Grade.GradeList();
-            //    ObservableGrades.AddGrade(Grade);
+            //    GradeDTO GradeDTO = new GradeDTO();
+            //    GradeDTO.GradeList();
+            //    ObservableGrades.AddGrade(GradeDTO);
 
             PropertyChanged(this, new PropertyChangedEventArgs("ObservableGrades"));
             //}
@@ -137,11 +137,11 @@ namespace VisualGrading.Grades
         }
 
         //TODO: should not be a way to remove grades from front end
-        //private void RemoveGradeFromPresentationAndRepository(Grade Grade)
+        //private void RemoveGradeFromPresentationAndRepository(GradeDTO GradeDTO)
         //{
         //    //TODO: Make these use events to talk to the repository instead
-        //    ObservableGrades.Remove(Grade);
-        //    _repository.RemoveGrade(Grade);
+        //    ObservableGrades.Remove(GradeDTO);
+        //    _repository.RemoveGrade(GradeDTO);
         //}
 
         private void OnDelete(Grade Grade)
@@ -149,19 +149,19 @@ namespace VisualGrading.Grades
             DeleteRequested(Grade);
         }
 
-        //TODO: RemoveGrade below method - its a temp method for the AddGrade Grade > Charting workflow
-        //private void OnAddGrade(Grade Grade)
+        //TODO: RemoveGrade below method - its a temp method for the AddGrade GradeDTO > Charting workflow
+        //private void OnAddGrade(GradeDTO GradeDTO)
         //{
-        //    Grade.GradeNumber += 1;
+        //    GradeDTO.GradeNumber += 1;
         //    PropertyChanged(this, new PropertyChangedEventArgs("Grades"));
-        //    AddGradeRequested(Grade);
+        //    AddGradeRequested(GradeDTO);
         //}
 
         private void OnAddGrade()
         {
-            //place holder for the actual on add Grade command for the actual on add Grade button
+            //place holder for the actual on add GradeDTO command for the actual on add GradeDTO button
             //the one above is linked to the chart button i believe...
-            AddRequested(new Grade() { GradeID = Guid.NewGuid() });
+            AddRequested(new Grade());
         }
 
 
@@ -174,7 +174,7 @@ namespace VisualGrading.Grades
         //FIXME: THIS IS NEVER FALSE
         private bool CanDelete(Grade Grade)
         {
-            //TODO: Selected Grade doesn't seem to work here, and this isn't really needed...
+            //TODO: Selected GradeDTO doesn't seem to work here, and this isn't really needed...
             //return SelectedGrade != null;
             return true;
         }

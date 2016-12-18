@@ -1,4 +1,7 @@
 ﻿using System;
+using Microsoft.Practices.Unity;
+using VisualGrading.Business;
+using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
 
@@ -10,7 +13,8 @@ namespace VisualGrading.Tests
 
         public AddEditTestViewModel(ITestRepository repository)
         {
-            _repository = repository;
+            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+            _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             CancelCommand = new RelayCommand(OnCancel);
             SaveCommand = new RelayCommand(OnSave, CanSave);
         }
@@ -19,7 +23,10 @@ namespace VisualGrading.Tests
 
         #region Properties
 
-        private readonly ITestRepository _repository;
+        private readonly IDataManager _dataManager;
+
+        private IBusinessManager _businessManager;
+
 
         private Test _editingTest;
 
@@ -75,7 +82,7 @@ namespace VisualGrading.Tests
 
         private void CopyTest(Test source, SimpleEditableTest destination)
         {
-            destination.TestID = source.TestID;
+            destination.ID = source.ID;
 
             if (EditMode)
             {
@@ -96,10 +103,13 @@ namespace VisualGrading.Tests
         private async void OnSave()
         {
             UpdateTest(EditingTest, _editingTest);
+
             if (EditMode)
-                _repository.UpdateTestAsync(_editingTest);
+               _dataManager.SaveTest(_editingTest);
+
             else
-                _repository.AddTestAsync(_editingTest);
+                _businessManager.AddTestAsync(_editingTest);
+
             Done();
         }
 

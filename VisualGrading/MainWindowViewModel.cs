@@ -44,7 +44,7 @@ namespace VisualGrading
             //though they may not be used by this class at all
 
             //Mapper.Initialize(cfg => {
-            //    cfg.CreateMap<VisualGrading.Model.Data.Student, VisualGrading.Students.Student>();
+            //    cfg.CreateMap<VisualGrading.Model.Data.StudentDTO, VisualGrading.Students.StudentDTO>();
             //});
 
             //AutoMapper.Mapper.Instance.
@@ -88,7 +88,7 @@ namespace VisualGrading
 
         private void NavToAddTest(Test test)
         {
-            //_ChartViewModel.Test = test;
+            //_ChartViewModel.TestDTO = test;
             //CurrentViewModel = _ChartViewModel;
             _addEditTestViewModel.EditMode = false;
             _addEditTestViewModel.SetTest(test);
@@ -104,7 +104,7 @@ namespace VisualGrading
 
         private void NavToAddStudent(Student student)
         {
-            //_ChartViewModel.Test = test;
+            //_ChartViewModel.TestDTO = test;
             //CurrentViewModel = _ChartViewModel;
             _addEditStudentViewModel.EditMode = false;
             _addEditStudentViewModel.SetStudent(student);

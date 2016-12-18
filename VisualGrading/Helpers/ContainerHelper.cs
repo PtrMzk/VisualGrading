@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Practices.Unity;
+using VisualGrading.Business;
 using VisualGrading.DataAccess;
 using VisualGrading.Grades;
 using VisualGrading.Model.Data;
@@ -21,9 +22,7 @@ namespace VisualGrading.Helpers
         static ContainerHelper()
         {
             _container = new UnityContainer();
-
-
-
+            
             _container.RegisterInstance<IUnitOfWork>(new EFUnitOfWork());
 
             _container.RegisterInstance<IDataManager>(DataManager.Instance);
@@ -34,7 +33,7 @@ namespace VisualGrading.Helpers
 
             _container.RegisterInstance<IGradeRepository>(GradeRepository.Instance);
 
-
+            _container.RegisterInstance<IBusinessManager>(new BusinessManager());
 
             //_container.RegisterInstance<IDataManager>(DataManager.Instance, new ContainerControlledLifetimeRepository());
             //_container.RegisterInstance<ITestRepository>(TestRepository.Instance, new ContainerControlledLifetimeRepository());

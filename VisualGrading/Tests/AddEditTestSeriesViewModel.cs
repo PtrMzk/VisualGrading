@@ -10,7 +10,7 @@ namespace VisualGrading.Tests
 
         public AddEditTestSeriesViewModel(ITestRepository repository)
         {
-            _repository = repository;
+            //_repository = repository;
             CancelCommand = new RelayCommand(OnCancel);
             SaveCommand = new RelayCommand(OnSave, CanSave);
         }
@@ -19,7 +19,7 @@ namespace VisualGrading.Tests
 
         #region Properties
 
-        private readonly ITestRepository _repository;
+        //private readonly ITestRepository _repository;
 
         private TestSeries _editingTestSeries;
 
@@ -57,7 +57,7 @@ namespace VisualGrading.Tests
 
         private void UpdateTestSeries(SimpleEditableTestSeries source, TestSeries destination)
         {
-            destination.SeriesID = source.SeriesID;
+            destination.ID = source.ID;
             destination.Name = source.Name;
             destination.Subject = source.Subject;
             destination.SubCategory = source.SubCategory;
@@ -67,7 +67,7 @@ namespace VisualGrading.Tests
 
         private void CopyTestSeries(TestSeries source, SimpleEditableTestSeries destination)
         {
-            destination.SeriesID = source.SeriesID;
+            destination.ID = source.ID;
             destination.Name = source.Name;
             destination.Subject = source.Subject;
             destination.SubCategory = source.SubCategory;
@@ -82,7 +82,7 @@ namespace VisualGrading.Tests
         private async void OnSave()
         {
             UpdateTestSeries(EditingTestSeries, _editingTestSeries);
-                _repository.AddTestSeriesAsync(_editingTestSeries);
+                //_repository.AddTestSeriesAsync(_editingTestSeries);
             Done();
         }
 

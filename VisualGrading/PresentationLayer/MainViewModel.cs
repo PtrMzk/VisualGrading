@@ -20,7 +20,7 @@ namespace VisualGrading.Presentation
 
         //}
 
-        //public void PlotGrades(List<Grade> Grades, string graphGrouping)
+        //public void PlotGrades(List<GradeDTO> Grades, string graphGrouping)
         //{
         //    TestModel = new PlotModel
         //    {
@@ -45,7 +45,7 @@ namespace VisualGrading.Presentation
 
 
         //    int maxTestNumber = 0;
-        //    foreach (Grade grade in Grades)
+        //    foreach (GradeDTO grade in Grades)
         //    {
         //        int defaultTestNumber = 1;
         //        distinctStudentList.Add(grade.Name);
@@ -64,7 +64,7 @@ namespace VisualGrading.Presentation
         //    {
         //        int maxSubjectTestNumber = 0;
         //        {
-        //            foreach (Grade grade in Grades)
+        //            foreach (GradeDTO grade in Grades)
         //            {
         //                if (grade.TestNumber > maxSubjectTestNumber && grade.Subject == subject.Subject)
         //                {
@@ -76,12 +76,12 @@ namespace VisualGrading.Presentation
         //    }
 
 
-        //    if (graphGrouping == "Student")
+        //    if (graphGrouping == "StudentDTO")
         //    {
         //        foreach (string test in distinctTestList)
         //        {
         //            var s1 = new ColumnSeries { Title = test.ToString().Replace("||", " "), StrokeColor = OxyColors.Black, StrokeThickness = 1 };
-        //            foreach (Grade grade in Grades)
+        //            foreach (GradeDTO grade in Grades)
         //            {
         //                if (grade.Subject + "||" + grade.TestNumber.ToString() == test)
         //                {
@@ -104,7 +104,7 @@ namespace VisualGrading.Presentation
         //        //  {
 
         //        var tempGrades = Grades.OrderBy(x => x.Subject).ToList();
-        //        List<Grade> tempGradesAveraged = new List<Grade>();
+        //        List<GradeDTO> tempGradesAveraged = new List<GradeDTO>();
         //        //
 
         //        //
@@ -129,7 +129,7 @@ namespace VisualGrading.Presentation
         //                {
         //                    foreach (string student in distinctStudentList)
         //                    {
-        //                        tempGrades.Add(new Grade() { Name = student, Nickname = string.Empty, Subject = subject.Subject, TestNumber = i, Grades = 0 });
+        //                        tempGrades.Add(new GradeDTO() { Name = student, Nickname = string.Empty, Subject = subject.Subject, TestNumber = i, Grades = 0 });
         //                    }
         //                }
         //            }
@@ -143,7 +143,7 @@ namespace VisualGrading.Presentation
         //                {
         //                    int gradeSum = 0;
         //                    int avgGrade = 0;
-        //                    foreach(Grade grade in tempGrades)
+        //                    foreach(GradeDTO grade in tempGrades)
         //                    {
         //                        if(grade.Subject == subject.Subject && grade.TestNumber == i)
         //                        {
@@ -152,7 +152,7 @@ namespace VisualGrading.Presentation
                                
         //                    }
         //                    avgGrade = gradeSum / distinctStudentList.Count;
-        //                    tempGradesAveraged.Add(new Grade() { Name = subject.Subject + "||" + i.ToString(), Nickname = string.Empty, Subject = subject.Subject, TestNumber = i, Grades = avgGrade });
+        //                    tempGradesAveraged.Add(new GradeDTO() { Name = subject.Subject + "||" + i.ToString(), Nickname = string.Empty, Subject = subject.Subject, TestNumber = i, Grades = avgGrade });
         //                }
         //            }
         //        }
@@ -167,7 +167,7 @@ namespace VisualGrading.Presentation
         //        {
         //            var s1 = new ColumnSeries { Title = "TEST" + " " + i.ToString(), StrokeColor = OxyColors.Black, StrokeThickness = 1 };
 
-        //            foreach (Grade grade in gradesOrderBySubject)
+        //            foreach (GradeDTO grade in gradesOrderBySubject)
         //            {
         //                if (grade.TestNumber == i)
         //                {

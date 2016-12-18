@@ -15,7 +15,7 @@ namespace VisualGrading.Grades
         void AddGradeAsync(Grade Grade);
         void AddGradesByStudentAsync(Student student);
         void AddGradesByTestAsync(Test test);
-        //List<Grade> GenerateGrades(List<Student> students, List<Test> tests);
+        //List<GradeDTO> GenerateGrades(List<StudentDTO> students, List<TestDTO> tests);
         Task<List<Grade>> GetGradesAsync();
         void RemoveGradesByStudentAsync(Student studentToRemove);
         void RemoveGradesByTestAsync(Test testToRemove);

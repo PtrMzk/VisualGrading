@@ -11,7 +11,7 @@
             x:Class="VisualGrading.Tests.TestView"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="600"
-             help:MVVMBehaviors.LoadedMethodName="LoadTests">
+    >
     <UserControl.InputBindings>
         <!--<KeyBinding Key="D"
                     Command="{Binding DeleteCommand}" />-->

@@ -7,7 +7,7 @@ namespace VisualGrading.Model.Data
     using System.Data.Entity.Spatial;
 
     [Table("Test")]
-    public partial class Test : IEntity
+    public partial class TestDTO : IEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -22,7 +22,8 @@ namespace VisualGrading.Model.Data
         [StringLength(2147483647)]
         public string SubCategory { get; set; }
 
-        public int? Date { get; set; }
+        [StringLength(2147483647)]
+        public string Date { get; set; }
 
         public long? SeriesNumber { get; set; }
 
