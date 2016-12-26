@@ -13,10 +13,10 @@ namespace VisualGrading.DataAccess
         void CommitChanges();
 
 
-        T Load<T>();
-        Task<T> LoadAsync<T>();
-        void Save<T>(object objectToSave);
-        Task SaveAsync<T>(object objectToSave);
+        //T Load<T>();
+        //Task<T> LoadAsync<T>();
+        //void Save<T>(object objectToSave);
+        //Task SaveAsync<T>(object objectToSave);
 
         Task<List<Student>> GetStudentsAsync();
         List<Student> GetStudents();

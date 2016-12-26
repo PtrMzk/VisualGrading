@@ -107,10 +107,10 @@ namespace VisualGrading.Students
         private async void OnSave()
         {
             UpdateStudent(EditingStudent, _editingStudent);
-            //if (EditMode)
-            //    await _dataManager.SaveStudentAsync(_editingStudent);
-            //else
-            await _businessManager.AddStudentAsync(_editingStudent);
+            if (EditMode)
+                await _businessManager.UpdateStudentAsync(_editingStudent);
+            else
+            await _businessManager.InsertStudentAsync(_editingStudent);
             Done();
         }
 

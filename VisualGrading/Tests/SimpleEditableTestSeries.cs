@@ -15,7 +15,7 @@ namespace VisualGrading.Tests
 
         #region Public Properties
         [Required]
-        public int ID
+        public long ID
         {
             get { return _id; }
             set { SetProperty(ref _id, value); }
@@ -53,7 +53,7 @@ namespace VisualGrading.Tests
 
         #region Private Properties
 
-        private int _id;
+        private long _id;
         private string _name; 
         private string _subject;
         private string _subCategory;

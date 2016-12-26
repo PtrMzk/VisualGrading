@@ -5,7 +5,6 @@ using Microsoft.Practices.Unity;
 using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Model.Data;
-using VisualGrading.Model.Repositories;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
@@ -53,59 +52,6 @@ namespace VisualGrading.DataAccess
         #endregion
 
         #region Methods
-
-        #region Generic Methods
-
-        //private Type FindCorrespondingType<T>(T businessObject)
-        //{
-        //    return _autoMapperProfile.MappingDictionary[typeof(T)];
-        //}
-
-        //private IRepository<IEntity> FindRepository<T>(T businessObject) where T : class
-        //{
-        //    IRepository<IEntity> repository = null;
-
-        //    switch (businessObject.GetType().Name)
-        //    {
-        //        case "StudentDTO":
-        //            repository = _studentRepositoryGen;
-        //            break;
-        //        case "TestDTO":
-        //            //return (IRepository<IEntity>)unitOfWork.TestRepository;
-        //            break;
-        //        case "GradeDTO":
-        //            //return (IRepository<IEntity>)unitOfWork.GradeRepository;
-        //            break;
-        //    }
-
-        //    return repository;
-        //}
-
-        //public async Task UpdateAsync<T>(T businessObject)
-        //{
-        //    UpdateRepository<T>(businessObject);
-        //    await _unitOfWork.CommitAsync();
-        //}
-
-        //private void UpdateRepository<T>(T businessObject)
-        //{
-
-        //    var DTOType = FindCorrespondingType<T>(businessObject);
-        //    //var testDTO = new TestDTO();
-
-        //    var newDTO = (IEntity)Activator.CreateInstance(DTOType);
-
-        //    IRepository<IEntity> repository = FindRepository(newDTO);
-
-        //    Mapper.Map(businessObject, newDTO);
-
-        //    var existingEntity = repository.Single(x => x.ID == newDTO.ID);
-
-        //    if (existingEntity != null)
-        //        _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(newDTO);
-        //}
-
-        #endregion
 
         #region Public DataManager Methods
 
@@ -308,31 +254,7 @@ namespace VisualGrading.DataAccess
         }
 
         #endregion
-
-        #region Old JSON Methods...left for compatability..for now..
-
-        public void Save<T>(object objectToSave)
-        {
-            JSONSerialization.SerializeJSON(_settingRepository.GetFileLocationByType<T>(), objectToSave);
-        }
-
-        public async Task SaveAsync<T>(object objectToSave)
-        {
-            await JSONSerialization.SerializeJSONAsync(_settingRepository.GetFileLocationByType<T>(), objectToSave);
-        }
-
-        public T Load<T>()
-        {
-            return JSONSerialization.DeserializeJSON<T>(_settingRepository.GetFileLocationByType<T>());
-        }
-
-        public async Task<T> LoadAsync<T>()
-        {
-            return await JSONSerialization.DeserializeJSONAsync<T>(_settingRepository.GetFileLocationByType<T>());
-        }
-
-        #endregion
-
+        
         #endregion
     }
 }

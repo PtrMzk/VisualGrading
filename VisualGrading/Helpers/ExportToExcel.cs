@@ -88,20 +88,20 @@
 //        /// <param name="header"></param>
 //        private void WriteData(object[] header)
 //        {
-//            object[,] objData = new object[dataToPrint.Count, header.Length];
+//            object[,] objData = new object[dataToPrint.Count, header.TestCount];
 
 //            for (int j = 0; j < dataToPrint.Count; j++)
 //            {
 //                var item = dataToPrint[j];
-//                for (int i = 0; i < header.Length; i++)
+//                for (int i = 0; i < header.TestCount; i++)
 //                {
 //                    var y = typeof(T).InvokeMember(header[i].ToString(),
 //                    BindingFlags.GetProperty, null, item, null);
 //                    objData[j, i] = (y == null) ? "" : y.ToString();
 //                }
 //            }
-//            AddExcelRows("A2", dataToPrint.Count, header.Length, objData);
-//            AutoFitColumns("A1", dataToPrint.Count + 1, header.Length);
+//            AddExcelRows("A2", dataToPrint.Count, header.TestCount, objData);
+//            AutoFitColumns("A1", dataToPrint.Count + 1, header.TestCount);
 //        }
 //        /// <summary>
 //        /// Method to make columns auto fit according to data
@@ -126,13 +126,13 @@
 //            // Create an array for the headers and add it to the
 //            // worksheet starting at cell A1.
 //            List<object> objHeaders = new List<object>();
-//            for (int n = 0; n < headerInfo.Length; n++)
+//            for (int n = 0; n < headerInfo.TestCount; n++)
 //            {
 //                objHeaders.AddTest(headerInfo[n].Name);
 //            }
 
 //            var headerToAdd = objHeaders.ToArray();
-//            AddExcelRows("A1", 1, headerToAdd.Length, headerToAdd);
+//            AddExcelRows("A1", 1, headerToAdd.TestCount, headerToAdd);
 //            SetHeaderStyle();
 
 //            return headerToAdd;

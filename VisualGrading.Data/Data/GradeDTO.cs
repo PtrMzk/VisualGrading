@@ -11,12 +11,20 @@ namespace VisualGrading.Model.Data
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         public int? Points { get; set; }
 
-        public int TestID { get; set; }
-        
-        public int StudentID { get; set; }
+        public virtual TestDTO Test { get; set; }
+
+        [InverseProperty("ID")]
+        [ForeignKey("Test")]
+        public long TestID { get; set; }
+
+        public virtual StudentDTO Student { get; set; }
+
+        [InverseProperty("ID")]
+        [ForeignKey("Student")]
+        public long StudentID { get; set; }
     }
 }

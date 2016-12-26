@@ -11,9 +11,8 @@ namespace VisualGrading.Tests
     {
         #region Constructor
 
-        public AddEditTestViewModel(ITestRepository repository)
+        public AddEditTestViewModel()
         {
-            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             CancelCommand = new RelayCommand(OnCancel);
             SaveCommand = new RelayCommand(OnSave, CanSave);
@@ -22,8 +21,7 @@ namespace VisualGrading.Tests
         #endregion
 
         #region Properties
-
-        private readonly IDataManager _dataManager;
+       
 
         private IBusinessManager _businessManager;
 
@@ -105,10 +103,10 @@ namespace VisualGrading.Tests
             UpdateTest(EditingTest, _editingTest);
 
             if (EditMode)
-               _dataManager.SaveTest(_editingTest);
+               await _businessManager.UpdateTestAsync(_editingTest);
 
             else
-                _businessManager.AddTestAsync(_editingTest);
+                await _businessManager.InsertTestAsync(_editingTest);
 
             Done();
         }

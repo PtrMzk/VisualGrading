@@ -14,7 +14,7 @@ namespace VisualGrading.Students
         event Action OnStudentUpdate;
         event PropertyChangedEventHandler PropertyChanged;
         //TODO: This probably shouldnt reference the studentRepository class...
-        event StudentRepository.OnStudentChangedEventHandler StudentAdded;
+        //event StudentRepository.OnStudentChangedEventHandler StudentAdded;
 
         void AddStudentAsync(Student Student);
         Task<List<Student>> GetStudentsAsync();

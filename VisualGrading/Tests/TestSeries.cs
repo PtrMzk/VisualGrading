@@ -17,11 +17,11 @@ namespace VisualGrading.Tests
         #endregion
 
         #region Properties
-        public int ID { get; set; }
+        public long ID { get; set; }
         public string Name { get; set; }
         public string Subject { get; set; }
         public string SubCategory { get; set; }
-        public int Length { get; set; }
+        public int TestCount { get; set; }
         #endregion
 
     }

@@ -1,12 +1,13 @@
-﻿using VisualGrading.Presentation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
+using Microsoft.Practices.Unity;
+using VisualGrading.Business;
 using VisualGrading.Helpers;
+using VisualGrading.Presentation;
 
 namespace VisualGrading.Grades
 {
@@ -14,10 +15,9 @@ namespace VisualGrading.Grades
     {
         #region Constructor
 
-        public GradeViewModel(IGradeRepository repository)
+        public GradeViewModel()
         {
-            _repository = repository;
-            DeleteCommand = new RelayCommand<Grade>(OnDelete, CanDelete);
+            _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             AddCommand = new RelayCommand(OnAddGrade);
             EditCommand = new RelayCommand<Grade>(OnEditGrade);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
@@ -28,22 +28,24 @@ namespace VisualGrading.Grades
 
         #region Properties
 
-        private IGradeRepository _repository;
+        private readonly IBusinessManager _businessManager;
 
-        private ObservableCollection<Grade> _observableGrades;
+        private ObservableCollectionExtended<Grade> _observableGrades;
 
-        public ObservableCollection<Grade> ObservableGrades
+        public ObservableCollectionExtended<Grade> ObservableGrades
         {
-            get
-            {
-                return _observableGrades;
-            }
+            get { return _observableGrades; }
             set
             {
+                if ((_observableGrades != null) && (value != _observableGrades))
+                    _observableGrades.CollectionPropertyChanged -= ObservableGrades_CollectionChanged;
+
                 SetProperty(ref _observableGrades, value);
                 PropertyChanged(this, new PropertyChangedEventArgs("ObservableGrades"));
+                _observableGrades.CollectionPropertyChanged += ObservableGrades_CollectionChanged;
             }
         }
+
 
         private List<Grade> _allGrades;
 
@@ -51,22 +53,17 @@ namespace VisualGrading.Grades
 
         public Grade SelectedGrade
         {
-            get
-            {
-                return _selectedGrade;
-            }
+            get { return _selectedGrade; }
             set
             {
                 if (_selectedGrade != value)
                 {
                     _selectedGrade = value;
-                    DeleteCommand.RaiseCanExecuteChanged();
                     PropertyChanged(this, new PropertyChangedEventArgs("ObservableGrades"));
                 }
             }
         }
-
-        public RelayCommand<Grade> DeleteCommand { get; private set; }
+       
 
         public RelayCommand AddCommand { get; private set; }
 
@@ -80,25 +77,18 @@ namespace VisualGrading.Grades
 
         public event Action<Grade> AddRequested = delegate { };
         public event Action<Grade> EditRequested = delegate { };
-        public event Action<Grade> DeleteRequested = delegate { };
 
         private string _searchInput;
 
         public string SearchInput
         {
-            get
-            {
-                return _searchInput;
-
-            }
+            get { return _searchInput; }
             set
             {
                 SetProperty(ref _searchInput, value);
                 FilterGrades(_searchInput);
-
             }
         }
-
 
         #endregion
 
@@ -107,33 +97,37 @@ namespace VisualGrading.Grades
         public async void LoadGrades()
         {
             if (DesignerProperties.GetIsInDesignMode(
-               new System.Windows.DependencyObject())) return;
-            //var ObservableGrades = new List<GradeDTO>();
-            _allGrades =
-                await
-                    _repository.GetGradesAsync();
-            ObservableGrades = new ObservableCollection<Grade>(_allGrades);
-            //if (ObservableGrades == null || ObservableGrades.Count == 0)
-            //{
-            //    GradeDTO GradeDTO = new GradeDTO();
-            //    GradeDTO.GradeList();
-            //    ObservableGrades.AddGrade(GradeDTO);
+                new DependencyObject())) return;
 
-            PropertyChanged(this, new PropertyChangedEventArgs("ObservableGrades"));
-            //}
+
+            //todo: does grades always need to be refreshed? ...
+            //todo: ...if a student or test is changed it doesnt get reflected with the below if statement
+            //if (_allGrades == null)
+            {
+                _allGrades = await _businessManager.GetGradesAsync();
+
+                ObservableGrades = new ObservableCollectionExtended<Grade>(_allGrades);
+
+                PropertyChanged(this, new PropertyChangedEventArgs("ObservableGrades"));
+            }
+            
         }
+
+        private async void ObservableGrades_CollectionChanged(object sender,
+            PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            await _businessManager.UpdateGradeAsync((Grade) sender);
+        }
+
 
         private void FilterGrades(string searchInput)
         {
             if (string.IsNullOrWhiteSpace(searchInput))
-            {
-                ObservableGrades = new ObservableCollection<Grade>(_allGrades);
-                return;
-            }
+                ObservableGrades = new ObservableCollectionExtended<Grade>(_allGrades);
             else
-            {
-                ObservableGrades = new ObservableCollection<Grade>(_allGrades.Where(g => g.Test.Subject.ToLower().Contains(searchInput.ToLower())));
-            }
+                ObservableGrades =
+                    new ObservableCollectionExtended<Grade>(
+                        _allGrades.Where(g => g.Test.Subject.ToLower().Contains(searchInput.ToLower())));
         }
 
         //TODO: should not be a way to remove grades from front end
@@ -143,11 +137,6 @@ namespace VisualGrading.Grades
         //    ObservableGrades.Remove(GradeDTO);
         //    _repository.RemoveGrade(GradeDTO);
         //}
-
-        private void OnDelete(Grade Grade)
-        {
-            DeleteRequested(Grade);
-        }
 
         //TODO: RemoveGrade below method - its a temp method for the AddGrade GradeDTO > Charting workflow
         //private void OnAddGrade(GradeDTO GradeDTO)
@@ -170,21 +159,11 @@ namespace VisualGrading.Grades
             EditRequested(Grade);
         }
 
-
-        //FIXME: THIS IS NEVER FALSE
-        private bool CanDelete(Grade Grade)
-        {
-            //TODO: Selected GradeDTO doesn't seem to work here, and this isn't really needed...
-            //return SelectedGrade != null;
-            return true;
-        }
-
         private void OnClearSearch()
         {
             SearchInput = null;
         }
 
         #endregion
-
     }
 }

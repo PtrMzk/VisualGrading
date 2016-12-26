@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
-using VisualGrading.Model.Repositories;
+using VisualGrading.Model.Data;
 
 namespace VisualGrading.Model.Data
 {
@@ -86,6 +86,7 @@ namespace VisualGrading.Model.Data
         {
             _dbSet.Attach(entity);
         }
+
 
         #endregion
     }

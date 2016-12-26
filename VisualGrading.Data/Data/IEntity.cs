@@ -8,6 +8,6 @@ namespace VisualGrading.Model.Data
 {
     public interface IEntity
     {
-        int ID { get; set; }
+        long ID { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VisualGrading.Model.Data;
 
-namespace VisualGrading.Model.Repositories
+namespace VisualGrading.Model.Data
 {
     public interface IUnitOfWork : IDisposable, IObjectContextAdapter
     {

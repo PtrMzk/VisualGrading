@@ -11,7 +11,7 @@ namespace VisualGrading.Model.Data
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         [StringLength(2147483647)]
         public string Name { get; set; }

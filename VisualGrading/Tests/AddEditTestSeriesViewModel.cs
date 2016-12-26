@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.Practices.Unity;
+using VisualGrading.Business;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
 
@@ -8,9 +10,9 @@ namespace VisualGrading.Tests
     {
         #region Constructor
 
-        public AddEditTestSeriesViewModel(ITestRepository repository)
+        public AddEditTestSeriesViewModel()
         {
-            //_repository = repository;
+            _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             CancelCommand = new RelayCommand(OnCancel);
             SaveCommand = new RelayCommand(OnSave, CanSave);
         }
@@ -22,6 +24,9 @@ namespace VisualGrading.Tests
         //private readonly ITestRepository _repository;
 
         private TestSeries _editingTestSeries;
+
+        private IBusinessManager _businessManager;
+
 
         public SimpleEditableTestSeries EditingTestSeries
         {
@@ -61,7 +66,7 @@ namespace VisualGrading.Tests
             destination.Name = source.Name;
             destination.Subject = source.Subject;
             destination.SubCategory = source.SubCategory;
-            destination.Length = source.Length;
+            destination.TestCount = source.Length;
 
         }
 
@@ -71,7 +76,7 @@ namespace VisualGrading.Tests
             destination.Name = source.Name;
             destination.Subject = source.Subject;
             destination.SubCategory = source.SubCategory;
-            destination.Length = source.Length;
+            destination.Length = source.TestCount;
         }
 
         private bool CanSave()
@@ -82,7 +87,7 @@ namespace VisualGrading.Tests
         private async void OnSave()
         {
             UpdateTestSeries(EditingTestSeries, _editingTestSeries);
-                //_repository.AddTestSeriesAsync(_editingTestSeries);
+            await _businessManager.InsertTestSeriesAsync(_editingTestSeries);
             Done();
         }
 

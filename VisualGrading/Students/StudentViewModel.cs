@@ -1,17 +1,12 @@
-﻿using VisualGrading.Presentation;
-using VisualGrading.Students;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+using System.Windows;
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
-using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
+using VisualGrading.Presentation;
 
 namespace VisualGrading.Students
 {
@@ -22,7 +17,6 @@ namespace VisualGrading.Students
         public StudentViewModel()
         {
             //_repository = repository;
-            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
 
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             DeleteCommand = new RelayCommand<Student>(OnDelete, CanDelete);
@@ -33,26 +27,24 @@ namespace VisualGrading.Students
             //AutoSaveCommand = new RelayCommand(OnRowEdit);
             DeleteRequested += DeleteStudent;
         }
+
         #endregion
 
         #region Properties
+
         //private IStudentRepository _repository;
 
-        private IDataManager _dataManager;
 
-        private IBusinessManager _businessManager;
-        
+        private readonly IBusinessManager _businessManager;
+
         private ObservableCollectionExtended<Student> _observableStudents;
 
         public ObservableCollectionExtended<Student> ObservableStudents
         {
-            get
-            {
-                return _observableStudents;
-            }
+            get { return _observableStudents; }
             set
             {
-                if (_observableStudents!= null && value != _observableStudents)
+                if ((_observableStudents != null) && (value != _observableStudents))
                     _observableStudents.CollectionPropertyChanged -= ObservableStudents_CollectionChanged;
 
                 SetProperty(ref _observableStudents, value);
@@ -67,10 +59,7 @@ namespace VisualGrading.Students
 
         public Student SelectedStudent
         {
-            get
-            {
-                return _selectedStudent;
-            }
+            get { return _selectedStudent; }
             set
             {
                 if (_selectedStudent != value)
@@ -82,7 +71,7 @@ namespace VisualGrading.Students
             }
         }
 
-        public RelayCommand<Student> DeleteCommand { get; private set; }
+        public RelayCommand<Student> DeleteCommand { get; }
 
         public RelayCommand AddCommand { get; private set; }
 
@@ -104,24 +93,18 @@ namespace VisualGrading.Students
 
         public string SearchInput
         {
-            get
-            {
-                return _searchInput;
-
-            }
+            get { return _searchInput; }
             set
             {
                 SetProperty(ref _searchInput, value);
                 FilterStudents(_searchInput);
-
             }
         }
 
         public void OnRowEdit(object sender, PropertyChangedEventArgs e)
         {
-            _dataManager.SaveStudent((Student)sender);
+            _businessManager.UpdateStudentAsync((Student) sender);
         }
-
 
         #endregion
 
@@ -130,38 +113,39 @@ namespace VisualGrading.Students
         public async void LoadStudents()
         {
             if (DesignerProperties.GetIsInDesignMode(
-               new System.Windows.DependencyObject())) return;
-            
-            _allStudents = _dataManager.GetStudents();
+                new DependencyObject())) return;
 
-            ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
+            if (_allStudents == null)
+            {
+                 _allStudents = await _businessManager.GetStudentsAsync();
 
-            PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
+                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
+
+                PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
+            }
         }
 
-        private void ObservableStudents_CollectionChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void ObservableStudents_CollectionChanged(object sender,
+            PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            _dataManager.SaveStudent((Student)sender);
+            _businessManager.UpdateStudentAsync((Student) sender);
         }
 
         private void FilterStudents(string searchInput)
         {
             if (string.IsNullOrWhiteSpace(searchInput))
-            {
-               ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
-                return;
-            }
+                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
             else
-            {
-                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents.Where(t => t.FullName.ToLower().Contains(searchInput.ToLower())));
-            }
+                ObservableStudents =
+                    new ObservableCollectionExtended<Student>(
+                        _allStudents.Where(t => t.FullName.ToLower().Contains(searchInput.ToLower())));
         }
 
         private void DeleteStudent(Student student)
         {
             ObservableStudents.Remove(student);
             _allStudents.Remove(student);
-            _dataManager.DeleteStudent(student);
+            _businessManager.DeleteStudentAsync(student);
         }
 
         private void OnDelete(Student student)

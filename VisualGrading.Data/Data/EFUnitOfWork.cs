@@ -6,7 +6,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VisualGrading.Model.Repositories;
+using SQLite.CodeFirst;
+using VisualGrading.Model.Data;
 
 namespace VisualGrading.Model.Data
 {
@@ -28,6 +29,12 @@ namespace VisualGrading.Model.Data
             _studentRepository = new EFRepository<StudentDTO>(Students);
             _gradeRepository = new EFRepository<GradeDTO>(Grades);
             //_studentRepositoryGen = new EFRepository<IEntity>();
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            var sqliteConnectionInitializer = new SqliteCreateDatabaseIfNotExists<EFUnitOfWork>(modelBuilder);
+            Database.SetInitializer(sqliteConnectionInitializer);
         }
 
         #region IUnitOfWork Implementation

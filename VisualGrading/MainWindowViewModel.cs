@@ -1,42 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Practices.Unity;
-using VisualGrading.DataAccess;
-using VisualGrading;
 using VisualGrading.Charts;
+using VisualGrading.DataAccess;
 using VisualGrading.Grades;
-using VisualGrading.Tests;
 using VisualGrading.Helpers;
-using VisualGrading.Model.Data;
-using VisualGrading.Model.Repositories;
 using VisualGrading.Presentation;
 using VisualGrading.Students;
-using Student = VisualGrading.Students.Student;
-using Test = VisualGrading.Tests.Test;
-
+using VisualGrading.Tests;
 
 namespace VisualGrading
 {
-    class MainWindowViewModel : BaseViewModel
+    internal class MainWindowViewModel : BaseViewModel
     {
-        private TestViewModel _testViewModel;
-        private StudentViewModel _studentViewModel;
-        private GradeViewModel _gradeViewModel;
-        private ChartViewModel _ChartViewModel = new ChartViewModel();
-        private AddEditTestViewModel _addEditTestViewModel;
-        private AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
-        private AddEditStudentViewModel _addEditStudentViewModel;
-        private ITestRepository _testRepository;
-        private IStudentRepository _studentRepository;
-        private IGradeRepository _gradeRepository;
-        private IDataManager _dataManager;
+        private readonly AddEditStudentViewModel _addEditStudentViewModel;
+        private readonly AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
+        private readonly AddEditTestViewModel _addEditTestViewModel;
+        private readonly ChartViewModel _ChartViewModel = new ChartViewModel();
 
         private BaseViewModel _currentViewModel;
+
+        private IDataManager _dataManager;
+        private readonly GradeViewModel _gradeViewModel;
+        private readonly StudentViewModel _studentViewModel;
+        private readonly TestViewModel _testViewModel;
 
         public MainWindowViewModel()
         {
@@ -49,16 +35,9 @@ namespace VisualGrading
 
             //AutoMapper.Mapper.Instance.
 
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile<AutoMapperProfile>();
-            });
+            Mapper.Initialize(cfg => { cfg.AddProfile<AutoMapperProfile>(); });
 
             _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
-            _gradeRepository = ContainerHelper.Container.Resolve<IGradeRepository>();
-            _testRepository = ContainerHelper.Container.Resolve<ITestRepository>();
-            _studentRepository = ContainerHelper.Container.Resolve<IStudentRepository>();
-
 
             _testViewModel = ContainerHelper.Container.Resolve<TestViewModel>();
             _addEditTestViewModel = ContainerHelper.Container.Resolve<AddEditTestViewModel>();
@@ -78,13 +57,17 @@ namespace VisualGrading
             _addEditStudentViewModel.Done += NavToStudentList;
             _addEditTestSeriesViewModel.Done += NavToTestList;
 
+            //default to Grades list
+            OnNav("grades");
         }
 
-        public Presentation.BaseViewModel CurrentViewModel
+        public BaseViewModel CurrentViewModel
         {
             get { return _currentViewModel; }
             set { SetProperty(ref _currentViewModel, value); }
         }
+
+        public RelayCommand<string> NavCommand { get; private set; }
 
         private void NavToAddTest(Test test)
         {
@@ -118,13 +101,10 @@ namespace VisualGrading
             CurrentViewModel = _addEditStudentViewModel;
         }
 
-        public RelayCommand<string> NavCommand { get; private set; }
-
         private void OnNav(string destination)
         {
             switch (destination)
             {
-
                 case "students":
                     CurrentViewModel = _studentViewModel;
                     break;
@@ -138,21 +118,20 @@ namespace VisualGrading
                 default:
                     CurrentViewModel = _testViewModel;
                     break;
-
             }
         }
 
         private void NavToTestList()
         {
             //TODO: Hack to get test lists to refresh with changes
-            _testViewModel.LoadTests();
+            //_testViewModel.LoadTests();
             CurrentViewModel = _testViewModel;
         }
 
         private void NavToStudentList()
         {
             //TODO: Hack to get students lists to refresh with changes
-            _studentViewModel.LoadStudents();
+            //_studentViewModel.LoadStudents();
             CurrentViewModel = _studentViewModel;
         }
 
@@ -161,7 +140,5 @@ namespace VisualGrading
             _addEditTestSeriesViewModel.SetTestSeries(testSeries);
             CurrentViewModel = _addEditTestSeriesViewModel;
         }
-
-
     }
 }

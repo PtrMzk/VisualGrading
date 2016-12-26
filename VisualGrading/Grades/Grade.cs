@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using StudentTestReporting.Annotations;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
 namespace VisualGrading.Grades
 {
     [Serializable]
-    public class Grade
+    public class Grade : INotifyPropertyChanged
     {
         #region Constructors
         public Grade()
@@ -27,19 +30,21 @@ namespace VisualGrading.Grades
         public Grade(Student student, Test test, int points)
         {
             this.Student = student;
+            this.StudentID = student.ID;
             this.Test = test;
+            this.TestID = test.ID;
             this.Points = points;
             //this.GradeID = Guid.NewGuid();
         }
 
-        public Grade(int studentID, int testID)
+        public Grade(long studentID, long testID)
         {
             this.StudentID = studentID;
             this.TestID = testID;
             //this.GradeID = Guid.NewGuid();
         }
 
-        public Grade(int studentID, int testID, int points)
+        public Grade(long studentID, long testID, int points)
         {
             this.StudentID = studentID;
             this.TestID = testID;
@@ -49,10 +54,21 @@ namespace VisualGrading.Grades
         #endregion
 
         #region Properties
-        public int GradeID { get; set; }
-        public int Points { get; set; }
-        public int StudentID { get; set; }
-        public int TestID { get; set; }
+        public long ID { get; set; }
+
+        public int Points
+        {
+            get { return _points; }
+            set
+            {
+                if (value == _points) return;
+                _points = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public long StudentID { get; set; }
+        public long TestID { get; set; }
 
         [NonSerialized]
         private Test _test;
@@ -65,12 +81,23 @@ namespace VisualGrading.Grades
 
         [NonSerialized]
         private Student _student;
+
+        private int _points;
+
         public Student Student
         {
             get { return _student; }
             set { _student = value; }
         }
-        #endregion 
+        #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
 

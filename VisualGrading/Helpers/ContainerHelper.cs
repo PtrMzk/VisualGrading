@@ -9,7 +9,6 @@ using VisualGrading.Business;
 using VisualGrading.DataAccess;
 using VisualGrading.Grades;
 using VisualGrading.Model.Data;
-using VisualGrading.Model.Repositories;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
@@ -27,11 +26,11 @@ namespace VisualGrading.Helpers
 
             _container.RegisterInstance<IDataManager>(DataManager.Instance);
 
-            _container.RegisterInstance<ITestRepository>(TestRepository.Instance);
+            //_container.RegisterInstance<ITestRepository>(TestRepository.Instance);
 
-            _container.RegisterInstance<IStudentRepository>(StudentRepository.Instance);
+            //_container.RegisterInstance<IStudentRepository>(StudentRepository.Instance);
 
-            _container.RegisterInstance<IGradeRepository>(GradeRepository.Instance);
+            //_container.RegisterInstance<IGradeRepository>(GradeRepository.Instance);
 
             _container.RegisterInstance<IBusinessManager>(new BusinessManager());
 

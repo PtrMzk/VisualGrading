@@ -16,9 +16,8 @@ namespace VisualGrading.Tests
     {
         #region Constructor
 
-        public TestViewModel(ITestRepository repository)
+        public TestViewModel()
         {
-            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
 
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             DeleteCommand = new RelayCommand<Test>(OnDelete, CanDelete);
@@ -56,7 +55,6 @@ namespace VisualGrading.Tests
 
         #region Properties
 
-        private IDataManager _dataManager;
 
         private IBusinessManager _businessManager;
 
@@ -134,16 +132,19 @@ namespace VisualGrading.Tests
         {
             if (DesignerProperties.GetIsInDesignMode(
                 new DependencyObject())) return;
-            //var ObservableTests = new List<TestDTO>();
-            _allTests =_dataManager.GetTests();
-            ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
-            //if (ObservableTests == null || ObservableTests.Count == 0)
-            //{
-            //    TestDTO test = new TestDTO();
-            //    test.TestList();
-            //    ObservableTests.AddTest(test);
 
-            PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
+            if (_allTests == null)
+            {
+                _allTests = await _businessManager.GetTestsAsync();
+                ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
+                //if (ObservableTests == null || ObservableTests.Count == 0)
+                //{
+                //    TestDTO test = new TestDTO();
+                //    test.TestList();
+                //    ObservableTests.AddTest(test);
+
+                PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
+            }
             //}
         }
 
@@ -157,11 +158,11 @@ namespace VisualGrading.Tests
                         _allTests.Where(t => t.Subject.ToLower().Contains(searchInput.ToLower())));
         }
 
-        private void DeleteTest(Test test)
+        private async void DeleteTest(Test test)
         {
             ObservableTests.Remove(test);
             _allTests.Remove(test);
-            _dataManager.DeleteTest(test);
+            await _businessManager.DeleteTestAsync(test);
         }
 
         private void OnDelete(Test test)
@@ -171,7 +172,7 @@ namespace VisualGrading.Tests
 
         private async void ObservableTests_CollectionChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            _dataManager.SaveTest((Test)sender);
+            await _businessManager.UpdateTestAsync((Test)sender);
         }
 
         //TODO: RemoveTest below method - its a temp method for the AddTest TestDTO > Charting workflow

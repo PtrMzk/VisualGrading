@@ -34,7 +34,7 @@ namespace VisualGrading.Tests
 
         #region Properties
 
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         public string Name
         {

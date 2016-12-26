@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VisualGrading.Model.Repositories
+namespace VisualGrading.Model.Data
 {
     public interface IRepository<T> where T : class
     {
