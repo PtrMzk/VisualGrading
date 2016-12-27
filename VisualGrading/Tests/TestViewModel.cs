@@ -8,6 +8,7 @@ using Microsoft.Practices.Unity;
 using VisualGrading.Business;
 using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
+using VisualGrading.Helpers.EnumLibrary;
 using VisualGrading.Presentation;
 
 namespace VisualGrading.Tests
@@ -25,6 +26,7 @@ namespace VisualGrading.Tests
             AddSeriesCommand = new RelayCommand(OnAddTestSeries);
             EditCommand = new RelayCommand<Test>(OnEditTest);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
+            ChartCommand = new RelayCommand<Test>(OnChartRequested);
             DeleteRequested += DeleteTest;
 
             //TODO: delete the below if not needed, clean this up to set the private variable test
@@ -104,6 +106,8 @@ namespace VisualGrading.Tests
 
         public RelayCommand ClearSearchCommand { get; private set; }
 
+        public RelayCommand<Test> ChartCommand { get; private set; }
+
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
 
@@ -111,6 +115,7 @@ namespace VisualGrading.Tests
         public event Action<TestSeries> AddSeriesRequested = delegate { };
         public event Action<Test> EditRequested = delegate { };
         public event Action<Test> DeleteRequested = delegate { };
+        public event Action<Test> ChartRequested = delegate { };
 
         private string _searchInput;
 
@@ -133,7 +138,8 @@ namespace VisualGrading.Tests
             if (DesignerProperties.GetIsInDesignMode(
                 new DependencyObject())) return;
 
-            if (_allTests == null)
+            //todo: test wont update if added
+            //if (_allTests == null)
             {
                 _allTests = await _businessManager.GetTestsAsync();
                 ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
@@ -198,6 +204,11 @@ namespace VisualGrading.Tests
         private void OnEditTest(Test test)
         {
             EditRequested(test);
+        }
+
+        private void OnChartRequested(Test grouping)
+        {
+            ChartRequested(grouping);
         }
 
         //FIXME: THIS IS NEVER FALSE

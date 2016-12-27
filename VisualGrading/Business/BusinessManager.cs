@@ -232,6 +232,27 @@ namespace VisualGrading.Business
             return await _dataManager.GetGradesAsync();
         }
 
+        public List<Grade> GetFilteredGrades(List<Test> testsToFilterOn)
+        {
+            return GetFilteredGrades(null, testsToFilterOn);
+        }
+
+
+        public List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null)
+        {
+            List<long> studentIDsToFilterOn = new List<long>();
+            List<long> testIDsToFilterOn = new List<long>();
+
+            if (studentsToFilterOn != null && studentsToFilterOn.Count > 0)
+            studentsToFilterOn.ForEach(s => studentIDsToFilterOn.Add(s.ID));
+
+            if (testsToFilterOn != null && testsToFilterOn.Count > 0)
+            testsToFilterOn.ForEach(t => testIDsToFilterOn.Add(t.ID));
+
+           return  _dataManager.GetFilteredGrades(studentIDsToFilterOn, testIDsToFilterOn);
+
+        }
+
         public List<Grade> GetGrades()
         {
             return _dataManager.GetGrades();

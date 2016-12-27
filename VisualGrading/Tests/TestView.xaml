@@ -7,7 +7,8 @@
              xmlns:help="clr-namespace:VisualGrading.Helpers"
              xmlns:local="clr-namespace:VisualGrading"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
-            xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
+            xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+            xmlns:e="clr-namespace:VisualGrading.Helpers.EnumLibrary"
             x:Class="VisualGrading.Tests.TestView"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="600"
@@ -59,22 +60,20 @@
                   HeadersVisibility="Column"
                   AlternatingRowBackground="WhiteSmoke">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Name}"
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding Subject}"
+                <DataGridTextColumn Header="Subject" Binding="{Binding Subject}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding SubCategory}"
+                <DataGridTextColumn Header="SubCategory" Binding="{Binding SubCategory}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding SeriesNumber}"
-					Width="*"/>
-                <DataGridTextColumn Binding="{Binding Date}"
+                <DataGridTextColumn Header="Date" Binding="{Binding Date}"
 					Width="*"/>
                 <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Chart"
-								Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-								CommandParameter="{Binding}"
+								Command="{Binding DataContext.ChartCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                CommandParameter="{Binding}"
 								Margin="5"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

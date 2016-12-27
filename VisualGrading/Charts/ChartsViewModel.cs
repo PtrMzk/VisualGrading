@@ -1,43 +1,237 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VisualGrading.Tests;
+using System.Windows;
+using Microsoft.Practices.Unity;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using VisualGrading.Business;
 using VisualGrading.Grades;
 using VisualGrading.Helpers;
+using VisualGrading.Helpers.EnumLibrary;
 using VisualGrading.Presentation;
+using VisualGrading.Students;
+using VisualGrading.Tests;
 
 namespace VisualGrading.Charts
 {
-    public class ChartViewModel : VisualGrading.Presentation.BaseViewModel
+    public class ChartViewModel : BaseViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public ObservableCollection<Grade> Charts { get; set; }
+        private readonly IBusinessManager _businessManager;
 
         public ChartViewModel()
         {
             if (DesignerProperties.GetIsInDesignMode(
-                new System.Windows.DependencyObject())) return;
+                new DependencyObject())) return;
 
-            //make async later
+            _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
 
-            //Charts = new ObservableCollection<GradeDTO>(GradeRepository.grades);
+            //todo:default to Student plotting for now
+            ChartByStudents();
         }
+        
+        public PlotModel GradeChart { get; private set; }
 
-        //temp code for test -> charts testing
-        private Test _Test;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public Test Test
+        public void ChartByStudent(Student studentToFilterOn)
         {
-            get { return _Test; }
-            set { SetProperty(ref _Test, value); }
+            var studentsToFilterOn = new List<Student>() { studentToFilterOn };
+            ChartByStudents(studentsToFilterOn);
         }
 
-        //end temp code
-    }
-}
+        public void ChartByStudents(List<Student> studentsToFilterOn = null)
+        {
+            var grades = _businessManager.GetFilteredGrades(studentsToFilterOn);
 
+            GradeChart = new PlotModel
+            {
+                Title = "Student Plot",
+                LegendPlacement = LegendPlacement.Outside,
+                LegendPosition = LegendPosition.BottomCenter,
+                LegendOrientation = LegendOrientation.Horizontal,
+                LegendBorderThickness = 0,
+            };
+
+            var distinctStudentList = new HashSet<string>();
+            var distinctTestList = new HashSet<string>();
+
+
+            var categoryAxis = new CategoryAxis { Position = AxisPosition.Bottom };
+
+           
+            foreach (var grade in grades)
+            {
+                distinctStudentList.Add(grade.Student.FullName);
+                distinctTestList.Add(grade.Test.Name);
+            }
+
+            {
+                foreach (var test in distinctTestList)
+                {
+                    var s1 = new ColumnSeries
+                    {
+                        Title = test,
+                        StrokeColor = OxyColors.Black,
+                        StrokeThickness = 1
+                    };
+
+                    foreach (var grade in grades)
+                        if (grade.Test.Name == test)
+                            s1.Items.Add(new ColumnItem { Value = grade.Points });
+                    GradeChart.Series.Add(s1);
+                }
+
+                foreach (var Name in distinctStudentList)
+                    categoryAxis.Labels.Add(Name);
+            }
+
+            var valueAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                MinimumPadding = 0,
+                MaximumPadding = 0.06,
+                AbsoluteMinimum = 0
+            };
+
+
+            GradeChart.Axes.Add(categoryAxis);
+            GradeChart.Axes.Add(valueAxis);
+
+            GradeChart.InvalidatePlot(true);
+        }
+
+        public void ChartByTest(Test testToFilterOn)
+        {
+            var tests = new List<Test>() {testToFilterOn};
+            ChartByTests(tests);
+        }
+
+        public void ChartByTests(List<Test> testsToFilterOn = null)
+        {
+            var grades = _businessManager.GetFilteredGrades(testsToFilterOn);
+
+            GradeChart = new PlotModel
+            {
+                Title = "Test Plot",
+                LegendPlacement = LegendPlacement.Outside,
+                LegendPosition = LegendPosition.BottomCenter,
+                LegendOrientation = LegendOrientation.Horizontal,
+                LegendBorderThickness = 0,
+            };
+
+            var distinctStudentList = new HashSet<string>();
+            var distinctTestList = new HashSet<string>();
+
+
+            var categoryAxis = new CategoryAxis { Position = AxisPosition.Bottom };
+
+            
+            foreach (var grade in grades)
+            {
+                distinctStudentList.Add(grade.Student.FullName);
+                distinctTestList.Add(grade.Test.Name);
+            }
+
+          {
+                foreach (var student in distinctStudentList)
+                {
+                    var s1 = new ColumnSeries
+                    {
+                        Title = student,
+                        StrokeColor = OxyColors.Black,
+                        StrokeThickness = 1
+                    };
+                    
+                    foreach (var grade in grades)
+                        if (grade.Student.FullName == student)
+                            s1.Items.Add(new ColumnItem { Value = grade.Points });
+                    GradeChart.Series.Add(s1);
+                }
+
+                foreach (var Name in distinctTestList)
+                    categoryAxis.Labels.Add(Name);
+            }
+
+            var valueAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                MinimumPadding = 0,
+                MaximumPadding = 0.06,
+                AbsoluteMinimum = 0
+            };
+
+
+            GradeChart.Axes.Add(categoryAxis);
+            GradeChart.Axes.Add(valueAxis);
+
+            GradeChart.InvalidatePlot(true);
+        }
+
+        private PlotModel TestPlot()
+        {
+            var model = new PlotModel
+            {
+                Title = "BarSeries",
+                LegendPlacement = LegendPlacement.Outside,
+                LegendPosition = LegendPosition.BottomCenter,
+                LegendOrientation = LegendOrientation.Horizontal,
+                LegendBorderThickness = 0
+            };
+
+            var s1 = new BarSeries() { Title = "Series 1", StrokeColor = OxyColors.Black, StrokeThickness = 1 };
+            s1.Items.Add(new BarItem { Value = 25 });
+            s1.Items.Add(new BarItem { Value = 137 });
+            s1.Items.Add(new BarItem { Value = 18 });
+            s1.Items.Add(new BarItem { Value = 40 });
+
+            var s2 = new BarSeries { Title = "Series 2", StrokeColor = OxyColors.Black, StrokeThickness = 1 };
+            s2.Items.Add(new BarItem { Value = 12 });
+            s2.Items.Add(new BarItem { Value = 14 });
+            s2.Items.Add(new BarItem { Value = 120 });
+            s2.Items.Add(new BarItem { Value = 26 });
+
+            CategoryAxis categoryAxis = new CategoryAxis { Position = AxisPosition.Left };
+            categoryAxis.Labels.Add("Category A");
+            categoryAxis.Labels.Add("Category B");
+            categoryAxis.Labels.Add("Category C");
+            categoryAxis.Labels.Add("Category D");
+            LinearAxis valueAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                MinimumPadding = 0,
+                MaximumPadding = 0.06,
+                AbsoluteMinimum = 0
+            };
+            model.Series.Add(s1);
+            model.Series.Add(s2);
+            model.Axes.Add(categoryAxis);
+            model.Axes.Add(valueAxis);
+            return model;
+        }
+    }
+
+
+
+    //internal sealed class DistinctSubject
+    //{
+    //    public int maxTestNumber;
+    //    public string Subject;
+    //}
+
+    //internal sealed class DistinctSubjectComparer : IEqualityComparer<DistinctSubject>
+    //{
+    //    public bool Equals(DistinctSubject i1, DistinctSubject i2)
+    //    {
+    //        var rslt = i1.Subject == i2.Subject && i1.maxTestNumber == i2.maxTestNumber;
+    //        return rslt;
+    //    }
+
+    //    public int GetHashCode(DistinctSubject x)
+    //    {
+    //        return x.Subject.GetHashCode() ^ x.maxTestNumber.GetHashCode();
+    //    }
+    //}
+}

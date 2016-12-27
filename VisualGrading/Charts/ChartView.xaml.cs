@@ -18,9 +18,9 @@ namespace VisualGrading.Charts
     /// <summary>
     /// Interaction logic for ChartsView.xaml
     /// </summary>
-    public partial class ChartsView : UserControl
+    public partial class ChartView : UserControl
     {
-        public ChartsView()
+        public ChartView()
         {
             InitializeComponent();
         }

@@ -34,7 +34,7 @@ namespace VisualGrading.DataAccess
         List<Grade> GetGrades();
         void SaveGrade(Grade grade);
         void DeleteGrade(Grade grade);
-        
+        List<Grade> GetFilteredGrades(List<long> studentIDsToFilterOn = null, List<long> testIDsToFilterOn = null);
 
         //Task UpdateAsync<T>(T businessObject);
     }

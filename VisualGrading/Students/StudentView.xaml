@@ -61,21 +61,21 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>-->
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding FullName}" IsReadOnly="True"
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" IsReadOnly="True"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding Nickname, UpdateSourceTrigger=LostFocus}"
+                <DataGridTextColumn Header="Nickname" Binding="{Binding Nickname, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"
+                <DataGridTextColumn Header="Email" Binding="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding ParentEmailAddress, UpdateSourceTrigger=LostFocus}"
+                <DataGridTextColumn Header="Parent's Email" Binding="{Binding ParentEmailAddress, UpdateSourceTrigger=LostFocus}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus}" IsReadOnly="True"
+                <DataGridTextColumn Header ="Overall Grade" Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus}" IsReadOnly="True"
 					Width="*"/>
                 <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Chart"
-								Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+								Command="{Binding DataContext.ChartCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
 								CommandParameter="{Binding}"
 								Margin="5"/>
                         </DataTemplate>

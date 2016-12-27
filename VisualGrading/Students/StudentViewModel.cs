@@ -23,6 +23,8 @@ namespace VisualGrading.Students
             AddCommand = new RelayCommand(OnAddStudent);
             EditCommand = new RelayCommand<Student>(OnEditStudent);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
+            ChartCommand = new RelayCommand<Student>(OnChartRequested);
+
 
             //AutoSaveCommand = new RelayCommand(OnRowEdit);
             DeleteRequested += DeleteStudent;
@@ -83,11 +85,15 @@ namespace VisualGrading.Students
 
         public RelayCommand AutoSaveCommand { get; private set; }
 
+        public RelayCommand<Student> ChartCommand { get; private set; }
+
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
         public event Action<Student> AddRequested = delegate { };
         public event Action<Student> EditRequested = delegate { };
         public event Action<Student> DeleteRequested = delegate { };
+        public event Action<Student> ChartRequested = delegate { };
+
 
         private string _searchInput;
 
@@ -115,7 +121,8 @@ namespace VisualGrading.Students
             if (DesignerProperties.GetIsInDesignMode(
                 new DependencyObject())) return;
 
-            if (_allStudents == null)
+            //todo: this wont update if studnet is added 
+            //if (_allStudents == null)
             {
                  _allStudents = await _businessManager.GetStudentsAsync();
 
@@ -171,6 +178,12 @@ namespace VisualGrading.Students
         private void OnEditStudent(Student student)
         {
             EditRequested(student);
+        }
+
+        private void OnChartRequested(Student student)
+        {
+            ChartRequested(student);
+
         }
 
 

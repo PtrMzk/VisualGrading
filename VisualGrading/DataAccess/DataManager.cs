@@ -90,7 +90,7 @@ namespace VisualGrading.DataAccess
 
             Mapper.Map(student, studentDTO);
 
-            if (studentDTO.ID != null && studentDTO.ID != 0)
+            if (studentDTO.ID != 0)
                 existingEntity = _studentRepository.Single(x => x.ID == studentDTO.ID);
 
             if (existingEntity != null)
@@ -165,7 +165,7 @@ namespace VisualGrading.DataAccess
 
             Mapper.Map(test, testDTO);
 
-            if (testDTO.ID != null && testDTO.ID != 0)
+            if (testDTO.ID != 0)
                 existingEntity = _testRepository.Single(x => x.ID == testDTO.ID);
             if (existingEntity != null)
                 _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(testDTO);
@@ -202,6 +202,31 @@ namespace VisualGrading.DataAccess
             return ConvertGradeDTOsToGrades(gradeDTOs);
         }
 
+        public List<Grade> GetFilteredGrades(List<long> studentIDsToFilterOn = null, List<long> testIDsToFilterOn = null)
+        {
+            List<GradeDTO> gradeDTOs;
+
+            var isStudentListPopulated = false;
+            var isTestListPopulated = false;
+
+            if (studentIDsToFilterOn != null && studentIDsToFilterOn.Count > 0)
+                isStudentListPopulated = true;
+
+            if (testIDsToFilterOn != null && testIDsToFilterOn.Count > 0)
+                isTestListPopulated = true;
+
+            if (isStudentListPopulated && isTestListPopulated)
+                gradeDTOs = _gradeRepository.Find(g => studentIDsToFilterOn.Contains(g.Student.ID) && testIDsToFilterOn.Contains(g.Test.ID));
+            else if (isStudentListPopulated)
+                gradeDTOs = _gradeRepository.Find(g => studentIDsToFilterOn.Contains(g.Student.ID));
+            else if (isTestListPopulated)
+                gradeDTOs = _gradeRepository.Find(g => testIDsToFilterOn.Contains(g.Test.ID));
+            else
+                gradeDTOs = _gradeRepository.GetAll();
+
+            return ConvertGradeDTOsToGrades(gradeDTOs);
+        }
+
         public List<Grade> GetGrades()
         {
             var gradeDTOs = _gradeRepository.GetAll();
@@ -227,7 +252,7 @@ namespace VisualGrading.DataAccess
 
             Mapper.Map(grade, gradeDTO);
 
-            if (gradeDTO.ID != null && gradeDTO.ID != 0)
+            if (gradeDTO.ID != 0)
                 existingEntity = _gradeRepository.Single(x => x.ID == gradeDTO.ID);
             if (existingEntity != null)
                 _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(gradeDTO);
@@ -254,7 +279,7 @@ namespace VisualGrading.DataAccess
         }
 
         #endregion
-        
+
         #endregion
     }
 }

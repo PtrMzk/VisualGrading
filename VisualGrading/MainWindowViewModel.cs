@@ -4,6 +4,7 @@ using VisualGrading.Charts;
 using VisualGrading.DataAccess;
 using VisualGrading.Grades;
 using VisualGrading.Helpers;
+using VisualGrading.Helpers.EnumLibrary;
 using VisualGrading.Presentation;
 using VisualGrading.Students;
 using VisualGrading.Tests;
@@ -15,7 +16,7 @@ namespace VisualGrading
         private readonly AddEditStudentViewModel _addEditStudentViewModel;
         private readonly AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
         private readonly AddEditTestViewModel _addEditTestViewModel;
-        private readonly ChartViewModel _ChartViewModel = new ChartViewModel();
+        private readonly ChartViewModel _chartViewModel;
 
         private BaseViewModel _currentViewModel;
 
@@ -45,8 +46,9 @@ namespace VisualGrading
             _studentViewModel = ContainerHelper.Container.Resolve<StudentViewModel>();
             _addEditStudentViewModel = ContainerHelper.Container.Resolve<AddEditStudentViewModel>();
             _gradeViewModel = ContainerHelper.Container.Resolve<GradeViewModel>();
+            _chartViewModel = ContainerHelper.Container.Resolve<ChartViewModel>();
 
-            NavCommand = new RelayCommand<string>(OnNav);
+            NavCommand = new RelayCommand<NavigationTarget>(OnNav);
 
             _testViewModel.AddRequested += NavToAddTest;
             _testViewModel.AddSeriesRequested += NavToAddTestSeries;
@@ -56,9 +58,11 @@ namespace VisualGrading
             _addEditTestViewModel.Done += NavToTestList;
             _addEditStudentViewModel.Done += NavToStudentList;
             _addEditTestSeriesViewModel.Done += NavToTestList;
+            _testViewModel.ChartRequested += NavToChart;
+            _studentViewModel.ChartRequested += NavToChart;
 
             //default to Grades list
-            OnNav("grades");
+            OnNav(NavigationTarget.Grade);
         }
 
         public BaseViewModel CurrentViewModel
@@ -67,7 +71,7 @@ namespace VisualGrading
             set { SetProperty(ref _currentViewModel, value); }
         }
 
-        public RelayCommand<string> NavCommand { get; private set; }
+        public RelayCommand<NavigationTarget> NavCommand { get; private set; }
 
         private void NavToAddTest(Test test)
         {
@@ -83,6 +87,19 @@ namespace VisualGrading
             _addEditTestViewModel.EditMode = true;
             _addEditTestViewModel.SetTest(test);
             CurrentViewModel = _addEditTestViewModel;
+        }
+
+        private void NavToChart(Test test)
+        {
+            _chartViewModel.ChartByTest(test);
+            CurrentViewModel = _chartViewModel;
+        }
+
+
+        private void NavToChart(Student student)
+        {
+            _chartViewModel.ChartByStudent(student);
+            CurrentViewModel = _chartViewModel;
         }
 
         private void NavToAddStudent(Student student)
@@ -101,20 +118,20 @@ namespace VisualGrading
             CurrentViewModel = _addEditStudentViewModel;
         }
 
-        private void OnNav(string destination)
+        private void OnNav(NavigationTarget target)
         {
-            switch (destination)
+            switch (target)
             {
-                case "students":
+                case NavigationTarget.Student:
                     CurrentViewModel = _studentViewModel;
                     break;
-                case "grades":
+                case NavigationTarget.Grade:
                     CurrentViewModel = _gradeViewModel;
                     break;
-                case "charts":
-                    CurrentViewModel = _ChartViewModel;
+                case NavigationTarget.Chart:
+                    CurrentViewModel = _chartViewModel;
                     break;
-                case "tests":
+                case NavigationTarget.Test:
                 default:
                     CurrentViewModel = _testViewModel;
                     break;

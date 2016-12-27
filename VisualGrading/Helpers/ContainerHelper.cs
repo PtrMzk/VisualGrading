@@ -26,24 +26,7 @@ namespace VisualGrading.Helpers
 
             _container.RegisterInstance<IDataManager>(DataManager.Instance);
 
-            //_container.RegisterInstance<ITestRepository>(TestRepository.Instance);
-
-            //_container.RegisterInstance<IStudentRepository>(StudentRepository.Instance);
-
-            //_container.RegisterInstance<IGradeRepository>(GradeRepository.Instance);
-
             _container.RegisterInstance<IBusinessManager>(new BusinessManager());
-
-            //_container.RegisterInstance<IDataManager>(DataManager.Instance, new ContainerControlledLifetimeRepository());
-            //_container.RegisterInstance<ITestRepository>(TestRepository.Instance, new ContainerControlledLifetimeRepository());
-            //_container.RegisterInstance<IStudentRepository>(StudentRepository.Instance, new ContainerControlledLifetimeRepository());
-
-            //_container.RegisterInstance<IDataManager>(DataManager.Instance, new ContainerControlledLifetimeRepository());
-
-            //_container.RegisterType<IDataManager, DataManager>(new ContainerControlledLifetimeRepository());
-            //_container.RegisterType<ITestRepository, TestRepository>(new ContainerControlledLifetimeRepository());
-            //_container.RegisterType<IStudentRepository, StudentRepository>(new ContainerControlledLifetimeRepository());
-            //_container.RegisterType<IGradeRepository, GradeRepository>(new ContainerControlledLifetimeRepository());
 
         }
 

@@ -47,15 +47,17 @@
             HeadersVisibility="Column"
             AlternatingRowBackground="WhiteSmoke">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Student.FullName}"
+                <DataGridTextColumn Header="Student" Binding="{Binding Student.FullName}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding Test.Subject}"
+                <DataGridTextColumn Header="Test" Binding="{Binding Test.Name}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding Test.SubCategory}"
+                <DataGridTextColumn Header="Subject" Binding="{Binding Test.Subject}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding Points}"
+                <DataGridTextColumn Header="SubCategory" Binding="{Binding Test.SubCategory}"
 					Width="*"/>
-                <DataGridTextColumn Binding="{Binding Test.Date}"
+                <DataGridTextColumn Header="Grade" Binding="{Binding Points}"
+					Width="*"/>
+                <DataGridTextColumn Header="Date" Binding="{Binding Test.Date}"
 					Width="*"/>
                 <DataGridTemplateColumn Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>

@@ -41,9 +41,9 @@ namespace VisualGrading.Model.Data
             return await _dbSet.Where(x => true).ToListAsync();
         }
 
-        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
+        public List<T> Find(Expression<Func<T, bool>> predicate)
         {
-            return _dbSet.Where(predicate);
+            return _dbSet.Where(predicate).ToList();
         }
 
         public T FirstOrDefault()

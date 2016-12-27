@@ -14,12 +14,13 @@ namespace VisualGrading.Model.Data
         IQueryable<T> AsQueryable();
 
         List<T> GetAll();
-        IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
+        List<T> Find(Expression<Func<T, bool>> predicate);
         T Single(Expression<Func<T, bool>> predicate);
         T SingleOrDefault(Expression<Func<T, bool>> predicate);
         T First(Expression<Func<T, bool>> predicate);
         T GetById(int id);
         T FirstOrDefault();
+
         
         Task<List<T>> GetAllAsync();
 

@@ -8,8 +8,10 @@
         xmlns:p="clr-namespace:VisualGrading.Presentation"
         xmlns:c="clr-namespace:VisualGrading.Charts"
         xmlns:t="clr-namespace:VisualGrading.Tests"
+        xmlns:e="clr-namespace:VisualGrading.Helpers.EnumLibrary"
         xmlns:s="clr-namespace:VisualGrading.Students"
         xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:enumLibrary="clr-namespace:VisualGrading.Helpers.EnumLibrary"
         mc:Ignorable="d"
         Title="Visual Grading" Height="650" Width="650">
     <Window.DataContext>
@@ -34,6 +36,10 @@
         <DataTemplate DataType="{x:Type g:GradeViewModel}">
             <g:GradeView></g:GradeView>
         </DataTemplate>
+
+        <DataTemplate DataType="{x:Type c:ChartViewModel}">
+        <c:ChartView/>       
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -45,21 +51,27 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button Content ="Tests"
                 Command="{Binding NavCommand}"
-                CommandParameter="tests"
+                CommandParameter="{x:Static e:NavigationTarget.Test}"
                 Grid.Column ="0">
             </Button>
             <Button Content ="Students"
                 Command="{Binding NavCommand}"
-                CommandParameter="students"
+                CommandParameter="{x:Static e:NavigationTarget.Student}"
                 Grid.Column ="1">
             </Button>
             <Button Content ="Grades"
                 Command="{Binding NavCommand}"
-                CommandParameter="grades"
+                CommandParameter="{x:Static e:NavigationTarget.Grade}"
                 Grid.Column ="2">
+            </Button>
+            <Button Content ="Charts"
+                Command="{Binding NavCommand}"
+                CommandParameter="{x:Static e:NavigationTarget.Chart}"
+                Grid.Column ="3">
             </Button>
         </Grid>
         <Grid x:Name="MainContent"
