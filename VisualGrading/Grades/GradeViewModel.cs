@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -37,7 +36,7 @@ namespace VisualGrading.Grades
             get { return _observableGrades; }
             set
             {
-                if ((_observableGrades != null) && (value != _observableGrades))
+                if (_observableGrades != null && value != _observableGrades)
                     _observableGrades.CollectionPropertyChanged -= ObservableGrades_CollectionChanged;
 
                 SetProperty(ref _observableGrades, value);
@@ -45,7 +44,6 @@ namespace VisualGrading.Grades
                 _observableGrades.CollectionPropertyChanged += ObservableGrades_CollectionChanged;
             }
         }
-
 
         private List<Grade> _allGrades;
 
@@ -63,7 +61,6 @@ namespace VisualGrading.Grades
                 }
             }
         }
-       
 
         public RelayCommand AddCommand { get; private set; }
 
@@ -99,7 +96,6 @@ namespace VisualGrading.Grades
             if (DesignerProperties.GetIsInDesignMode(
                 new DependencyObject())) return;
 
-
             //todo: does grades always need to be refreshed? ...
             //todo: ...if a student or test is changed it doesnt get reflected with the below if statement
             //if (_allGrades == null)
@@ -110,7 +106,6 @@ namespace VisualGrading.Grades
 
                 PropertyChanged(this, new PropertyChangedEventArgs("ObservableGrades"));
             }
-            
         }
 
         private async void ObservableGrades_CollectionChanged(object sender,
@@ -119,7 +114,6 @@ namespace VisualGrading.Grades
             await _businessManager.UpdateGradeAsync((Grade) sender);
         }
 
-
         private void FilterGrades(string searchInput)
         {
             if (string.IsNullOrWhiteSpace(searchInput))
@@ -127,24 +121,14 @@ namespace VisualGrading.Grades
             else
                 ObservableGrades =
                     new ObservableCollectionExtended<Grade>(
-                        _allGrades.Where(g => g.Test.Subject.ToLower().Contains(searchInput.ToLower())));
+                        _allGrades.Where(g =>
+                            g.Test.Name.ToLower().Contains(searchInput.ToLower()) ||
+                            g.Test.Subject.ToLower().Contains(searchInput.ToLower()) ||
+                            g.Test.SubCategory.ToLower().Contains(searchInput.ToLower()) ||
+                            g.Student.FullName.ToLower().Contains(searchInput.ToLower())
+                        )
+                    );
         }
-
-        //TODO: should not be a way to remove grades from front end
-        //private void RemoveGradeFromPresentationAndRepository(GradeDTO GradeDTO)
-        //{
-        //    //TODO: Make these use events to talk to the repository instead
-        //    ObservableGrades.Remove(GradeDTO);
-        //    _repository.RemoveGrade(GradeDTO);
-        //}
-
-        //TODO: RemoveGrade below method - its a temp method for the AddGrade GradeDTO > Charting workflow
-        //private void OnAddGrade(GradeDTO GradeDTO)
-        //{
-        //    GradeDTO.GradeNumber += 1;
-        //    PropertyChanged(this, new PropertyChangedEventArgs("Grades"));
-        //    AddGradeRequested(GradeDTO);
-        //}
 
         private void OnAddGrade()
         {
@@ -152,7 +136,6 @@ namespace VisualGrading.Grades
             //the one above is linked to the chart button i believe...
             AddRequested(new Grade());
         }
-
 
         private void OnEditGrade(Grade Grade)
         {

@@ -47,40 +47,24 @@
             HeadersVisibility="Column"
             AlternatingRowBackground="WhiteSmoke">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Student" Binding="{Binding Student.FullName}"
+                <DataGridTextColumn Header="Student" Binding="{Binding Student.FullName}" IsReadOnly="True"
 					Width="*"/>
                 <DataGridTextColumn Header="Test" Binding="{Binding Test.Name}"
-					Width="*"/>
+					Width="*"
+                     IsReadOnly="True" />
                 <DataGridTextColumn Header="Subject" Binding="{Binding Test.Subject}"
-					Width="*"/>
+					Width="*"
+                                    IsReadOnly="True"/>
                 <DataGridTextColumn Header="SubCategory" Binding="{Binding Test.SubCategory}"
-					Width="*"/>
-                <DataGridTextColumn Header="Grade" Binding="{Binding Points}"
+					Width="*"
+                                    IsReadOnly="True"/>
+                <DataGridTextColumn Header="Grade" Binding="{Binding Points}" FontWeight="Bold"
 					Width="*"/>
                 <DataGridTextColumn Header="Date" Binding="{Binding Test.Date}"
-					Width="*"/>
-                <DataGridTemplateColumn Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Chart"
-								Command="{Binding DataContext.AddCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-								CommandParameter="{Binding}"
-								Margin="5"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="Edit"
-								Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-								CommandParameter="{Binding}"
-								Margin="5"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto">
-                </DataGridTemplateColumn>
+					Width="*"
+                                    IsReadOnly="True"/>
+
+
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -178,7 +178,7 @@
     <Compile Include="Helpers\MVVMBehaviors.cs" />
     <Compile Include="Tests\AddEditTestViewModel.cs" />
     <Compile Include="PresentationLayer\BaseViewModel.cs" />
-    <Compile Include="Charts\ChartsViewModel.cs" />
+    <Compile Include="Charts\ChartViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Helpers\BinarySerialization.cs" />
     <Compile Include="Grades\Grade.cs" />

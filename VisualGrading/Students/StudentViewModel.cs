@@ -25,7 +25,6 @@ namespace VisualGrading.Students
             ClearSearchCommand = new RelayCommand(OnClearSearch);
             ChartCommand = new RelayCommand<Student>(OnChartRequested);
 
-
             //AutoSaveCommand = new RelayCommand(OnRowEdit);
             DeleteRequested += DeleteStudent;
         }
@@ -159,14 +158,7 @@ namespace VisualGrading.Students
         {
             DeleteRequested(student);
         }
-
-        //TODO: RemoveStudent below method - its a temp method for the AddStudent StudentDTO > Charting workflow
-        //private void OnAddStudent(StudentDTO StudentDTO)
-        //{
-        //    StudentDTO.StudentNumber += 1;
-        //    PropertyChanged(this, new PropertyChangedEventArgs("Students"));
-        //    AddStudentRequested(StudentDTO);
-        //}
+        
 
         private void OnAddStudent()
         {
@@ -187,7 +179,7 @@ namespace VisualGrading.Students
         }
 
 
-        //FIXME: THIS IS NEVER FALSE
+        //TODO: THIS IS NEVER FALSE
         private bool CanDelete(Student student)
         {
             //TODO: Selected StudentDTO doesn't seem to work here, and this isn't really needed...

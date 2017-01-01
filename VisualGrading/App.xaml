@@ -4,6 +4,133 @@
              xmlns:local="clr-namespace:VisualGrading"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="DarkNavBrush" Color="#063940" />
+        <SolidColorBrush x:Key="MediumNavBrush" Color="#195E63" />
+        <SolidColorBrush x:Key="LightNavBrush" Color="#d1c9c7" />
+
+        <SolidColorBrush x:Key="LightFontBrush" Color="White" />
+        
+        <SolidColorBrush x:Key="AlternatingBackground" Color="#ECE9E8" />
+        <SolidColorBrush x:Key="DataGridLines" Color="WhiteSmoke" />
+
+        <Style x:Key="TitleButtonStyle" TargetType="RadioButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background" Value="{StaticResource DarkNavBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource LightFontBrush}" />
+            <Setter Property="FontWeight" Value="Light" />
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="MidnightBlue" />
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="BorderThickness" Value="0,0,0,2" />
+                    <Setter Property="BorderBrush" Value="{StaticResource DarkNavBrush}" />
+                    <Setter Property="Background" Value="{StaticResource MediumNavBrush}" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource MediumNavBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ChildNavGridStyle" TargetType="Grid">
+            <Setter Property="Background" Value="{StaticResource MediumNavBrush}" />
+            <Setter Property="Height" Value="40" />
+        </Style>
+
+        <Style x:Key="ContentDataGridStyle" TargetType="DataGrid">
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource AlternatingBackground}" />
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource DataGridLines}" />
+            <Setter Property="VerticalGridLinesBrush" Value="{StaticResource DataGridLines}" />
+        </Style>
+
+        <Style x:Key="ContentDataGridCellStyle" TargetType="DataGridCell" />
+
+        <Style x:Key="ContentDataGridHeaderStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+            <Setter Property="Background" Value="{StaticResource LightNavBrush}"></Setter>
+            <Setter Property="MinHeight" Value="30" />
+            <Setter Property="Foreground" Value="Black"></Setter>
+            <Setter Property="FontSize" Value="15"></Setter>
+            <Setter Property="FontWeight" Value="Light"></Setter>
+            <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="BorderBrush" Value="{StaticResource DataGridLines}"></Setter>
+
+
+        </Style>
+        
+        <!--sample code-->
+        <Style x:Key="HeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource HeaderBrush}" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="30" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <LinearGradientBrush x:Key="HeaderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#FF6B8E95" Offset="0"/>
+            <GradientStop Color="#FF14A7C1" Offset="1"/>
+            <GradientStop Color="#FF1E424E" Offset="0.509"/>
+            <GradientStop Color="#FF1D4855" Offset="0.542"/>
+            <GradientStop Color="#FF1D4855" Offset="0.542"/>
+            <GradientStop Color="#FF193A44" Offset="0.526"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="HeaderBorderBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#FF1D1D1D" Offset="0.614"/>
+            <GradientStop Color="#FF007F96" Offset="0.853"/>
+            <GradientStop Color="#FF0AEAFA" Offset="1"/>
+        </LinearGradientBrush>
+        <!--end sample code-->
+               
+
+        <Style x:Key="ContentButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <Style x:Key="ChildNavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontWeight" Value="Light" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Foreground" Value="{StaticResource LightFontBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+
+        </Style>
+
+        <Style x:Key="ChildNavTextBoxStyle" TargetType="TextBoxBase">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontWeight" Value="Light" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Foreground" Value="{StaticResource LightFontBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+
+        </Style>
+
+        <Style x:Key="ChildNavLabelStyle" TargetType="Label">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontWeight" Value="Light" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="Foreground" Value="{StaticResource LightFontBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+
+        </Style>
+
+
     </Application.Resources>
 </Application>

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.Practices.Unity;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -20,6 +22,7 @@ namespace VisualGrading.Charts
     public class ChartViewModel : BaseViewModel
     {
         private readonly IBusinessManager _businessManager;
+        
 
         public ChartViewModel()
         {
@@ -30,17 +33,48 @@ namespace VisualGrading.Charts
 
             //todo:default to Student plotting for now
             ChartByStudents();
+
+            NewChartCommand = new RelayCommand<string>(NewChartRequested);
+
+        }
+
+        public List<string> ComboBoxValues { get { return Enum.GetNames(typeof(ChartGrouping)).ToList(); } }
+
+        public RelayCommand<string> NewChartCommand { get; private set; }
+
+        private PlotModel _gradeChart;
+
+        public PlotModel GradeChart
+        {
+            get { return _gradeChart; }
+            private set
+            {
+                SetProperty(ref _gradeChart, value);             
+            }
         }
         
-        public PlotModel GradeChart { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public void ChartByStudent(Student studentToFilterOn)
         {
             var studentsToFilterOn = new List<Student>() { studentToFilterOn };
             ChartByStudents(studentsToFilterOn);
         }
+
+        private void NewChartRequested(string grouping)
+        {
+            ChartGrouping chartGrouping;
+            Enum.TryParse(grouping, out chartGrouping);
+            switch (chartGrouping)
+            {
+                case ChartGrouping.Student:
+                    ChartByStudents();
+                    return;
+                case ChartGrouping.Test:
+                default:
+                    ChartByTests();
+                    return;
+            }
+        }
+
 
         public void ChartByStudents(List<Student> studentsToFilterOn = null)
         {
@@ -61,7 +95,7 @@ namespace VisualGrading.Charts
 
             var categoryAxis = new CategoryAxis { Position = AxisPosition.Bottom };
 
-           
+
             foreach (var grade in grades)
             {
                 distinctStudentList.Add(grade.Student.FullName);
@@ -105,7 +139,7 @@ namespace VisualGrading.Charts
 
         public void ChartByTest(Test testToFilterOn)
         {
-            var tests = new List<Test>() {testToFilterOn};
+            var tests = new List<Test>() { testToFilterOn };
             ChartByTests(tests);
         }
 
@@ -128,14 +162,14 @@ namespace VisualGrading.Charts
 
             var categoryAxis = new CategoryAxis { Position = AxisPosition.Bottom };
 
-            
+
             foreach (var grade in grades)
             {
                 distinctStudentList.Add(grade.Student.FullName);
                 distinctTestList.Add(grade.Test.Name);
             }
 
-          {
+            {
                 foreach (var student in distinctStudentList)
                 {
                     var s1 = new ColumnSeries
@@ -144,7 +178,7 @@ namespace VisualGrading.Charts
                         StrokeColor = OxyColors.Black,
                         StrokeThickness = 1
                     };
-                    
+
                     foreach (var grade in grades)
                         if (grade.Student.FullName == student)
                             s1.Items.Add(new ColumnItem { Value = grade.Points });
@@ -212,26 +246,4 @@ namespace VisualGrading.Charts
             return model;
         }
     }
-
-
-
-    //internal sealed class DistinctSubject
-    //{
-    //    public int maxTestNumber;
-    //    public string Subject;
-    //}
-
-    //internal sealed class DistinctSubjectComparer : IEqualityComparer<DistinctSubject>
-    //{
-    //    public bool Equals(DistinctSubject i1, DistinctSubject i2)
-    //    {
-    //        var rslt = i1.Subject == i2.Subject && i1.maxTestNumber == i2.maxTestNumber;
-    //        return rslt;
-    //    }
-
-    //    public int GetHashCode(DistinctSubject x)
-    //    {
-    //        return x.Subject.GetHashCode() ^ x.maxTestNumber.GetHashCode();
-    //    }
-    //}
 }

@@ -14,8 +14,47 @@
         <vm:TestViewModel />
     </UserControl.DataContext>-->
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <ComboBox x:Name="comboBox" 
+                  HorizontalAlignment="Left" 
+                  Margin="10,10,0,0" 
+                  Width="100"
+                  VerticalAlignment="Top" 
+                  ItemsSource="{Binding ComboBoxValues}"
+                  />
+            <TextBlock Text="Select Chart.." IsHitTestVisible="False"                  
+                  HorizontalAlignment="Left" 
+                  Margin="15,12,0,0" 
+                  VerticalAlignment="Top"
+                       FontStyle="Italic">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Hidden"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=comboBox,Path=SelectedItem}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Button x:Name="button" 
+                    Command="{Binding NewChartCommand}"
+                    CommandParameter= "{Binding ElementName=comboBox, Path=SelectedItem}"
+                    Content="Generate" 
+                    HorizontalAlignment="Left" 
+                    Margin="115,10,0,0" 
+                    VerticalAlignment="Top" 
+                    Width="75"/>
+        </Grid>
+        <Grid Grid.Row = "1">
         <oxy:Plot Title="Test Chart - Bind Title to VM Later">
         </oxy:Plot>
         <oxy:PlotView Model="{Binding GradeChart}"/>
+        </Grid>
     </Grid>
 </UserControl>

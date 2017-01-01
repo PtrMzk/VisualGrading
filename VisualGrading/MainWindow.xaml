@@ -13,71 +13,72 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:enumLibrary="clr-namespace:VisualGrading.Helpers.EnumLibrary"
         mc:Ignorable="d"
-        Title="Visual Grading" Height="650" Width="650">
+        Title="Visual Grading" MinHeight="650" MinWidth="650"  
+        >
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
     <Window.Resources>
         <DataTemplate DataType="{x:Type t:TestViewModel}">
-            <t:TestView></t:TestView>
+            <t:TestView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type t:AddEditTestViewModel}">
-            <t:AddEditTestView></t:AddEditTestView>
+            <t:AddEditTestView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type t:AddEditTestSeriesViewModel}">
-            <t:AddEditTestSeriesView></t:AddEditTestSeriesView>
+            <t:AddEditTestSeriesView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type s:StudentViewModel}">
-            <s:StudentView></s:StudentView>
+            <s:StudentView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type s:AddEditStudentViewModel}">
-            <s:AddEditStudentView></s:AddEditStudentView>
+            <s:AddEditStudentView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type g:GradeViewModel}">
-            <g:GradeView></g:GradeView>
+            <g:GradeView />
         </DataTemplate>
-
         <DataTemplate DataType="{x:Type c:ChartViewModel}">
-        <c:ChartView/>       
+            <c:ChartView />
         </DataTemplate>
     </Window.Resources>
-    <Grid>
+    <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="55" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid x:Name ="NavBar">
+        <Grid x:Name="NavBar">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button Content ="Tests"
-                Command="{Binding NavCommand}"
-                CommandParameter="{x:Static e:NavigationTarget.Test}"
-                Grid.Column ="0">
-            </Button>
-            <Button Content ="Students"
-                Command="{Binding NavCommand}"
-                CommandParameter="{x:Static e:NavigationTarget.Student}"
-                Grid.Column ="1">
-            </Button>
-            <Button Content ="Grades"
-                Command="{Binding NavCommand}"
-                CommandParameter="{x:Static e:NavigationTarget.Grade}"
-                Grid.Column ="2">
-            </Button>
-            <Button Content ="Charts"
-                Command="{Binding NavCommand}"
-                CommandParameter="{x:Static e:NavigationTarget.Chart}"
-                Grid.Column ="3">
-            </Button>
+
+            <RadioButton Content="Tests"
+                         Command="{Binding NavCommand}"
+                         CommandParameter="{x:Static e:NavigationTarget.Test}"
+                         Grid.Column="0"
+                         Style="{StaticResource TitleButtonStyle}" />
+            <RadioButton Content="Students"
+                         Command="{Binding NavCommand}"
+                         CommandParameter="{x:Static e:NavigationTarget.Student}"
+                         Grid.Column="1"
+                         Style="{StaticResource TitleButtonStyle}" />
+            <RadioButton Content="Grades"
+                         Command="{Binding NavCommand}"
+                         CommandParameter="{x:Static e:NavigationTarget.Grade}"
+                         Grid.Column="2"
+                         Style="{StaticResource TitleButtonStyle}" />
+            <RadioButton Content="Charts"
+                         Command="{Binding NavCommand}"
+                         CommandParameter="{x:Static e:NavigationTarget.Chart}"
+                         Grid.Column="3"
+                         Style="{StaticResource TitleButtonStyle}" />
+
         </Grid>
         <Grid x:Name="MainContent"
               Grid.Row="1">
-        <ContentControl Content="{Binding CurrentViewModel}"></ContentControl>
-    </Grid>
+            <ContentControl Content="{Binding CurrentViewModel}" />
+        </Grid>
     </Grid>
 </Window>
-
