@@ -26,8 +26,8 @@
         <Grid
             Style="{StaticResource ChildNavGridStyle}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Button Content="Add"
@@ -35,34 +35,31 @@
                     HorizontalContentAlignment="Center"
                     Grid.Column="0"
                     HorizontalAlignment="Left"
-                    MinWidth="150"
-                    Style="{StaticResource ChildNavButtonStyle}"
-                    Margin="10,0" />
+
+                    Style="{StaticResource ChildNavLeftMostButtonStyle}"
+                     />
             <Button Content="Quick Add Series"
                     HorizontalContentAlignment="Center"
                     Command="{Binding AddSeriesCommand}"
                     Grid.Column="1"
                     HorizontalAlignment="Left"
-                    MinWidth="150"
-                    Style="{StaticResource ChildNavButtonStyle}"
-                    Margin="10,0" />
+                    Style="{StaticResource ChildNavButtonStyle}" />
 
             <DockPanel
                 Grid.Column="2"
-                HorizontalAlignment="Stretch">
+                Style="{StaticResource ChildNavDockPanel}">
 
                 <Label Content="Search:"
                        Style="{StaticResource ChildNavLabelStyle}"
-                       VerticalContentAlignment="Center" />
+                       Width="60" />
                 <TextBox Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
-                         MinWidth="75"
                          Style="{StaticResource ChildNavTextBoxStyle}"
-                         VerticalContentAlignment="Center" />
+                          />
                 <Button Content="X"
                         Command="{Binding ClearSearchCommand}"
-                        Style="{StaticResource ChildNavButtonStyle}"
+                        Style="{StaticResource ChildNavXButtonStyle}"
                         HorizontalAlignment="Right"
-                        Margin="15,0" />
+                        />
             </DockPanel>
         </Grid>
         <DataGrid ItemsSource="{Binding ObservableTests}"

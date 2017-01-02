@@ -13,8 +13,9 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:enumLibrary="clr-namespace:VisualGrading.Helpers.EnumLibrary"
         mc:Ignorable="d"
-        Title="Visual Grading" MinHeight="650" MinWidth="650"  
+        Title="Visual Grading" MinHeight="650" MinWidth="650" 
         >
+    
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
@@ -41,7 +42,7 @@
             <c:ChartView />
         </DataTemplate>
     </Window.Resources>
-    <Grid >
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="55" />
             <RowDefinition Height="*" />
