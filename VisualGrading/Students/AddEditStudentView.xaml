@@ -1,12 +1,12 @@
 ﻿<UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             x:Class="VisualGrading.Students.AddEditStudentView"
-             xmlns:h="clr-namespace:VisualGrading.Helpers"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    x:Class="VisualGrading.Students.AddEditStudentView"
+    xmlns:h="clr-namespace:VisualGrading.Helpers"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <h:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
         <h:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
@@ -15,66 +15,84 @@
             <Style.Triggers>
                 <Trigger Property="Validation.HasError"
                          Value="True">
-                    <Setter Property ="ToolTip"
+                    <Setter Property="ToolTip"
                             Value="{Binding RelativeSource={x:Static RelativeSource.Self},
-                        Path=(Validation.Errors).CurrentItem.ErrorContent}"/>
+                        Path=(Validation.Errors).CurrentItem.ErrorContent}" />
                 </Trigger>
 
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Grid>
+
+    <Grid Style="{StaticResource ContentGridStyle}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid x:Name="grid1" DataContext="{Binding EditingStudent}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
+        <Grid Row="0" Style="{StaticResource ChildNavGridStyle}">
+        </Grid>
+        <Grid x:Name="grid1" DataContext="{Binding EditingStudent}" HorizontalAlignment="Left" Margin="10,15,0,0"
+              VerticalAlignment="Top" Row="1"
+              >
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label Content="First Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0" VerticalAlignment="Center"/>
-            <TextBox x:Name="firstNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="0" Text="{Binding FirstName, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
-            <Label Content="Last Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center"/>
-            <TextBox x:Name="lastNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" Text="{Binding LastName, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
-            <Label Content="Nickname:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center"/>
-            <TextBox x:Name="nicknameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2" Text="{Binding Nickname, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
-            <Label Content="Email:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center"/>
-            <TextBox x:Name="emailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" Text="{Binding EmailAddress, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
-            <Label Content="Parent Email:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4" VerticalAlignment="Center"/>
-            <TextBox x:Name="parentEmailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="4" Text="{Binding ParentEmailAddress, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
+            <Label Content="First Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0"
+                   VerticalAlignment="Center" />
+            <TextBox x:Name="firstNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3"
+                     Grid.Row="0" Text="{Binding FirstName, ValidatesOnNotifyDataErrors=True}"
+                     VerticalAlignment="Center" Width="120" />
+            <Label Content="Last Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1"
+                   VerticalAlignment="Center" />
+            <TextBox x:Name="lastNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3"
+                     Grid.Row="1" Text="{Binding LastName, ValidatesOnNotifyDataErrors=True}"
+                     VerticalAlignment="Center" Width="120" />
+            <Label Content="Nickname:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2"
+                   VerticalAlignment="Center" />
+            <TextBox x:Name="nicknameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3"
+                     Grid.Row="2" Text="{Binding Nickname, ValidatesOnNotifyDataErrors=True}"
+                     VerticalAlignment="Center" Width="120" />
+            <Label Content="Email:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3"
+                   VerticalAlignment="Center" />
+            <TextBox x:Name="emailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3"
+                     Grid.Row="3" Text="{Binding EmailAddress, ValidatesOnNotifyDataErrors=True}"
+                     VerticalAlignment="Center" Width="120" />
+            <Label Content="Parent Email:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4"
+                   VerticalAlignment="Center" />
+            <TextBox x:Name="parentEmailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23"
+                     Margin="3" Grid.Row="4" Text="{Binding ParentEmailAddress, ValidatesOnNotifyDataErrors=True}"
+                     VerticalAlignment="Center" Width="120" />
         </Grid>
-        <Grid Grid.Row="1">
-            <Button Content ="Save"
-                    Command ="{Binding SaveCommand}"
-                    Visibility ="{Binding EditMode, Converter={StaticResource VisConverter}}"
+        <Grid Grid.Row="2">
+            <Button Content="Save"
+                    Command="{Binding SaveCommand}"
+                    Visibility="{Binding EditMode, Converter={StaticResource VisConverter}}"
                     HorizontalAlignment="Left"
                     Margin="25,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75">
-            </Button>
-            <Button Content ="Add"
-                    Command ="{Binding SaveCommand}"
-                    Visibility ="{Binding EditMode, Converter={StaticResource NegVisConverter}}"
+                    Width="75" />
+            <Button Content="Add"
+                    Command="{Binding SaveCommand}"
+                    Visibility="{Binding EditMode, Converter={StaticResource NegVisConverter}}"
                     HorizontalAlignment="Left"
                     Margin="25,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75">
-            </Button>
-            <Button Content ="Cancel"
-                    Command ="{Binding CancelCommand}"
+                    Width="75" />
+            <Button Content="Cancel"
+                    Command="{Binding CancelCommand}"
                     HorizontalAlignment="Left"
                     Margin="130,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75">
-            </Button>
+                    Width="75" />
         </Grid>
 
     </Grid>

@@ -27,5 +27,6 @@ namespace VisualGrading.Model.Data
 
         [StringLength(2147483647)]
         public string ParentEmailAddress { get; set; }
+        
     }
 }

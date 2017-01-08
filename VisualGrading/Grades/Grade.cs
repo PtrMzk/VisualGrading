@@ -89,6 +89,11 @@ namespace VisualGrading.Grades
             get { return _student; }
             set { _student = value; }
         }
+
+        public decimal PercentAverage
+        {
+            get { return _points / (decimal) (Test.MaximumPoints == 0 ? 1 : Test.MaximumPoints); }
+        }
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;

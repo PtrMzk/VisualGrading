@@ -73,14 +73,18 @@ namespace VisualGrading.DataAccess
         {
             var studentDTOs = await _studentRepository.GetAllAsync();
 
-            return ConvertStudentDTOsToStudents(studentDTOs);
+            var students = ConvertStudentDTOsToStudents(studentDTOs);
+
+            return CalculateOverallGrades(students);
         }
 
         public List<Student> GetStudents()
         {
             var studentDTOs = _studentRepository.GetAll();
 
-            return ConvertStudentDTOsToStudents(studentDTOs);
+            var students = ConvertStudentDTOsToStudents(studentDTOs);
+
+            return CalculateOverallGrades(students);
         }
 
         public void SaveStudent(Student student)
@@ -125,6 +129,31 @@ namespace VisualGrading.DataAccess
                 Mapper.Map(studentDTO, student);
                 students.Add(student);
             }
+
+            return students;
+        }
+
+        private List<Student> CalculateOverallGrades(List<Student> students)
+        {
+            var studentPoints = new Dictionary<long, StudentPointsHelper>();
+
+            var grades = GetGrades();
+
+            foreach (var grade in grades)
+                if (studentPoints.ContainsKey(grade.StudentID))
+                {
+                    studentPoints[grade.StudentID].PointsAchieved += grade.Points;
+                    studentPoints[grade.StudentID].MaxPoints += grade.Test.MaximumPoints;
+                }
+                else
+                {
+                    studentPoints.Add(grade.StudentID,
+                        new StudentPointsHelper {PointsAchieved = grade.Points, MaxPoints = grade.Test.MaximumPoints});
+                }
+
+            foreach (var student in students)
+                if (studentPoints.ContainsKey(student.ID))
+                    student.OverallGrade = studentPoints[student.ID].Average;
 
             return students;
         }
@@ -216,7 +245,9 @@ namespace VisualGrading.DataAccess
                 isTestListPopulated = true;
 
             if (isStudentListPopulated && isTestListPopulated)
-                gradeDTOs = _gradeRepository.Find(g => studentIDsToFilterOn.Contains(g.Student.ID) && testIDsToFilterOn.Contains(g.Test.ID));
+                gradeDTOs =
+                    _gradeRepository.Find(
+                        g => studentIDsToFilterOn.Contains(g.Student.ID) && testIDsToFilterOn.Contains(g.Test.ID));
             else if (isStudentListPopulated)
                 gradeDTOs = _gradeRepository.Find(g => studentIDsToFilterOn.Contains(g.Student.ID));
             else if (isTestListPopulated)
@@ -281,5 +312,12 @@ namespace VisualGrading.DataAccess
         #endregion
 
         #endregion
+    }
+
+    public class StudentPointsHelper
+    {
+        public int PointsAchieved { get; set; }
+        public int MaxPoints { get; set; }
+        public decimal Average => PointsAchieved / (decimal) (MaxPoints == 0 ? 1 : MaxPoints);
     }
 }

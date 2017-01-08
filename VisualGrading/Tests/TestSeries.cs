@@ -22,6 +22,7 @@ namespace VisualGrading.Tests
         public string Subject { get; set; }
         public string SubCategory { get; set; }
         public int TestCount { get; set; }
+        public int MaximumPoints { get; set; }
         #endregion
 
     }

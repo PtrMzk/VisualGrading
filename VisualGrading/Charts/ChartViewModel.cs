@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using Microsoft.Practices.Unity;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -22,7 +20,10 @@ namespace VisualGrading.Charts
     public class ChartViewModel : BaseViewModel
     {
         private readonly IBusinessManager _businessManager;
-        
+
+        private PlotModel _gradeChart;
+
+        private const string MAIN_FONT = "Segoe UI";
 
         public ChartViewModel()
         {
@@ -35,27 +36,26 @@ namespace VisualGrading.Charts
             ChartByStudents();
 
             NewChartCommand = new RelayCommand<string>(NewChartRequested);
-
+            
         }
 
-        public List<string> ComboBoxValues { get { return Enum.GetNames(typeof(ChartGrouping)).ToList(); } }
+
+        public List<string> ComboBoxValues
+        {
+            get { return Enum.GetNames(typeof(ChartGrouping)).ToList(); }
+        }
 
         public RelayCommand<string> NewChartCommand { get; private set; }
-
-        private PlotModel _gradeChart;
 
         public PlotModel GradeChart
         {
             get { return _gradeChart; }
-            private set
-            {
-                SetProperty(ref _gradeChart, value);             
-            }
+            private set { SetProperty(ref _gradeChart, value); }
         }
-        
+
         public void ChartByStudent(Student studentToFilterOn)
         {
-            var studentsToFilterOn = new List<Student>() { studentToFilterOn };
+            var studentsToFilterOn = new List<Student> {studentToFilterOn};
             ChartByStudents(studentsToFilterOn);
         }
 
@@ -75,175 +75,130 @@ namespace VisualGrading.Charts
             }
         }
 
-
         public void ChartByStudents(List<Student> studentsToFilterOn = null)
         {
             var grades = _businessManager.GetFilteredGrades(studentsToFilterOn);
+            var distinctStudents = new HashSet<string>();
+            var distinctTests = new HashSet<string>();
 
-            GradeChart = new PlotModel
+            CreateBasePlotModel("Student Chart");
+
+            FindDistinctStudentsAndTests(grades, distinctStudents, distinctTests);
+
+            foreach (var test in distinctTests)
             {
-                Title = "Student Plot",
-                LegendPlacement = LegendPlacement.Outside,
-                LegendPosition = LegendPosition.BottomCenter,
-                LegendOrientation = LegendOrientation.Horizontal,
-                LegendBorderThickness = 0,
-            };
+                var s1 = CreateColumnSeries(test);
 
-            var distinctStudentList = new HashSet<string>();
-            var distinctTestList = new HashSet<string>();
+                foreach (var grade in grades)
+                    if (grade.Test.Name == test)
+                        s1.Items.Add(new ColumnItem {Value = (double) grade.PercentAverage});
+                GradeChart.Series.Add(s1);
+            }
 
+            var categoryAxis = CreateCategoryAxis(distinctStudents);
 
-            var categoryAxis = new CategoryAxis { Position = AxisPosition.Bottom };
+            GenerateAxesAndRefreshChart(categoryAxis);
+        }
 
-
+        private void FindDistinctStudentsAndTests(List<Grade> grades, HashSet<string> distinctStudents,
+            HashSet<string> distinctTests)
+        {
             foreach (var grade in grades)
             {
-                distinctStudentList.Add(grade.Student.FullName);
-                distinctTestList.Add(grade.Test.Name);
+                distinctStudents.Add(grade.Student.FullName);
+                distinctTests.Add(grade.Test.Name);
             }
+        }
 
-            {
-                foreach (var test in distinctTestList)
-                {
-                    var s1 = new ColumnSeries
-                    {
-                        Title = test,
-                        StrokeColor = OxyColors.Black,
-                        StrokeThickness = 1
-                    };
+        private CategoryAxis CreateCategoryAxis(HashSet<string> distinctCategories)
+        {
+            var categoryAxis = new CategoryAxis {Position = AxisPosition.Bottom};
 
-                    foreach (var grade in grades)
-                        if (grade.Test.Name == test)
-                            s1.Items.Add(new ColumnItem { Value = grade.Points });
-                    GradeChart.Series.Add(s1);
-                }
+            foreach (var category in distinctCategories)
+                categoryAxis.Labels.Add(category);
 
-                foreach (var Name in distinctStudentList)
-                    categoryAxis.Labels.Add(Name);
-            }
-
-            var valueAxis = new LinearAxis
-            {
-                Position = AxisPosition.Left,
-                MinimumPadding = 0,
-                MaximumPadding = 0.06,
-                AbsoluteMinimum = 0
-            };
-
-
-            GradeChart.Axes.Add(categoryAxis);
-            GradeChart.Axes.Add(valueAxis);
-
-            GradeChart.InvalidatePlot(true);
+            return categoryAxis;
         }
 
         public void ChartByTest(Test testToFilterOn)
         {
-            var tests = new List<Test>() { testToFilterOn };
+            var tests = new List<Test> {testToFilterOn};
             ChartByTests(tests);
         }
 
         public void ChartByTests(List<Test> testsToFilterOn = null)
         {
             var grades = _businessManager.GetFilteredGrades(testsToFilterOn);
+            var distinctStudents = new HashSet<string>();
+            var distinctTests = new HashSet<string>();
 
+            CreateBasePlotModel("Test Chart");
+
+            FindDistinctStudentsAndTests(grades, distinctStudents, distinctTests);
+
+            foreach (var student in distinctStudents)
+            {
+                var s1 = CreateColumnSeries(student);
+
+                foreach (var grade in grades)
+                    if (grade.Student.FullName == student)
+                        s1.Items.Add(new ColumnItem {Value = (double) grade.PercentAverage});
+                GradeChart.Series.Add(s1);
+            }
+
+            var categoryAxis = CreateCategoryAxis(distinctTests);
+            GenerateAxesAndRefreshChart(categoryAxis);
+        }
+
+        private ColumnSeries CreateColumnSeries(string title)
+        {
+            var s1 = new ColumnSeries
+            {
+                Title = title,
+                StrokeColor = OxyColors.Black,
+                StrokeThickness = 1,
+            };
+            return s1;
+        }
+
+        private void CreateBasePlotModel(string title)
+        {
             GradeChart = new PlotModel
             {
-                Title = "Test Plot",
+                Title = title,
+                DefaultFont = MAIN_FONT,
+                TitleFont = MAIN_FONT,
+                TitleFontWeight = 1,
+                TitleFontSize = 32,
                 LegendPlacement = LegendPlacement.Outside,
                 LegendPosition = LegendPosition.BottomCenter,
                 LegendOrientation = LegendOrientation.Horizontal,
                 LegendBorderThickness = 0,
+                PlotAreaBackground = OxyColor.Parse("#FFFFFFFF"),
+                Background = ColorHelper.OxyBackgroundColor,
+                DefaultColors = ColorHelper.OxyColorPalete,
+                LegendFont= MAIN_FONT,
+                LegendFontSize = 16,
+                SubtitleFontSize = 22,
+                DefaultFontSize = 22,
+                LegendTitleFont = MAIN_FONT
             };
+        }
 
-            var distinctStudentList = new HashSet<string>();
-            var distinctTestList = new HashSet<string>();
-
-
-            var categoryAxis = new CategoryAxis { Position = AxisPosition.Bottom };
-
-
-            foreach (var grade in grades)
-            {
-                distinctStudentList.Add(grade.Student.FullName);
-                distinctTestList.Add(grade.Test.Name);
-            }
-
-            {
-                foreach (var student in distinctStudentList)
-                {
-                    var s1 = new ColumnSeries
-                    {
-                        Title = student,
-                        StrokeColor = OxyColors.Black,
-                        StrokeThickness = 1
-                    };
-
-                    foreach (var grade in grades)
-                        if (grade.Student.FullName == student)
-                            s1.Items.Add(new ColumnItem { Value = grade.Points });
-                    GradeChart.Series.Add(s1);
-                }
-
-                foreach (var Name in distinctTestList)
-                    categoryAxis.Labels.Add(Name);
-            }
-
+        private void GenerateAxesAndRefreshChart(CategoryAxis categoryAxis)
+        {
             var valueAxis = new LinearAxis
             {
                 Position = AxisPosition.Left,
                 MinimumPadding = 0,
                 MaximumPadding = 0.06,
-                AbsoluteMinimum = 0
-            };
-
+                AbsoluteMinimum = 0,
+                };
 
             GradeChart.Axes.Add(categoryAxis);
             GradeChart.Axes.Add(valueAxis);
 
             GradeChart.InvalidatePlot(true);
-        }
-
-        private PlotModel TestPlot()
-        {
-            var model = new PlotModel
-            {
-                Title = "BarSeries",
-                LegendPlacement = LegendPlacement.Outside,
-                LegendPosition = LegendPosition.BottomCenter,
-                LegendOrientation = LegendOrientation.Horizontal,
-                LegendBorderThickness = 0
-            };
-
-            var s1 = new BarSeries() { Title = "Series 1", StrokeColor = OxyColors.Black, StrokeThickness = 1 };
-            s1.Items.Add(new BarItem { Value = 25 });
-            s1.Items.Add(new BarItem { Value = 137 });
-            s1.Items.Add(new BarItem { Value = 18 });
-            s1.Items.Add(new BarItem { Value = 40 });
-
-            var s2 = new BarSeries { Title = "Series 2", StrokeColor = OxyColors.Black, StrokeThickness = 1 };
-            s2.Items.Add(new BarItem { Value = 12 });
-            s2.Items.Add(new BarItem { Value = 14 });
-            s2.Items.Add(new BarItem { Value = 120 });
-            s2.Items.Add(new BarItem { Value = 26 });
-
-            CategoryAxis categoryAxis = new CategoryAxis { Position = AxisPosition.Left };
-            categoryAxis.Labels.Add("Category A");
-            categoryAxis.Labels.Add("Category B");
-            categoryAxis.Labels.Add("Category C");
-            categoryAxis.Labels.Add("Category D");
-            LinearAxis valueAxis = new LinearAxis
-            {
-                Position = AxisPosition.Bottom,
-                MinimumPadding = 0,
-                MaximumPadding = 0.06,
-                AbsoluteMinimum = 0
-            };
-            model.Series.Add(s1);
-            model.Series.Add(s2);
-            model.Axes.Add(categoryAxis);
-            model.Axes.Add(valueAxis);
-            return model;
         }
     }
 }

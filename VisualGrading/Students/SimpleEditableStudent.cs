@@ -18,12 +18,14 @@ namespace VisualGrading.Students
             set { SetProperty(ref _id, value); }
         }
 
+        [Required]
         public string FirstName
         {
             get { return _firstName; }
             set { SetProperty(ref _firstName, value); }
         }
 
+        [Required]
         public string LastName
         {
             get { return _lastName; }

@@ -31,9 +31,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <DockPanel
-       
                 Grid.Column="1"
-
                 Style="{StaticResource ChildNavDockPanel}">
                 <Label Content="Search:" Style="{StaticResource ChildNavLabelStyle}" />
                 <TextBox Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
@@ -55,13 +53,8 @@
                                     Width="*"
                                     IsReadOnly="True" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
-                <DataGridTextColumn Header="Subject" Binding="{Binding Test.Subject}"
-                                    Width="*"
-                                    IsReadOnly="True" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
-                <DataGridTextColumn Header="SubCategory" Binding="{Binding Test.SubCategory}"
-                                    Width="*"
-                                    IsReadOnly="True" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
+                <DataGridTextColumn Header="Points Possible" Binding="{Binding Test.MaximumPoints}"
+                                    Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
                 <DataGridTextColumn Header="Grade" Binding="{Binding Points}" FontWeight="Bold"
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"

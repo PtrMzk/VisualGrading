@@ -59,10 +59,10 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>-->
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" IsReadOnly="True"
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, UpdateSourceTrigger=LostFocus}" 
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
-                <DataGridTextColumn Header="Nickname" Binding="{Binding Nickname, UpdateSourceTrigger=LostFocus}"
+                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName, UpdateSourceTrigger=LostFocus}"
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
                 <DataGridTextColumn Header="Email" Binding="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"
@@ -73,7 +73,7 @@
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
                 <DataGridTextColumn Header="Overall Grade"
-                                    Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus}" IsReadOnly="True"
+                                    Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus, StringFormat=p}" IsReadOnly="True" 
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
                 <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"

@@ -21,13 +21,14 @@ namespace VisualGrading.Tests
             //this.TestID = Guid.NewGuid();
         }
 
-        public Test(string name, string subject, string subCategory, int seriesNumber)
+        public Test(string name, string subject, string subCategory, int seriesNumber, int maxPoints)
         {
             //this.tID = Guid.NewGuid();
             Name = name;
             Subject = subject;
             SubCategory = subCategory;
             SeriesNumber = seriesNumber;
+            MaximumPoints = maxPoints;
         }
 
         #endregion

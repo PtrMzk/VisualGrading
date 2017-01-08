@@ -20,9 +20,7 @@ namespace VisualGrading.Tests
         #endregion
 
         #region Properties
-
-        //private readonly ITestRepository _repository;
-
+        
         private TestSeries _editingTestSeries;
 
         private IBusinessManager _businessManager;
@@ -67,6 +65,7 @@ namespace VisualGrading.Tests
             destination.Subject = source.Subject;
             destination.SubCategory = source.SubCategory;
             destination.TestCount = source.Length;
+            destination.MaximumPoints = source.MaximumPoints; 
 
         }
 
@@ -77,6 +76,7 @@ namespace VisualGrading.Tests
             destination.Subject = source.Subject;
             destination.SubCategory = source.SubCategory;
             destination.Length = source.TestCount;
+            destination.MaximumPoints = source.MaximumPoints;
         }
 
         private bool CanSave()
@@ -90,7 +90,7 @@ namespace VisualGrading.Tests
             await _businessManager.InsertTestSeriesAsync(_editingTestSeries);
             Done();
         }
-
+        
         private void OnCancel()
         {
             Done();

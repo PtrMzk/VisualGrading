@@ -20,7 +20,6 @@ namespace VisualGrading.Grades
             AddCommand = new RelayCommand(OnAddGrade);
             EditCommand = new RelayCommand<Grade>(OnEditGrade);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
-            //DeleteRequested += RemoveGradeFromPresentationAndRepository;
         }
 
         #endregion

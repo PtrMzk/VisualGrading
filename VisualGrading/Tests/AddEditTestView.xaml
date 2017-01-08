@@ -24,12 +24,15 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid Style="{StaticResource ContentGridStyle}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid x:Name="grid1" DataContext="{Binding EditingTest}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top">
+        <Grid Row="0" Style="{StaticResource ChildNavGridStyle}">
+        </Grid>
+        <Grid x:Name="grid1" DataContext="{Binding EditingTest}" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -52,7 +55,7 @@
             <Label Content="Point Value:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4" VerticalAlignment="Center"/>
             <TextBox x:Name="maxPointsTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="4" Text="{Binding MaximumPoints, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center" Width="120"/>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Button Content ="Save"
                     Command ="{Binding SaveCommand}"
                     Visibility ="{Binding EditMode, Converter={StaticResource VisConverter}}"

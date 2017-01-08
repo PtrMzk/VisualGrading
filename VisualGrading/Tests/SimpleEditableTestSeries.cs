@@ -49,6 +49,13 @@ namespace VisualGrading.Tests
             set { SetProperty(ref _length, value); }
         }
 
+        [Required]
+        public int MaximumPoints
+        {
+            get { return _maximumPoints; }
+            set { SetProperty(ref _maximumPoints, value); }
+        }
+
         #endregion
 
         #region Private Properties
@@ -58,6 +65,8 @@ namespace VisualGrading.Tests
         private string _subject;
         private string _subCategory;
         private int _length;
+        private int _maximumPoints;
+
 
 
         #endregion

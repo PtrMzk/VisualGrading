@@ -105,7 +105,7 @@ namespace VisualGrading.Business
         private Test GenerateTestFromTestSeries(TestSeries tests, int seriesNumber)
         {
             var test = new Test(string.Format("{0} {1}", tests.Name, seriesNumber), tests.Subject, tests.SubCategory,
-                seriesNumber);
+                seriesNumber, tests.MaximumPoints);
             return test;
         }
 

@@ -143,6 +143,7 @@
     </ApplicationDefinition>
     <Compile Include="Business\BusinessManager.cs" />
     <Compile Include="Business\IBusinessManager.cs" />
+    <Compile Include="Charts\ColorHelper.cs" />
     <Compile Include="DataAccess\DataManager.cs" />
     <Compile Include="DataAccess\IDataManager.cs" />
     <Compile Include="Grades\GradeGenerator.cs" />
