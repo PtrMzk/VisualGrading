@@ -75,7 +75,7 @@ namespace VisualGrading.DataAccess
 
             var students = ConvertStudentDTOsToStudents(studentDTOs);
 
-            return CalculateOverallGrades(students);
+            return await CalculateOverallGradesAsync(students);
         }
 
         public List<Student> GetStudents()
@@ -135,9 +135,21 @@ namespace VisualGrading.DataAccess
 
         private List<Student> CalculateOverallGrades(List<Student> students)
         {
-            var studentPoints = new Dictionary<long, StudentPointsHelper>();
-
             var grades = GetGrades();
+
+            return CalculateOverallGrades(students, grades);
+        }
+
+        private async Task<List<Student>> CalculateOverallGradesAsync(List<Student> students)
+        {
+            var grades = await GetGradesAsync();
+
+            return CalculateOverallGrades(students, grades);
+        }
+
+        private List<Student> CalculateOverallGrades(List<Student> students, List<Grade> grades)
+        {
+            var studentPoints = new Dictionary<long, StudentPointsHelper>();
 
             foreach (var grade in grades)
                 if (studentPoints.ContainsKey(grade.StudentID))
