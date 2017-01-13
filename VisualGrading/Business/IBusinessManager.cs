@@ -33,6 +33,6 @@ namespace VisualGrading.Business
         Task<List<Test>> GetTestsAsync();
         List<Test> GetTests();
         List<Grade> GetFilteredGrades(List<Test> testsToFilterOn);
-        List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null);
+        List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null, string subject = null, string subCategory = null);
     }
 }

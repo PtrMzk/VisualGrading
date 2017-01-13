@@ -237,8 +237,14 @@ namespace VisualGrading.Business
             return GetFilteredGrades(null, testsToFilterOn);
         }
 
+        public List<Grade> GetFilteredGrades(string subject, string subCategory)
+        {
+            return GetFilteredGrades(null, null, subject, subCategory);
+        }
 
-        public List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null)
+
+
+        public List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null, string subject = null, string subCategory = null)
         {
             List<long> studentIDsToFilterOn = new List<long>();
             List<long> testIDsToFilterOn = new List<long>();
@@ -249,7 +255,7 @@ namespace VisualGrading.Business
             if (testsToFilterOn != null && testsToFilterOn.Count > 0)
             testsToFilterOn.ForEach(t => testIDsToFilterOn.Add(t.ID));
 
-           return  _dataManager.GetFilteredGrades(studentIDsToFilterOn, testIDsToFilterOn);
+           return  _dataManager.GetFilteredGrades(studentIDsToFilterOn, testIDsToFilterOn, subject, subCategory);
 
         }
 

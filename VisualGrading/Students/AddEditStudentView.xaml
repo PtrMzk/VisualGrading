@@ -47,30 +47,30 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Label Content="First Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0"
-                   VerticalAlignment="Center" />
-            <TextBox x:Name="firstNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
+            <TextBox x:Name="firstNameTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
                      Grid.Row="0" Text="{Binding FirstName, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center" Width="120" />
+                     VerticalAlignment="Center"  Style="{StaticResource AddEditTextBoxStyle}"/>
             <Label Content="Last Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1"
-                   VerticalAlignment="Center" />
-            <TextBox x:Name="lastNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
+            <TextBox x:Name="lastNameTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
                      Grid.Row="1" Text="{Binding LastName, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center" Width="120" />
+                     VerticalAlignment="Center"  Style="{StaticResource AddEditTextBoxStyle}"/>
             <Label Content="Nickname:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2"
-                   VerticalAlignment="Center" />
-            <TextBox x:Name="nicknameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
+            <TextBox x:Name="nicknameTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
                      Grid.Row="2" Text="{Binding Nickname, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center" Width="120" />
+                     VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}"/>
             <Label Content="Email:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3"
-                   VerticalAlignment="Center" />
-            <TextBox x:Name="emailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
+            <TextBox x:Name="emailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
                      Grid.Row="3" Text="{Binding EmailAddress, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center" Width="120" />
+                     VerticalAlignment="Center"  Style="{StaticResource AddEditTextBoxStyle}"/>
             <Label Content="Parent Email:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4"
-                   VerticalAlignment="Center" />
-            <TextBox x:Name="parentEmailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
+            <TextBox x:Name="parentEmailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" 
                      Margin="3" Grid.Row="4" Text="{Binding ParentEmailAddress, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center" Width="120" />
+                     VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}"/>
         </Grid>
         <Grid Grid.Row="2">
             <Button Content="Save"
@@ -79,20 +79,23 @@
                     HorizontalAlignment="Left"
                     Margin="25,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75" />
+                    Width="75" 
+                    Style="{StaticResource AddEditButtonStyle}"/>
             <Button Content="Add"
                     Command="{Binding SaveCommand}"
                     Visibility="{Binding EditMode, Converter={StaticResource NegVisConverter}}"
                     HorizontalAlignment="Left"
                     Margin="25,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75" />
+                    Width="75" 
+                    Style="{StaticResource AddEditButtonStyle}"/>
             <Button Content="Cancel"
                     Command="{Binding CancelCommand}"
                     HorizontalAlignment="Left"
                     Margin="130,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75" />
+                    Width="75"
+                    Style="{StaticResource AddEditButtonStyle}"/>
         </Grid>
 
     </Grid>

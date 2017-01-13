@@ -12,9 +12,23 @@ namespace VisualGrading.DataAccess
 {
     public class DataManager : IDataManager
     {
-        //TODO: Is singleton needed? Might give constrained life to Unit of Work without it
+        #region Fields
 
-        #region Singleton Implementation
+        private readonly AutoMapperProfile _autoMapperProfile = new AutoMapperProfile();
+
+        private readonly IRepository<GradeDTO> _gradeRepository;
+
+        private readonly IRepository<StudentDTO> _studentRepository;
+
+        // private readonly IRepository<IEntity> _studentRepositoryGen;
+
+        private readonly IRepository<TestDTO> _testRepository;
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        #endregion
+
+        #region Constructors
 
         private DataManager()
         {
@@ -29,31 +43,17 @@ namespace VisualGrading.DataAccess
             //_studentRepositoryGen = _unitOfWork.StudentRepositoryGen;
         }
 
-        public static DataManager Instance { get; } = new DataManager();
-
         #endregion
 
         #region Properties
 
-        private readonly AutoMapperProfile _autoMapperProfile = new AutoMapperProfile();
-
-        private readonly IUnitOfWork _unitOfWork;
-
-        private readonly IRepository<StudentDTO> _studentRepository;
-
-        // private readonly IRepository<IEntity> _studentRepositoryGen;
-
-        private readonly IRepository<TestDTO> _testRepository;
-
-        private readonly IRepository<GradeDTO> _gradeRepository;
+        public static DataManager Instance { get; } = new DataManager();
 
         private SettingRepository _settingRepository => SettingRepository.Instance;
 
         #endregion
 
         #region Methods
-
-        #region Public DataManager Methods
 
         public void CommitChanges()
         {
@@ -64,10 +64,6 @@ namespace VisualGrading.DataAccess
         {
             await _unitOfWork.CommitAsync();
         }
-
-        #endregion
-
-        #region Public Student Methods
 
         public async Task<List<Student>> GetStudentsAsync()
         {
@@ -114,10 +110,6 @@ namespace VisualGrading.DataAccess
             if (existingEntity != null)
                 _studentRepository.Delete(existingEntity);
         }
-
-        #endregion
-
-        #region Private Student Methods
 
         private List<Student> ConvertStudentDTOsToStudents(List<StudentDTO> studentDTOs)
         {
@@ -170,10 +162,6 @@ namespace VisualGrading.DataAccess
             return students;
         }
 
-        #endregion
-
-        #region Public Test Methods 
-
         public async Task<List<Test>> GetTestsAsync()
         {
             var testDTOs = await _testRepository.GetAllAsync();
@@ -214,10 +202,6 @@ namespace VisualGrading.DataAccess
                 _testRepository.Add(testDTO);
         }
 
-        #endregion
-
-        #region Private Test Methods
-
         private List<Test> ConvertTestDTOsToTests(List<TestDTO> testDTOs)
         {
             var tests = new List<Test>();
@@ -232,10 +216,6 @@ namespace VisualGrading.DataAccess
             return tests;
         }
 
-        #endregion
-
-        #region Public Grade Methods 
-
         public async Task<List<Grade>> GetGradesAsync()
         {
             var gradeDTOs = await _gradeRepository.GetAllAsync();
@@ -243,29 +223,21 @@ namespace VisualGrading.DataAccess
             return ConvertGradeDTOsToGrades(gradeDTOs);
         }
 
-        public List<Grade> GetFilteredGrades(List<long> studentIDsToFilterOn = null, List<long> testIDsToFilterOn = null)
+        public List<Grade> GetFilteredGrades(List<long> studentIDsFilter = null, List<long> testIDsFilter = null,
+            string subjectFilter = null, string subCategoryFilter = null)
         {
             List<GradeDTO> gradeDTOs;
 
-            var isStudentListPopulated = false;
-            var isTestListPopulated = false;
-
-            if (studentIDsToFilterOn != null && studentIDsToFilterOn.Count > 0)
-                isStudentListPopulated = true;
-
-            if (testIDsToFilterOn != null && testIDsToFilterOn.Count > 0)
-                isTestListPopulated = true;
-
-            if (isStudentListPopulated && isTestListPopulated)
-                gradeDTOs =
-                    _gradeRepository.Find(
-                        g => studentIDsToFilterOn.Contains(g.Student.ID) && testIDsToFilterOn.Contains(g.Test.ID));
-            else if (isStudentListPopulated)
-                gradeDTOs = _gradeRepository.Find(g => studentIDsToFilterOn.Contains(g.Student.ID));
-            else if (isTestListPopulated)
-                gradeDTOs = _gradeRepository.Find(g => testIDsToFilterOn.Contains(g.Test.ID));
-            else
-                gradeDTOs = _gradeRepository.GetAll();
+            //TODO: Make sure null check is not needed for the two lists
+            // it was breaking when implemeneted. 
+            gradeDTOs =
+                _gradeRepository.Find(
+                    g =>
+                        (studentIDsFilter.Contains(g.Student.ID) || studentIDsFilter.Count == 0)
+                        && (testIDsFilter.Contains(g.Test.ID) || testIDsFilter.Count == 0)
+                        && (g.Test.Subject == subjectFilter || subjectFilter == null)
+                        && (g.Test.SubCategory == subCategoryFilter || subCategoryFilter == null)
+                );
 
             return ConvertGradeDTOsToGrades(gradeDTOs);
         }
@@ -303,10 +275,6 @@ namespace VisualGrading.DataAccess
                 _gradeRepository.Add(gradeDTO);
         }
 
-        #endregion
-
-        #region Private Grade Methods
-
         private List<Grade> ConvertGradeDTOsToGrades(List<GradeDTO> gradeDTOs)
         {
             var grades = new List<Grade>();
@@ -323,13 +291,17 @@ namespace VisualGrading.DataAccess
 
         #endregion
 
-        #endregion
+        //TODO: Is singleton needed? Might give constrained life to Unit of Work without it
     }
 
-    public class StudentPointsHelper
+    internal class StudentPointsHelper
     {
+        #region Properties
+
         public int PointsAchieved { get; set; }
         public int MaxPoints { get; set; }
         public decimal Average => PointsAchieved / (decimal) (MaxPoints == 0 ? 1 : MaxPoints);
+
+        #endregion
     }
 }

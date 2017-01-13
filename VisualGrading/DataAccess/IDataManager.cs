@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Cryptography.Pkcs;
 using System.Threading.Tasks;
 using VisualGrading.Grades;
 using VisualGrading.Students;
@@ -11,13 +12,7 @@ namespace VisualGrading.DataAccess
 
         Task CommitChangesAsync();
         void CommitChanges();
-
-
-        //T Load<T>();
-        //Task<T> LoadAsync<T>();
-        //void Save<T>(object objectToSave);
-        //Task SaveAsync<T>(object objectToSave);
-
+        
         Task<List<Student>> GetStudentsAsync();
         List<Student> GetStudents();
         void SaveStudent(Student student);
@@ -34,8 +29,6 @@ namespace VisualGrading.DataAccess
         List<Grade> GetGrades();
         void SaveGrade(Grade grade);
         void DeleteGrade(Grade grade);
-        List<Grade> GetFilteredGrades(List<long> studentIDsToFilterOn = null, List<long> testIDsToFilterOn = null);
-
-        //Task UpdateAsync<T>(T businessObject);
+        List<Grade> GetFilteredGrades(List<long> studentIDsToFilterOn = null, List<long> testIDsToFilterOn = null, string subject = null, string subCategory = null);
     }
 }

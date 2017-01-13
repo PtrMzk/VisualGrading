@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
-using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
-using VisualGrading.Helpers.EnumLibrary;
 using VisualGrading.Presentation;
 
 namespace VisualGrading.Tests
@@ -19,47 +16,24 @@ namespace VisualGrading.Tests
 
         public TestViewModel()
         {
-
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             DeleteCommand = new RelayCommand<Test>(OnDelete, CanDelete);
             AddCommand = new RelayCommand(OnAddTest);
             AddSeriesCommand = new RelayCommand(OnAddTestSeries);
             EditCommand = new RelayCommand<Test>(OnEditTest);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
-            ChartCommand = new RelayCommand<Test>(OnChartRequested);
+            ChartTestCommand = new RelayCommand<Test>(OnChartRequested);
+            ChartSubjectCommand = new RelayCommand<string>(OnSubjectChartRequested);
+            ChartSubCategoryCommand = new RelayCommand<string>(OnSubCategoryChartRequested);
+
             DeleteRequested += DeleteTest;
-
-            //TODO: delete the below if not needed, clean this up to set the private variable test
-            //var _observableTests = new ObservableCollection<TestDTO>();
-            //this._observableTests = new ObservableCollection<TestDTO>();
-
-            //this._observableTests.AddTest(new TestDTO()
-            //{
-            //    Subject = "Computer Programming",
-            //    TestNumber = 1
-            //});
-            //this._observableTests.AddTest(new TestDTO()
-            //{
-
-            //    Subject = "Computer Programming",
-            //    TestNumber = 2
-            //});
-            //this._observableTests.AddTest(new TestDTO()
-            //{
-
-            //    Subject = "Science",
-            //    TestNumber = 1
-            //});
-            //PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
         }
 
         #endregion
 
         #region Properties
 
-
-        private IBusinessManager _businessManager;
-
+        private readonly IBusinessManager _businessManager;
 
         private ObservableCollectionExtended<Test> _observableTests;
 
@@ -76,7 +50,6 @@ namespace VisualGrading.Tests
                 _observableTests.CollectionPropertyChanged += ObservableTests_CollectionChanged;
             }
         }
-
 
         private List<Test> _allTests;
 
@@ -106,16 +79,21 @@ namespace VisualGrading.Tests
 
         public RelayCommand ClearSearchCommand { get; private set; }
 
-        public RelayCommand<Test> ChartCommand { get; private set; }
+        public RelayCommand<Test> ChartTestCommand { get; private set; }
+
+        public RelayCommand<string> ChartSubjectCommand { get; private set; }
+
+        public RelayCommand<string> ChartSubCategoryCommand { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
 
         public event Action<Test> AddRequested = delegate { };
         public event Action<TestSeries> AddSeriesRequested = delegate { };
         public event Action<Test> EditRequested = delegate { };
         public event Action<Test> DeleteRequested = delegate { };
-        public event Action<Test> ChartRequested = delegate { };
+        public event Action<Test> TestChartRequested = delegate { };
+        public event Action<string> SubjectChartRequested = delegate { };
+        public event Action<string> SubCategoryChartRequested = delegate { };
 
         private string _searchInput;
 
@@ -138,20 +116,10 @@ namespace VisualGrading.Tests
             if (DesignerProperties.GetIsInDesignMode(
                 new DependencyObject())) return;
 
-            //todo: test wont update if added
-            //if (_allTests == null)
-            {
-                _allTests = await _businessManager.GetTestsAsync();
-                ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
-                //if (ObservableTests == null || ObservableTests.Count == 0)
-                //{
-                //    TestDTO test = new TestDTO();
-                //    test.TestList();
-                //    ObservableTests.AddTest(test);
+            _allTests = await _businessManager.GetTestsAsync();
+            ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
 
-                PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
-            }
-            //}
+            PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
         }
 
         private void FilterTests(string searchInput)
@@ -176,23 +144,14 @@ namespace VisualGrading.Tests
             DeleteRequested(test);
         }
 
-        private async void ObservableTests_CollectionChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private async void ObservableTests_CollectionChanged(object sender,
+            PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            await _businessManager.UpdateTestAsync((Test)sender);
+            await _businessManager.UpdateTestAsync((Test) sender);
         }
-
-        //TODO: RemoveTest below method - its a temp method for the AddTest TestDTO > Charting workflow
-        //private void OnAddTest(TestDTO test)
-        //{
-        //    test.TestNumber += 1;
-        //    PropertyChanged(this, new PropertyChangedEventArgs("Tests"));
-        //    AddTestRequested(test);
-        //}
 
         private void OnAddTest()
         {
-            //place holder for the actual on add test command for the actual on add test button
-            //the one above is linked to the chart button i believe...
             AddRequested(new Test());
         }
 
@@ -208,10 +167,20 @@ namespace VisualGrading.Tests
 
         private void OnChartRequested(Test grouping)
         {
-            ChartRequested(grouping);
+            TestChartRequested(grouping);
         }
 
-        //FIXME: THIS IS NEVER FALSE
+        private void OnSubjectChartRequested(string grouping)
+        {
+            SubjectChartRequested(grouping);
+        }
+
+        private void OnSubCategoryChartRequested(string grouping)
+        {
+            SubCategoryChartRequested(grouping);
+        }
+
+        //TODO: THIS IS NEVER FALSE
         private bool CanDelete(Test test)
         {
             //TODO: Selected test doesn't seem to work here, and this isn't really needed...

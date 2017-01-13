@@ -8,7 +8,6 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using VisualGrading.Business;
-using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Helpers.EnumLibrary;
 using VisualGrading.Presentation;
@@ -19,11 +18,18 @@ namespace VisualGrading.Charts
 {
     public class ChartViewModel : BaseViewModel
     {
+        #region Fields
+
+        private const string MAIN_FONT = "Segoe UI";
+        private const string TEST_CHART = "Test Chart";
+        private const string STUDENT_CHART = "Student Chart";
         private readonly IBusinessManager _businessManager;
 
         private PlotModel _gradeChart;
 
-        private const string MAIN_FONT = "Segoe UI";
+        #endregion
+
+        #region Constructors
 
         public ChartViewModel()
         {
@@ -36,9 +42,11 @@ namespace VisualGrading.Charts
             ChartByStudents();
 
             NewChartCommand = new RelayCommand<string>(NewChartRequested);
-            
         }
 
+        #endregion
+
+        #region Properties
 
         public List<string> ComboBoxValues
         {
@@ -53,10 +61,137 @@ namespace VisualGrading.Charts
             private set { SetProperty(ref _gradeChart, value); }
         }
 
-        public void ChartByStudent(Student studentToFilterOn)
+        #endregion
+
+        #region Methods
+
+        public void ChartByStudent(Student studentFilter)
         {
-            var studentsToFilterOn = new List<Student> {studentToFilterOn};
-            ChartByStudents(studentsToFilterOn);
+            var studentsFilter = new List<Student> {studentFilter};
+            ChartByStudents(studentsFilter, null, null, null, studentFilter.FullName);
+        }
+
+        public void ChartStudentsByTest(Test testFilter)
+        {
+            var testsFilter = new List<Test> {testFilter};
+            ChartByStudents(null, testsFilter, null, null, testFilter.Name);
+        }
+
+        public void ChartStudentsBySubject(string subject)
+        {
+            ChartByStudents(null, null, subject, null, subject);
+        }
+
+        public void ChartStudentsBySubCategory(string subCategory)
+        {
+            ChartByStudents(null, null, null, subCategory, subCategory);
+        }
+
+        public void ChartByStudents(List<Student> studentsFilter = null, List<Test> testsFilter = null,
+            string subjectFilter = null, string subCategoryFilter = null, string title = null)
+        {
+            var grades = _businessManager.GetFilteredGrades(studentsFilter, testsFilter, subjectFilter,
+                subCategoryFilter);
+            var averageGradeByStudent = new SortedDictionary<long, ChartHelper>();
+            var distinctTests = new SortedDictionary<long, string>();
+            var columnSeries = CreateColumnSeries();
+            var plotTitle = title != null ? title : STUDENT_CHART;
+
+            CreateBasePlotModel(plotTitle);
+
+            foreach (var grade in grades)
+            {
+                if (!averageGradeByStudent.ContainsKey(grade.StudentID))
+                {
+                    averageGradeByStudent.Add(grade.StudentID,
+                        new ChartHelper(grade.Student.FullName, grade.Points, grade.Test.MaximumPoints));
+                }
+                else
+                {
+                    averageGradeByStudent[grade.StudentID].PointsAttained += grade.Points;
+                    averageGradeByStudent[grade.StudentID].PointsPossible += grade.Test.MaximumPoints;
+                }
+
+                if (!distinctTests.ContainsKey(grade.TestID))
+                    distinctTests.Add(grade.TestID, grade.Test.Name);
+            }
+
+            var categoryAxis = CreateCategoryAxis(averageGradeByStudent, columnSeries);
+
+            GenerateAxesAndRefreshChart(categoryAxis, columnSeries);
+        }
+
+        public void ChartByTest(Test testFilter)
+        {
+            var tests = new List<Test> {testFilter};
+            ChartByTests(null, tests, null, null, testFilter.Name);
+        }
+
+        public void ChartTestsByStudent(Student studentFilter)
+        {
+            var studentsFilter = new List<Student> {studentFilter};
+            ChartByTests(studentsFilter, null, null, null, studentFilter.FullName);
+        }
+
+        public void ChartTestsBySubject(string subject)
+        {
+            ChartByTests(null, null, subject, null, subject);
+        }
+
+        public void ChartTestsBySubCategory(string subCategory)
+        {
+            ChartByTests(null, null, null, subCategory, subCategory);
+        }
+
+        public void ChartByTests(List<Student> studentsFilter = null, List<Test> testsFilter = null,
+            string subjectFilter = null, string subCategoryFilter = null, string title = null)
+        {
+            var grades = _businessManager.GetFilteredGrades(studentsFilter, testsFilter, subjectFilter,
+                subCategoryFilter);
+            var averageGradeByTest = new SortedDictionary<long, ChartHelper>();
+            var distinctStudents = new SortedDictionary<long, string>();
+            var columnSeries = CreateColumnSeries();
+            var plotTitle = title != null ? title : TEST_CHART;
+
+            CreateBasePlotModel(plotTitle);
+
+            foreach (var grade in grades)
+            {
+                if (!averageGradeByTest.ContainsKey(grade.TestID))
+                {
+                    averageGradeByTest.Add(grade.TestID,
+                        new ChartHelper(grade.Test.Name, grade.Points, grade.Test.MaximumPoints));
+                }
+                else
+                {
+                    averageGradeByTest[grade.TestID].PointsAttained += grade.Points;
+                    averageGradeByTest[grade.TestID].PointsPossible += grade.Test.MaximumPoints;
+                }
+
+                if (!distinctStudents.ContainsKey(grade.TestID))
+                    distinctStudents.Add(grade.TestID, grade.Student.FullName);
+            }
+
+            var categoryAxis = CreateCategoryAxis(averageGradeByTest, columnSeries);
+
+            GenerateAxesAndRefreshChart(categoryAxis, columnSeries);
+        }
+
+        private CategoryAxis CreateCategoryAxis(SortedDictionary<long, ChartHelper> averageGradeSortedDictionary,
+            ColumnSeries columnSeries)
+        {
+            var categoryAxis = new CategoryAxis
+            {
+                Position = AxisPosition.Bottom
+            };
+
+            foreach (var grouping in averageGradeSortedDictionary)
+            {
+                categoryAxis.Labels.Add(grouping.Value.Name);
+
+                columnSeries.Items.Add(new ColumnItem {Value = (double) grouping.Value.PointsAverage});
+            }
+            return categoryAxis;
         }
 
         private void NewChartRequested(string grouping)
@@ -75,90 +210,14 @@ namespace VisualGrading.Charts
             }
         }
 
-        public void ChartByStudents(List<Student> studentsToFilterOn = null)
+        private ColumnSeries CreateColumnSeries()
         {
-            var grades = _businessManager.GetFilteredGrades(studentsToFilterOn);
-            var distinctStudents = new HashSet<string>();
-            var distinctTests = new HashSet<string>();
-
-            CreateBasePlotModel("Student Chart");
-
-            FindDistinctStudentsAndTests(grades, distinctStudents, distinctTests);
-
-            foreach (var test in distinctTests)
+            var series = new ColumnSeries
             {
-                var s1 = CreateColumnSeries(test);
-
-                foreach (var grade in grades)
-                    if (grade.Test.Name == test)
-                        s1.Items.Add(new ColumnItem {Value = (double) grade.PercentAverage});
-                GradeChart.Series.Add(s1);
-            }
-
-            var categoryAxis = CreateCategoryAxis(distinctStudents);
-
-            GenerateAxesAndRefreshChart(categoryAxis);
-        }
-
-        private void FindDistinctStudentsAndTests(List<Grade> grades, HashSet<string> distinctStudents,
-            HashSet<string> distinctTests)
-        {
-            foreach (var grade in grades)
-            {
-                distinctStudents.Add(grade.Student.FullName);
-                distinctTests.Add(grade.Test.Name);
-            }
-        }
-
-        private CategoryAxis CreateCategoryAxis(HashSet<string> distinctCategories)
-        {
-            var categoryAxis = new CategoryAxis {Position = AxisPosition.Bottom};
-
-            foreach (var category in distinctCategories)
-                categoryAxis.Labels.Add(category);
-
-            return categoryAxis;
-        }
-
-        public void ChartByTest(Test testToFilterOn)
-        {
-            var tests = new List<Test> {testToFilterOn};
-            ChartByTests(tests);
-        }
-
-        public void ChartByTests(List<Test> testsToFilterOn = null)
-        {
-            var grades = _businessManager.GetFilteredGrades(testsToFilterOn);
-            var distinctStudents = new HashSet<string>();
-            var distinctTests = new HashSet<string>();
-
-            CreateBasePlotModel("Test Chart");
-
-            FindDistinctStudentsAndTests(grades, distinctStudents, distinctTests);
-
-            foreach (var student in distinctStudents)
-            {
-                var s1 = CreateColumnSeries(student);
-
-                foreach (var grade in grades)
-                    if (grade.Student.FullName == student)
-                        s1.Items.Add(new ColumnItem {Value = (double) grade.PercentAverage});
-                GradeChart.Series.Add(s1);
-            }
-
-            var categoryAxis = CreateCategoryAxis(distinctTests);
-            GenerateAxesAndRefreshChart(categoryAxis);
-        }
-
-        private ColumnSeries CreateColumnSeries(string title)
-        {
-            var s1 = new ColumnSeries
-            {
-                Title = title,
                 StrokeColor = OxyColors.Black,
-                StrokeThickness = 1,
+                StrokeThickness = 1
             };
-            return s1;
+            return series;
         }
 
         private void CreateBasePlotModel(string title)
@@ -177,7 +236,7 @@ namespace VisualGrading.Charts
                 PlotAreaBackground = OxyColor.Parse("#FFFFFFFF"),
                 Background = ColorHelper.OxyBackgroundColor,
                 DefaultColors = ColorHelper.OxyColorPalete,
-                LegendFont= MAIN_FONT,
+                LegendFont = MAIN_FONT,
                 LegendFontSize = 16,
                 SubtitleFontSize = 22,
                 DefaultFontSize = 22,
@@ -185,7 +244,7 @@ namespace VisualGrading.Charts
             };
         }
 
-        private void GenerateAxesAndRefreshChart(CategoryAxis categoryAxis)
+        private void GenerateAxesAndRefreshChart(CategoryAxis categoryAxis, ColumnSeries columnSeries)
         {
             var valueAxis = new LinearAxis
             {
@@ -193,12 +252,45 @@ namespace VisualGrading.Charts
                 MinimumPadding = 0,
                 MaximumPadding = 0.06,
                 AbsoluteMinimum = 0,
-                };
+                AbsoluteMaximum = 1.1,
+                Maximum = 1
+            };
 
+            GradeChart.Series.Add(columnSeries);
             GradeChart.Axes.Add(categoryAxis);
             GradeChart.Axes.Add(valueAxis);
 
             GradeChart.InvalidatePlot(true);
         }
+
+        #endregion
+    }
+
+    internal class ChartHelper
+    {
+        #region Fields
+
+        public string Name;
+        public decimal PointsAttained;
+        public decimal PointsPossible;
+
+        #endregion
+
+        #region Constructors
+
+        public ChartHelper(string name, decimal pointsAttained, decimal pointsPossible)
+        {
+            Name = name;
+            PointsAttained = pointsAttained;
+            PointsPossible = pointsPossible;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public decimal PointsAverage => PointsAttained / PointsPossible;
+
+        #endregion
     }
 }

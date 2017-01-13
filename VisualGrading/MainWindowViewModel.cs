@@ -58,7 +58,10 @@ namespace VisualGrading
             _addEditTestViewModel.Done += NavToTestList;
             _addEditStudentViewModel.Done += NavToStudentList;
             _addEditTestSeriesViewModel.Done += NavToTestList;
-            _testViewModel.ChartRequested += NavToChart;
+            _testViewModel.TestChartRequested += NavToChart;
+            _testViewModel.SubjectChartRequested += NavToStudentChartBySubject;
+            _testViewModel.SubCategoryChartRequested += NavToStudentChartBySubCategory;
+
             _studentViewModel.ChartRequested += NavToChart;
 
             //default to Grades list
@@ -91,14 +94,26 @@ namespace VisualGrading
 
         private void NavToChart(Test test)
         {
-            _chartViewModel.ChartByTest(test);
+            _chartViewModel.ChartStudentsByTest(test);
+            CurrentViewModel = _chartViewModel;
+        }
+
+        private void NavToStudentChartBySubject(string subject)
+        {
+            _chartViewModel.ChartStudentsBySubject(subject);
+            CurrentViewModel = _chartViewModel;
+        }
+
+        private void NavToStudentChartBySubCategory(string subCategory)
+        {
+            _chartViewModel.ChartStudentsBySubCategory(subCategory);
             CurrentViewModel = _chartViewModel;
         }
 
 
         private void NavToChart(Student student)
         {
-            _chartViewModel.ChartByStudent(student);
+            _chartViewModel.ChartTestsByStudent(student);
             CurrentViewModel = _chartViewModel;
         }
 
