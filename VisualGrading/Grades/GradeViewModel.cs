@@ -6,18 +6,35 @@ using System.Windows;
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
 using VisualGrading.Helpers;
-using VisualGrading.Presentation;
+using VisualGrading.ViewModelHelpers;
 
 namespace VisualGrading.Grades
 {
     public class GradeViewModel : BaseViewModel
     {
-        #region Constructor
+        #region Fields
+
+        private readonly IBusinessManager _businessManager;
+
+        private readonly IFileDialog _fileDialog;
+
+        private List<Grade> _allGrades;
+
+        private ObservableCollectionExtended<Grade> _observableGrades;
+
+        private string _searchInput;
+
+        #endregion
+
+        #region Constructors
 
         public GradeViewModel()
         {
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
+            _fileDialog = ContainerHelper.Container.Resolve<IFileDialog>();
+
             AddCommand = new RelayCommand(OnAddGrade);
+            ExportCommand = new RelayCommand(OnExport);
             EditCommand = new RelayCommand<Grade>(OnEditGrade);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
         }
@@ -25,10 +42,6 @@ namespace VisualGrading.Grades
         #endregion
 
         #region Properties
-
-        private readonly IBusinessManager _businessManager;
-
-        private ObservableCollectionExtended<Grade> _observableGrades;
 
         public ObservableCollectionExtended<Grade> ObservableGrades
         {
@@ -43,8 +56,6 @@ namespace VisualGrading.Grades
                 _observableGrades.CollectionPropertyChanged += ObservableGrades_CollectionChanged;
             }
         }
-
-        private List<Grade> _allGrades;
 
         private Grade _selectedGrade { get; set; }
 
@@ -63,18 +74,13 @@ namespace VisualGrading.Grades
 
         public RelayCommand AddCommand { get; private set; }
 
+        public RelayCommand ExportCommand { get; private set; }
+
         public RelayCommand AddSeriesCommand { get; private set; }
 
         public RelayCommand<Grade> EditCommand { get; private set; }
 
         public RelayCommand ClearSearchCommand { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        public event Action<Grade> AddRequested = delegate { };
-        public event Action<Grade> EditRequested = delegate { };
-
-        private string _searchInput;
 
         public string SearchInput
         {
@@ -131,8 +137,6 @@ namespace VisualGrading.Grades
 
         private void OnAddGrade()
         {
-            //place holder for the actual on add GradeDTO command for the actual on add GradeDTO button
-            //the one above is linked to the chart button i believe...
             AddRequested(new Grade());
         }
 
@@ -146,6 +150,44 @@ namespace VisualGrading.Grades
             SearchInput = null;
         }
 
+        private void OnExport()
+        {
+            //    var type = typeof(Grade);
+            //    var properties = type.GetProperties();
+
+            _fileDialog.SaveFileDialog.Filter = "CSV|*.csv";
+            _fileDialog.SaveFileDialog.Title = "Export Grades to CSV";
+
+            if (_fileDialog.SaveFileDialog.ShowDialog() == true)
+            {
+                var csvExport = new CsvExport();
+
+                foreach (var grade in _allGrades)
+                {
+                    csvExport.AddRow();
+                    //foreach (var property in properties)
+                    //{
+                    //    csvExport[property.Name] = property.GetValue(grade, null);
+                    //}
+                    csvExport["StudentID"] = grade.StudentID;
+                    csvExport["Student"] = grade.Student.FullName;
+                    csvExport["TestID"] = grade.TestID;
+                    csvExport["Test"] = grade.Test.Name;
+                    csvExport["Date"] = grade.Test.Date;
+                    csvExport["Maximum Points"] = grade.Test.MaximumPoints;
+                    csvExport["Points Achieved"] = grade.Points;
+                    csvExport["Percentage"] = grade.PercentAverage;
+                }
+
+                csvExport.ExportToFile(_fileDialog.SaveFileDialog.FileName);
+            }
+        }
+
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        public event Action<Grade> AddRequested = delegate { };
+        public event Action<Grade> EditRequested = delegate { };
     }
 }

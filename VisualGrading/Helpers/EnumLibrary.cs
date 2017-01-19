@@ -17,6 +17,9 @@ namespace VisualGrading.Helpers.EnumLibrary
         Student,
         Test,
         Grade,
-        Chart
+        Chart,
+        Settings
     }
+
+
 }

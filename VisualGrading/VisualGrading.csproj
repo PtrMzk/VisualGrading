@@ -152,11 +152,16 @@
     <Compile Include="Helpers\AutoMapperProfile.cs" />
     <Compile Include="Helpers\ContainerHelper.cs" />
     <Compile Include="Helpers\EnumLibrary.cs" />
+    <Compile Include="Helpers\CSVExport.cs" />
     <Compile Include="Helpers\NegateBooleanVisibilityConverter.cs" />
     <Compile Include="Helpers\ObservableCollectionExtended.cs" />
-    <Compile Include="Helpers\SettingManager.cs" />
+    <Compile Include="Settings\Setting.cs" />
     <Compile Include="Helpers\ValidateBaseViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Settings\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\SettingsViewModel.cs" />
     <Compile Include="Students\AddEditStudentView.xaml.cs">
       <DependentUpon>AddEditStudentView.xaml</DependentUpon>
     </Compile>
@@ -179,7 +184,7 @@
     <Compile Include="DataAccess\JSONSerialization.cs" />
     <Compile Include="Helpers\MVVMBehaviors.cs" />
     <Compile Include="Tests\AddEditTestViewModel.cs" />
-    <Compile Include="PresentationLayer\BaseViewModel.cs" />
+    <Compile Include="ViewModelHelpers\BaseViewModel.cs" />
     <Compile Include="Charts\ChartViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Helpers\BinarySerialization.cs" />
@@ -200,10 +205,16 @@
     <Compile Include="Tests\TestView.xaml.cs">
       <DependentUpon>TestView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PresentationLayer\ViewModelLocator.cs" />
+    <Compile Include="ViewModelHelpers\FileDialog.cs" />
+    <Compile Include="ViewModelHelpers\IFileDialog.cs" />
+    <Compile Include="ViewModelHelpers\ViewModelLocator.cs" />
     <Compile Include="Grades\GradeViewModel.cs" />
     <Compile Include="Students\StudentViewModel.cs" />
     <Compile Include="Tests\TestViewModel.cs" />
+    <Page Include="Settings\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Students\AddEditStudentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,22 +1,39 @@
-﻿using VisualGrading.Presentation;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using StudentTestReporting.Annotations;
 using VisualGrading.Helpers;
 
 namespace VisualGrading.Tests
 {
     public class SimpleEditableTest : ValidatableBaseViewModel
     {
+        #region Fields
 
-        #region Public Properties
+        private DateTime _date;
+
+        private long _id;
+        private int _maximumPoints;
+        private string _name;
+        private int _seriesNumber;
+        private string _subCategory;
+        private string _subject;
+
+        #endregion
+
+        #region Constructors
+
+        public SimpleEditableTest()
+        {
+        }
+
+        #endregion
+
+        #region Properties
+
         [Required]
         public long ID
         {
-            get { return _id; } 
+            get { return _id; }
             set { SetProperty(ref _id, value); }
         }
 
@@ -42,7 +59,7 @@ namespace VisualGrading.Tests
         }
 
         [Required]
-        public int SeriesNumber 
+        public int SeriesNumber
         {
             get { return _seriesNumber; }
             set { SetProperty(ref _seriesNumber, value); }
@@ -61,17 +78,6 @@ namespace VisualGrading.Tests
             get { return _maximumPoints; }
             set { SetProperty(ref _maximumPoints, value); }
         }
-        #endregion
-
-        #region Private Properties
-
-        private long _id;
-        private string _subject;
-        private string _subCategory;
-        private string _name;
-        private DateTime _date;
-        private int _seriesNumber;
-        private int _maximumPoints;
 
         #endregion
     }

@@ -1,15 +1,26 @@
 ﻿using System;
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
-using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
-using VisualGrading.Presentation;
+using VisualGrading.ViewModelHelpers;
 
 namespace VisualGrading.Tests
 {
     public class AddEditTestViewModel : BaseViewModel
     {
-        #region Constructor
+        #region Fields
+
+        private readonly IBusinessManager _businessManager;
+
+        private Test _editingTest;
+
+        private bool _editMode;
+
+        private SimpleEditableTest _test;
+
+        #endregion
+
+        #region Constructors
 
         public AddEditTestViewModel()
         {
@@ -21,22 +32,12 @@ namespace VisualGrading.Tests
         #endregion
 
         #region Properties
-       
-
-        private IBusinessManager _businessManager;
-
-
-        private Test _editingTest;
 
         public SimpleEditableTest EditingTest
         {
             get { return _test; }
             set { SetProperty(ref _test, value); }
         }
-
-        private SimpleEditableTest _test;
-
-        private bool _editMode;
 
         public bool EditMode
         {
@@ -47,8 +48,6 @@ namespace VisualGrading.Tests
         public RelayCommand CancelCommand { get; private set; }
 
         public RelayCommand SaveCommand { get; }
-
-        public event Action Done = delegate { };
 
         #endregion
 
@@ -82,15 +81,14 @@ namespace VisualGrading.Tests
         {
             destination.ID = source.ID;
 
-            if (EditMode)
-            {
-                destination.Subject = source.Subject;
-                destination.SeriesNumber = source.SeriesNumber;
-                destination.Date = source.Date;
-                destination.Name = source.Name;
-                destination.SubCategory = source.SubCategory;
-                destination.MaximumPoints = source.MaximumPoints;
-            }
+            destination.Subject = source.Subject;
+            destination.SeriesNumber = source.SeriesNumber;
+
+            destination.Date = EditMode ? source.Date : DateTime.Now;
+
+            destination.Name = source.Name;
+            destination.SubCategory = source.SubCategory;
+            destination.MaximumPoints = source.MaximumPoints;
         }
 
         private bool CanSave()
@@ -103,7 +101,7 @@ namespace VisualGrading.Tests
             UpdateTest(EditingTest, _editingTest);
 
             if (EditMode)
-               await _businessManager.UpdateTestAsync(_editingTest);
+                await _businessManager.UpdateTestAsync(_editingTest);
 
             else
                 await _businessManager.InsertTestAsync(_editingTest);
@@ -117,5 +115,7 @@ namespace VisualGrading.Tests
         }
 
         #endregion
+
+        public event Action Done = delegate { };
     }
 }

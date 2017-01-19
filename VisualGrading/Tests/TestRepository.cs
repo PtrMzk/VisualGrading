@@ -41,7 +41,7 @@
 
 //        private IDataManager _dataManager;
 
-//        //private string TestFileLocation { get { return SettingRepository.TestFileLocation; } }
+//        //private string TestFileLocation { get { return Setting.TestFileLocation; } }
 
 //        private List<Test> _testList;
 
@@ -67,7 +67,7 @@
 
 //        private async void InitializeTestList()
 //        {
-//            if (!File.Exists(settingRepository.GetFileLocationByType<List<Test>>()))
+//            if (!File.Exists(Setting.GetFileLocationByType<List<Test>>()))
 //            {
 //                _dataManager.UpdateTest(new Test());
 //            }

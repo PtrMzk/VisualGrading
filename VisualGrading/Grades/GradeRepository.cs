@@ -79,7 +79,7 @@
 //        private void InitializeGradeList()
 //        {
 //            //TODO: This logic can be improved
-//            if (!File.Exists(settingRepository.GetFileLocationByType<List<Grade>>()))
+//            if (!File.Exists(Setting.GetFileLocationByType<List<Grade>>()))
 //            {
 //                //GenerateAndSaveGrades();
 //            }
@@ -111,7 +111,7 @@
 
 //            try
 //            {
-//                if (!File.Exists(settingRepository.GetFileLocationByType<List<Grade>>()))
+//                if (!File.Exists(Setting.GetFileLocationByType<List<Grade>>()))
 //                {
 //                    await _dataManager.SaveAsync<List<Grade>>(grades);
 //                }

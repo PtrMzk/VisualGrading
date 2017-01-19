@@ -7,12 +7,16 @@ using Microsoft.Practices.Unity;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using OxyPlot.Wpf;
 using VisualGrading.Business;
 using VisualGrading.Helpers;
 using VisualGrading.Helpers.EnumLibrary;
-using VisualGrading.Presentation;
 using VisualGrading.Students;
 using VisualGrading.Tests;
+using VisualGrading.ViewModelHelpers;
+using CategoryAxis = OxyPlot.Axes.CategoryAxis;
+using ColumnSeries = OxyPlot.Series.ColumnSeries;
+using LinearAxis = OxyPlot.Axes.LinearAxis;
 
 namespace VisualGrading.Charts
 {
@@ -24,6 +28,7 @@ namespace VisualGrading.Charts
         private const string TEST_CHART = "Test Chart";
         private const string STUDENT_CHART = "Student Chart";
         private readonly IBusinessManager _businessManager;
+        private readonly IFileDialog _fileDialog;
 
         private PlotModel _gradeChart;
 
@@ -38,9 +43,12 @@ namespace VisualGrading.Charts
 
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
 
+            _fileDialog = ContainerHelper.Container.Resolve<IFileDialog>();
+
             //todo:default to Student plotting for now
             ChartByStudents();
 
+            ExportCommand = new RelayCommand(OnExport);
             NewChartCommand = new RelayCommand<string>(NewChartRequested);
         }
 
@@ -54,6 +62,7 @@ namespace VisualGrading.Charts
         }
 
         public RelayCommand<string> NewChartCommand { get; private set; }
+        public RelayCommand ExportCommand { get; private set; }
 
         public PlotModel GradeChart
         {
@@ -261,6 +270,19 @@ namespace VisualGrading.Charts
             GradeChart.Axes.Add(valueAxis);
 
             GradeChart.InvalidatePlot(true);
+        }
+
+        private void OnExport()
+        {
+            _fileDialog.SaveFileDialog.Filter = "PNG|*.png";
+            _fileDialog.SaveFileDialog.Title = GradeChart.Title;
+
+            if (_fileDialog.SaveFileDialog.ShowDialog() == true)
+            {
+                var pngExporter = new PngExporter {Width = 1920, Height = 1080, Background = OxyColors.White};
+
+                pngExporter.ExportToFile(GradeChart, _fileDialog.SaveFileDialog.FileName);
+            }
         }
 
         #endregion

@@ -1,4 +1,4 @@
-﻿using VisualGrading.Presentation;
+﻿using VisualGrading.ViewModelHelpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

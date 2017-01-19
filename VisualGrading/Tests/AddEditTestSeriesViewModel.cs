@@ -2,7 +2,7 @@
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
 using VisualGrading.Helpers;
-using VisualGrading.Presentation;
+using VisualGrading.ViewModelHelpers;
 
 namespace VisualGrading.Tests
 {

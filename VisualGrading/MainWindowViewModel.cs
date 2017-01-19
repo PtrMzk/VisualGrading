@@ -5,25 +5,35 @@ using VisualGrading.DataAccess;
 using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Helpers.EnumLibrary;
-using VisualGrading.Presentation;
+using VisualGrading.Settings;
 using VisualGrading.Students;
 using VisualGrading.Tests;
+using VisualGrading.ViewModelHelpers;
 
 namespace VisualGrading
 {
     internal class MainWindowViewModel : BaseViewModel
     {
+        #region Fields
+
         private readonly AddEditStudentViewModel _addEditStudentViewModel;
         private readonly AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
         private readonly AddEditTestViewModel _addEditTestViewModel;
         private readonly ChartViewModel _chartViewModel;
+        private readonly GradeViewModel _gradeViewModel;
+        private readonly StudentViewModel _studentViewModel;
+        private readonly TestViewModel _testViewModel;
+        private readonly SettingsViewModel _settingsViewModel;
+
+        private NavigationTarget _currentTab;
 
         private BaseViewModel _currentViewModel;
 
         private IDataManager _dataManager;
-        private readonly GradeViewModel _gradeViewModel;
-        private readonly StudentViewModel _studentViewModel;
-        private readonly TestViewModel _testViewModel;
+
+        #endregion
+
+        #region Constructors
 
         public MainWindowViewModel()
         {
@@ -47,6 +57,8 @@ namespace VisualGrading
             _addEditStudentViewModel = ContainerHelper.Container.Resolve<AddEditStudentViewModel>();
             _gradeViewModel = ContainerHelper.Container.Resolve<GradeViewModel>();
             _chartViewModel = ContainerHelper.Container.Resolve<ChartViewModel>();
+            _settingsViewModel = ContainerHelper.Container.Resolve<SettingsViewModel>();
+
 
             NavCommand = new RelayCommand<NavigationTarget>(OnNav);
 
@@ -68,13 +80,27 @@ namespace VisualGrading
             OnNav(NavigationTarget.Grade);
         }
 
+        #endregion
+
+        #region Properties
+
         public BaseViewModel CurrentViewModel
         {
             get { return _currentViewModel; }
             set { SetProperty(ref _currentViewModel, value); }
         }
 
+        public NavigationTarget CurrentTab
+        {
+            get { return _currentTab; }
+            set { SetProperty(ref _currentTab, value); }
+        }
+
         public RelayCommand<NavigationTarget> NavCommand { get; private set; }
+
+        #endregion
+
+        #region Methods
 
         private void NavToAddTest(Test test)
         {
@@ -109,7 +135,6 @@ namespace VisualGrading
             _chartViewModel.ChartStudentsBySubCategory(subCategory);
             CurrentViewModel = _chartViewModel;
         }
-
 
         private void NavToChart(Student student)
         {
@@ -147,6 +172,11 @@ namespace VisualGrading
                     CurrentViewModel = _chartViewModel;
                     break;
                 case NavigationTarget.Test:
+                    CurrentViewModel = _testViewModel;
+                    break;
+                case NavigationTarget.Settings:
+                    CurrentViewModel = _settingsViewModel;
+                    break;
                 default:
                     CurrentViewModel = _testViewModel;
                     break;
@@ -172,5 +202,7 @@ namespace VisualGrading
             _addEditTestSeriesViewModel.SetTestSeries(testSeries);
             CurrentViewModel = _addEditTestSeriesViewModel;
         }
+
+        #endregion
     }
 }

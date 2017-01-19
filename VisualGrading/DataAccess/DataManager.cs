@@ -5,6 +5,7 @@ using Microsoft.Practices.Unity;
 using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Model.Data;
+using VisualGrading.Settings;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
@@ -49,7 +50,7 @@ namespace VisualGrading.DataAccess
 
         public static DataManager Instance { get; } = new DataManager();
 
-        private SettingRepository _settingRepository => SettingRepository.Instance;
+        private SettingsProfile SettingsProfile => SettingsProfile.Instance;
 
         #endregion
 

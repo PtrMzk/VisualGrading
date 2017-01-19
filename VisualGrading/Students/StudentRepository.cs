@@ -67,14 +67,14 @@
 //            }
 //        }
 
-//        //public string StudentFileLocation { get { return settingRepository.StudentFileLocation; } }
+//        //public string StudentFileLocation { get { return Setting.StudentFileLocation; } }
 //        #endregion
 
 //        #region Methods
 
 //        private void InitializeStudentList()
 //        {
-//            if (!File.Exists(settingRepository.GetFileLocationByType<List<Student>>()))
+//            if (!File.Exists(Setting.GetFileLocationByType<List<Student>>()))
 //            {
 //                List<Student> emptyStudentList = new List<Student>();
 //                _dataManager.Save<List<Student>>(emptyStudentList);

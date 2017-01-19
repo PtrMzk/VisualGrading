@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VisualGrading"
         xmlns:g="clr-namespace:VisualGrading.Grades"
-        xmlns:p="clr-namespace:VisualGrading.Presentation"
+        xmlns:p="clr-namespace:VisualGrading.ViewModelHelpers"
         xmlns:c="clr-namespace:VisualGrading.Charts"
         xmlns:t="clr-namespace:VisualGrading.Tests"
         xmlns:e="clr-namespace:VisualGrading.Helpers.EnumLibrary"
         xmlns:s="clr-namespace:VisualGrading.Students"
+        xmlns:st="clr-namespace:VisualGrading.Settings"
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:enumLibrary="clr-namespace:VisualGrading.Helpers.EnumLibrary"
         mc:Ignorable="d"
@@ -41,6 +42,9 @@
         <DataTemplate DataType="{x:Type c:ChartViewModel}">
             <c:ChartView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type st:SettingsViewModel}">
+            <st:SettingsView />
+        </DataTemplate>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -53,6 +57,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+
             </Grid.ColumnDefinitions>
 
             <RadioButton Content="Tests"
@@ -74,6 +80,11 @@
                          Command="{Binding NavCommand}"
                          CommandParameter="{x:Static e:NavigationTarget.Chart}"
                          Grid.Column="3"
+                         Style="{StaticResource TitleButtonStyle}" />
+            <RadioButton Content="Settings"
+                         Command="{Binding NavCommand}"
+                         CommandParameter="{x:Static e:NavigationTarget.Settings}"
+                         Grid.Column="4"
                          Style="{StaticResource TitleButtonStyle}" />
 
         </Grid>

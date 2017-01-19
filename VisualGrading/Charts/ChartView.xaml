@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:VisualGrading"
              xmlns:oxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot"
              xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -18,38 +19,47 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" >
+        <Grid Grid.Row="0">
             <Grid Style="{StaticResource ChildNavGridStyle}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-            <ComboBox x:Name="comboBox"
-                      HorizontalAlignment="Left"
-                      Margin="10,0"
-                      VerticalAlignment="Center"
-                      ItemsSource="{Binding ComboBoxValues}"
-                      ItemContainerStyle="{StaticResource ChildNavComboBoxItemStyle}"
-                      Style="{StaticResource ChildNavComboBoxStyle}"
-                      Template="{DynamicResource ComboBoxControlTemplate}" 
-                      Grid.Column="0"/>
+                <ComboBox x:Name="comboBox"
+                          HorizontalAlignment="Left"
+                          Margin="10,0"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding ComboBoxValues}"
+                          ItemContainerStyle="{StaticResource ChildNavComboBoxItemStyle}"
+                          Style="{StaticResource ChildNavComboBoxStyle}"
+                          Template="{DynamicResource ComboBoxControlTemplate}"
+                          Grid.Column="0">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding NewChartCommand}"
+                                                   CommandParameter="{Binding ElementName=comboBox, Path=SelectedValue}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
 
-            <TextBlock Text="Select Chart..." IsHitTestVisible="False"
-                       TextAlignment="Center"
-                       HorizontalAlignment="Left"
-                       Margin="10,0,0,0"
-                       VerticalAlignment="Center"
-                       Grid.Column="0"
-                       
-                       Style="{StaticResource ChildNavTextBlockForComboBoxStyle}" />
-            <Button x:Name="button"
-                    Command="{Binding NewChartCommand}"
-                    CommandParameter="{Binding ElementName=comboBox, Path=SelectedItem}"
-                    Content="Generate"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Width="75" Style="{StaticResource ChildNavButtonStyle}" 
-                    Grid.Column="1"/>
+                <TextBlock Text="Select Chart..." IsHitTestVisible="False"
+                           TextAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Margin="10,0,0,0"
+                           VerticalAlignment="Center"
+                           Grid.Column="0"
+
+                           Style="{StaticResource ChildNavTextBlockForComboBoxStyle}" />
+
+                <Button x:Name="exportButton"
+                        Command="{Binding ExportCommand}"
+                        CommandParameter="{Binding ElementName=comboBox, Path=SelectedItem}"
+                        Content="Export"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Width="75" Style="{StaticResource ChildNavButtonStyle}"
+                        Grid.Column="2" />
             </Grid>
         </Grid>
         <Grid Grid.Row="1">

@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VisualGrading.Helpers;
+using VisualGrading.Settings;
 
 namespace StudentTestReporting.Helpers
 {
     public abstract class AbstractRepository
     {
-        internal SettingRepository settingRepository
+        internal SettingsProfile SettingsProfile
         {
             get
             {
-                return SettingRepository.Instance;
+                return SettingsProfile.Instance;
             }
         }
 

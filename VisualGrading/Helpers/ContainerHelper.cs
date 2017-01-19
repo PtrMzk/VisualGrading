@@ -1,39 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.Practices.Unity;
+﻿using Microsoft.Practices.Unity;
 using VisualGrading.Business;
 using VisualGrading.DataAccess;
-using VisualGrading.Grades;
 using VisualGrading.Model.Data;
-using VisualGrading.Students;
-using VisualGrading.Tests;
+using VisualGrading.ViewModelHelpers;
 
 namespace VisualGrading.Helpers
 {
     public static class ContainerHelper
     {
-        private static IUnityContainer _container;
+        #region Fields
+
+        #endregion
+
+        #region Constructors
 
         static ContainerHelper()
         {
-            _container = new UnityContainer();
-            
-            _container.RegisterInstance<IUnitOfWork>(new EFUnitOfWork());
+            Container = new UnityContainer();
 
-            _container.RegisterInstance<IDataManager>(DataManager.Instance);
+            Container.RegisterInstance<IUnitOfWork>(new EFUnitOfWork());
 
-            _container.RegisterInstance<IBusinessManager>(new BusinessManager());
+            Container.RegisterInstance<IDataManager>(DataManager.Instance);
 
+            Container.RegisterInstance<IBusinessManager>(new BusinessManager());
+
+            Container.RegisterInstance<IFileDialog>(new FileDialog());
         }
 
-        public static IUnityContainer Container
-        {
-            get { return _container; }
-        }
+        #endregion
 
+        #region Properties
+
+        public static IUnityContainer Container { get; }
+
+        #endregion
     }
 }

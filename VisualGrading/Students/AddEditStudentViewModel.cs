@@ -1,19 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
 using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
-using VisualGrading.Presentation;
+using VisualGrading.ViewModelHelpers;
 
 namespace VisualGrading.Students
 {
     public class AddEditStudentViewModel : BaseViewModel
     {
-        #region Constructor
+        #region Fields
+
+        private readonly IBusinessManager _businessManager;
+
+        private IDataManager _dataManager;
+
+        private Student _editingStudent;
+
+        private bool _editMode;
+
+        private SimpleEditableStudent _Student;
+
+        #endregion
+
+        #region Constructors
 
         public AddEditStudentViewModel()
         {
@@ -27,22 +37,11 @@ namespace VisualGrading.Students
 
         #region Properties
 
-        private IBusinessManager _businessManager;
-
-
-        private IDataManager _dataManager;
-
-        private Student _editingStudent;
-
         public SimpleEditableStudent EditingStudent
         {
             get { return _Student; }
             set { SetProperty(ref _Student, value); }
         }
-
-        private SimpleEditableStudent _Student;
-
-        private bool _editMode;
 
         public bool EditMode
         {
@@ -53,8 +52,6 @@ namespace VisualGrading.Students
         public RelayCommand CancelCommand { get; private set; }
 
         public RelayCommand SaveCommand { get; }
-
-        public event Action Done = delegate { };
 
         #endregion
 
@@ -88,15 +85,11 @@ namespace VisualGrading.Students
         {
             destination.ID = source.ID;
 
-            if (EditMode)
-            {
-                destination.FirstName = source.FirstName;
-                destination.LastName = source.LastName;
-                destination.Nickname = source.Nickname;
-                destination.EmailAddress = source.EmailAddress;
-                destination.ParentEmailAddress = source.ParentEmailAddress;
-
-            }
+            destination.FirstName = source.FirstName;
+            destination.LastName = source.LastName;
+            destination.Nickname = source.Nickname;
+            destination.EmailAddress = source.EmailAddress;
+            destination.ParentEmailAddress = source.ParentEmailAddress;
         }
 
         private bool CanSave()
@@ -110,7 +103,7 @@ namespace VisualGrading.Students
             if (EditMode)
                 await _businessManager.UpdateStudentAsync(_editingStudent);
             else
-            await _businessManager.InsertStudentAsync(_editingStudent);
+                await _businessManager.InsertStudentAsync(_editingStudent);
             Done();
         }
 
@@ -120,5 +113,7 @@ namespace VisualGrading.Students
         }
 
         #endregion
+
+        public event Action Done = delegate { };
     }
 }

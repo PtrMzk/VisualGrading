@@ -28,10 +28,18 @@
         <Grid Style="{StaticResource ChildNavGridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+            <Button Content="Export"
+                    Command="{Binding ExportCommand}"
+                    HorizontalContentAlignment="Center"
+                    Grid.Column="0"
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource ChildNavLeftMostButtonStyle}"
+                     />
             <DockPanel
-                Grid.Column="1"
+                Grid.Column="2"
                 Style="{StaticResource ChildNavDockPanel}">
                 <Label Content="Search:" Style="{StaticResource ChildNavLabelStyle}" />
                 <TextBox Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
@@ -63,8 +71,6 @@
                                     Width="*"
                                     IsReadOnly="True" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
-
-
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
