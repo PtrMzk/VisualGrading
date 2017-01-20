@@ -57,6 +57,7 @@
     <Compile Include="Data\EFUnitOfWork.cs" />
     <Compile Include="Data\GradeDTO.cs" />
     <Compile Include="Data\IEntity.cs" />
+    <Compile Include="Data\SettingsProfileDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\StudentDTO.cs" />
     <Compile Include="Data\TestDTO.cs" />

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace VisualGrading.Helpers
+namespace VisualGrading.DataAccess
 {
     /// <summary>
     /// Simple CSV export
@@ -58,7 +58,7 @@ namespace VisualGrading.Helpers
         private readonly bool includeColumnSeparatorDefinitionPreamble;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="VisualGrading.Helpers.CsvExport"/> class.
+        /// Initializes a new instance of the <see cref="CsvExport"/> class.
         /// </summary>
         /// <param name="columnSeparator">
         /// The string used to separate columns in the output.

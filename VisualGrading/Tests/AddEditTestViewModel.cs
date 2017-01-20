@@ -2,7 +2,7 @@
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
 using VisualGrading.Helpers;
-using VisualGrading.ViewModelHelpers;
+using VisualGrading.Presentation;
 
 namespace VisualGrading.Tests
 {
@@ -81,15 +81,16 @@ namespace VisualGrading.Tests
         {
             destination.ID = source.ID;
 
-            destination.Subject = source.Subject;
-            destination.SeriesNumber = source.SeriesNumber;
+          
+                destination.Subject = source.Subject;
+                destination.SeriesNumber = source.SeriesNumber;
 
-            destination.Date = EditMode ? source.Date : DateTime.Now;
+                destination.Date = EditMode ? source.Date : DateTime.Now;
 
-            destination.Name = source.Name;
-            destination.SubCategory = source.SubCategory;
-            destination.MaximumPoints = source.MaximumPoints;
-        }
+                destination.Name = source.Name;
+                destination.SubCategory = source.SubCategory;
+                destination.MaximumPoints = source.MaximumPoints;
+            }
 
         private bool CanSave()
         {

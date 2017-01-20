@@ -148,15 +148,15 @@
     <Compile Include="DataAccess\IDataManager.cs" />
     <Compile Include="Grades\GradeGenerator.cs" />
     <Compile Include="Grades\IGradeManager.cs" />
-    <Compile Include="Helpers\AbstractRepository.cs" />
-    <Compile Include="Helpers\AutoMapperProfile.cs" />
+    <Compile Include="DataAccess\AutoMapperProfile.cs" />
     <Compile Include="Helpers\ContainerHelper.cs" />
     <Compile Include="Helpers\EnumLibrary.cs" />
-    <Compile Include="Helpers\CSVExport.cs" />
-    <Compile Include="Helpers\NegateBooleanVisibilityConverter.cs" />
-    <Compile Include="Helpers\ObservableCollectionExtended.cs" />
-    <Compile Include="Settings\Setting.cs" />
-    <Compile Include="Helpers\ValidateBaseViewModel.cs" />
+    <Compile Include="DataAccess\CSVExport.cs" />
+    <Compile Include="Presentation\MVVMBehaviors.cs" />
+    <Compile Include="Presentation\NegatableBooleanToVisibilityConverter.cs" />
+    <Compile Include="Presentation\ObservableCollectionExtended.cs" />
+    <Compile Include="Presentation\ValidatableBaseViewModel.cs" />
+    <Compile Include="Settings\SettingsProfile.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Settings\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -182,12 +182,10 @@
       <DependentUpon>GradeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataAccess\JSONSerialization.cs" />
-    <Compile Include="Helpers\MVVMBehaviors.cs" />
     <Compile Include="Tests\AddEditTestViewModel.cs" />
-    <Compile Include="ViewModelHelpers\BaseViewModel.cs" />
+    <Compile Include="Presentation\BaseViewModel.cs" />
     <Compile Include="Charts\ChartViewModel.cs" />
     <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="Helpers\BinarySerialization.cs" />
     <Compile Include="Grades\Grade.cs" />
     <Compile Include="Students\Student.cs" />
     <Compile Include="Grades\GradeRepository.cs" />
@@ -197,7 +195,7 @@
     <Compile Include="Tests\SimpleEditableTestSeries.cs" />
     <Compile Include="Tests\Test.cs" />
     <Compile Include="Tests\TestRepository.cs" />
-    <Compile Include="Helpers\RelayCommand.cs" />
+    <Compile Include="Presentation\RelayCommand.cs" />
     <Compile Include="Students\StudentView.xaml.cs">
       <DependentUpon>StudentView.xaml</DependentUpon>
     </Compile>
@@ -205,9 +203,9 @@
     <Compile Include="Tests\TestView.xaml.cs">
       <DependentUpon>TestView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModelHelpers\FileDialog.cs" />
-    <Compile Include="ViewModelHelpers\IFileDialog.cs" />
-    <Compile Include="ViewModelHelpers\ViewModelLocator.cs" />
+    <Compile Include="Presentation\FileDialog.cs" />
+    <Compile Include="Presentation\IFileDialog.cs" />
+    <Compile Include="Presentation\ViewModelLocator.cs" />
     <Compile Include="Grades\GradeViewModel.cs" />
     <Compile Include="Students\StudentViewModel.cs" />
     <Compile Include="Tests\TestViewModel.cs" />

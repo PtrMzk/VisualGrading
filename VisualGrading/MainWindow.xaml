@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VisualGrading"
         xmlns:g="clr-namespace:VisualGrading.Grades"
-        xmlns:p="clr-namespace:VisualGrading.ViewModelHelpers"
+        xmlns:p="clr-namespace:VisualGrading.Presentation"
         xmlns:c="clr-namespace:VisualGrading.Charts"
         xmlns:t="clr-namespace:VisualGrading.Tests"
         xmlns:e="clr-namespace:VisualGrading.Helpers.EnumLibrary"

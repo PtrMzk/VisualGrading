@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 
-namespace VisualGrading.ViewModelHelpers
+namespace VisualGrading.Presentation
 {
     public class FileDialog : IFileDialog
     {

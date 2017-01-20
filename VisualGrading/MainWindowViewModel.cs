@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+using System.IO;
+using AutoMapper;
 using Microsoft.Practices.Unity;
 using VisualGrading.Charts;
 using VisualGrading.DataAccess;
@@ -8,7 +10,7 @@ using VisualGrading.Helpers.EnumLibrary;
 using VisualGrading.Settings;
 using VisualGrading.Students;
 using VisualGrading.Tests;
-using VisualGrading.ViewModelHelpers;
+using VisualGrading.Presentation;
 
 namespace VisualGrading
 {
@@ -16,20 +18,20 @@ namespace VisualGrading
     {
         #region Fields
 
-        private readonly AddEditStudentViewModel _addEditStudentViewModel;
-        private readonly AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
-        private readonly AddEditTestViewModel _addEditTestViewModel;
-        private readonly ChartViewModel _chartViewModel;
-        private readonly GradeViewModel _gradeViewModel;
-        private readonly StudentViewModel _studentViewModel;
-        private readonly TestViewModel _testViewModel;
-        private readonly SettingsViewModel _settingsViewModel;
+        private AddEditStudentViewModel _addEditStudentViewModel;
+        private AddEditTestSeriesViewModel _addEditTestSeriesViewModel;
+        private AddEditTestViewModel _addEditTestViewModel;
+        private ChartViewModel _chartViewModel;
 
         private NavigationTarget _currentTab;
 
         private BaseViewModel _currentViewModel;
 
         private IDataManager _dataManager;
+        private GradeViewModel _gradeViewModel;
+        private SettingsViewModel _settingsViewModel;
+        private StudentViewModel _studentViewModel;
+        private TestViewModel _testViewModel;
 
         #endregion
 
@@ -37,47 +39,7 @@ namespace VisualGrading
 
         public MainWindowViewModel()
         {
-            //ensure all repositories are created when application starts
-            //though they may not be used by this class at all
-
-            //Mapper.Initialize(cfg => {
-            //    cfg.CreateMap<VisualGrading.Model.Data.StudentDTO, VisualGrading.Students.StudentDTO>();
-            //});
-
-            //AutoMapper.Mapper.Instance.
-
-            Mapper.Initialize(cfg => { cfg.AddProfile<AutoMapperProfile>(); });
-
-            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
-
-            _testViewModel = ContainerHelper.Container.Resolve<TestViewModel>();
-            _addEditTestViewModel = ContainerHelper.Container.Resolve<AddEditTestViewModel>();
-            _addEditTestSeriesViewModel = ContainerHelper.Container.Resolve<AddEditTestSeriesViewModel>();
-            _studentViewModel = ContainerHelper.Container.Resolve<StudentViewModel>();
-            _addEditStudentViewModel = ContainerHelper.Container.Resolve<AddEditStudentViewModel>();
-            _gradeViewModel = ContainerHelper.Container.Resolve<GradeViewModel>();
-            _chartViewModel = ContainerHelper.Container.Resolve<ChartViewModel>();
-            _settingsViewModel = ContainerHelper.Container.Resolve<SettingsViewModel>();
-
-
-            NavCommand = new RelayCommand<NavigationTarget>(OnNav);
-
-            _testViewModel.AddRequested += NavToAddTest;
-            _testViewModel.AddSeriesRequested += NavToAddTestSeries;
-            _studentViewModel.AddRequested += NavToAddStudent;
-            _testViewModel.EditRequested += NavToEditTest;
-            _studentViewModel.EditRequested += NavToEditStudent;
-            _addEditTestViewModel.Done += NavToTestList;
-            _addEditStudentViewModel.Done += NavToStudentList;
-            _addEditTestSeriesViewModel.Done += NavToTestList;
-            _testViewModel.TestChartRequested += NavToChart;
-            _testViewModel.SubjectChartRequested += NavToStudentChartBySubject;
-            _testViewModel.SubCategoryChartRequested += NavToStudentChartBySubCategory;
-
-            _studentViewModel.ChartRequested += NavToChart;
-
-            //default to Grades list
-            OnNav(NavigationTarget.Grade);
+            InitializeVisualGrading();
         }
 
         #endregion
@@ -101,6 +63,45 @@ namespace VisualGrading
         #endregion
 
         #region Methods
+
+        private void InitializeVisualGrading()
+        {
+            //set AppData to be location of DB file
+            AppDomain.CurrentDomain.SetData("DataDirectory",
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VisualGrading"));
+
+            Mapper.Initialize(cfg => { cfg.AddProfile<AutoMapperProfile>(); });
+
+            _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+
+            _testViewModel = ContainerHelper.Container.Resolve<TestViewModel>();
+            _addEditTestViewModel = ContainerHelper.Container.Resolve<AddEditTestViewModel>();
+            _addEditTestSeriesViewModel = ContainerHelper.Container.Resolve<AddEditTestSeriesViewModel>();
+            _studentViewModel = ContainerHelper.Container.Resolve<StudentViewModel>();
+            _addEditStudentViewModel = ContainerHelper.Container.Resolve<AddEditStudentViewModel>();
+            _gradeViewModel = ContainerHelper.Container.Resolve<GradeViewModel>();
+            _chartViewModel = ContainerHelper.Container.Resolve<ChartViewModel>();
+            _settingsViewModel = ContainerHelper.Container.Resolve<SettingsViewModel>();
+
+            NavCommand = new RelayCommand<NavigationTarget>(OnNav);
+
+            _testViewModel.AddRequested += NavToAddTest;
+            _testViewModel.AddSeriesRequested += NavToAddTestSeries;
+            _studentViewModel.AddRequested += NavToAddStudent;
+            _testViewModel.EditRequested += NavToEditTest;
+            _studentViewModel.EditRequested += NavToEditStudent;
+            _addEditTestViewModel.Done += NavToTestList;
+            _addEditStudentViewModel.Done += NavToStudentList;
+            _addEditTestSeriesViewModel.Done += NavToTestList;
+            _testViewModel.TestChartRequested += NavToChart;
+            _testViewModel.SubjectChartRequested += NavToStudentChartBySubject;
+            _testViewModel.SubCategoryChartRequested += NavToStudentChartBySubCategory;
+
+            _studentViewModel.ChartRequested += NavToChart;
+
+            //default to Grades list
+            OnNav(NavigationTarget.Grade);
+        }
 
         private void NavToAddTest(Test test)
         {

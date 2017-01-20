@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using StudentTestReporting.Annotations;
 
-namespace VisualGrading.Helpers
+namespace VisualGrading.Presentation
 {
     public class ObservableCollectionExtended<T> : ObservableCollection<T> where T : INotifyPropertyChanged
     {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using VisualGrading.Grades;
+using VisualGrading.Settings;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
@@ -8,6 +9,8 @@ namespace VisualGrading.Business
 {
     public interface IBusinessManager
     {
+        #region Methods
+
         void InsertGrade(Grade grade);
         Task InsertGradeAsync(Grade grade);
         void UpdateGrade(Grade grade);
@@ -33,6 +36,17 @@ namespace VisualGrading.Business
         Task<List<Test>> GetTestsAsync();
         List<Test> GetTests();
         List<Grade> GetFilteredGrades(List<Test> testsToFilterOn);
-        List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null, string subject = null, string subCategory = null);
+
+        List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null,
+            string subject = null, string subCategory = null);
+
+        Task InsertSettingsProfileAsync(SettingsProfile settingsProfile);
+        void InsertSettingsProfile(SettingsProfile settingsProfile);
+        void UpdateSettingsProfile(SettingsProfile settingsProfile);
+        Task UpdateSettingsProfileAsync(SettingsProfile settingsProfile);
+        Task<SettingsProfile> GetSettingsProfileAsync();
+        SettingsProfile GetSettingsProfile();
+
+        #endregion
     }
 }

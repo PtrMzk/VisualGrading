@@ -13,7 +13,7 @@ using VisualGrading.Helpers;
 using VisualGrading.Helpers.EnumLibrary;
 using VisualGrading.Students;
 using VisualGrading.Tests;
-using VisualGrading.ViewModelHelpers;
+using VisualGrading.Presentation;
 using CategoryAxis = OxyPlot.Axes.CategoryAxis;
 using ColumnSeries = OxyPlot.Series.ColumnSeries;
 using LinearAxis = OxyPlot.Axes.LinearAxis;

@@ -4,6 +4,7 @@ using Microsoft.Practices.Unity;
 using VisualGrading.DataAccess;
 using VisualGrading.Grades;
 using VisualGrading.Helpers;
+using VisualGrading.Settings;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
@@ -11,14 +12,58 @@ namespace VisualGrading.Business
 {
     public class BusinessManager : IBusinessManager
     {
+        #region Fields
+
         private readonly IDataManager _dataManager;
+
+        #endregion
+
+        #region Constructors
 
         public BusinessManager()
         {
             _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
         }
 
-        #region Test Methods
+        #endregion
+
+        #region Methods
+
+        public async Task InsertSettingsProfileAsync(SettingsProfile settingsProfile)
+        {
+            await UpdateSettingsProfileAsync(settingsProfile);
+
+        }
+
+        public void InsertSettingsProfile(SettingsProfile settingsProfile)
+        {
+            UpdateSettingsProfile(settingsProfile);
+
+        }
+
+        public void UpdateSettingsProfile(SettingsProfile settingsProfile)
+        {
+            _dataManager.SaveSettingsProfile(settingsProfile);
+            _dataManager.CommitChanges();
+        }
+
+        public async Task UpdateSettingsProfileAsync(SettingsProfile settingsProfile)
+        {
+            _dataManager.SaveSettingsProfile(settingsProfile);
+            _dataManager.CommitChanges();
+        }
+
+        public async Task<SettingsProfile> GetSettingsProfileAsync()
+        {
+            return await _dataManager.GetSettingsProfileAsync();
+        }
+
+        public SettingsProfile GetSettingsProfile()
+        {
+            return _dataManager.GetSettingsProfile();
+        }
+
+
 
         public async Task UpdateTestAsync(Test test)
         {
@@ -36,7 +81,6 @@ namespace VisualGrading.Business
 
         public void InsertTest(Test test)
         {
-
             InsertTestAndApplicableGrades(test);
 
             _dataManager.CommitChanges();
@@ -49,32 +93,25 @@ namespace VisualGrading.Business
             await _dataManager.CommitChangesAsync();
         }
 
-
         public async Task InsertTestSeriesAsync(TestSeries tests)
         {
-            for (int i = 0; i < tests.TestCount; i++)
+            for (var i = 0; i < tests.TestCount; i++)
             {
                 var seriesNumber = i + 1;
                 var test = GenerateTestFromTestSeries(tests, seriesNumber);
                 await InsertTestAsync(test);
             }
-
         }
-
-
 
         public void InsertTestSeries(TestSeries tests)
         {
-            for (int i = 0; i < tests.TestCount; i++)
+            for (var i = 0; i < tests.TestCount; i++)
             {
                 var seriesNumber = i + 1;
                 var test = GenerateTestFromTestSeries(tests, seriesNumber);
                 InsertTest(test);
             }
         }
-
-
-
 
         public async Task<List<Test>> GetTestsAsync()
         {
@@ -85,7 +122,6 @@ namespace VisualGrading.Business
         {
             return _dataManager.GetTests();
         }
-
 
         //the delete methods delete grades via Entity Framework
         public async Task DeleteTestAsync(Test test)
@@ -123,10 +159,6 @@ namespace VisualGrading.Business
             }
         }
 
-        #endregion
-
-        #region Student Methods
-
         public async Task UpdateStudentAsync(Student student)
         {
             _dataManager.SaveStudent(student);
@@ -147,8 +179,6 @@ namespace VisualGrading.Business
 
             await _dataManager.CommitChangesAsync();
         }
-
-
 
         public void InsertStudent(Student student)
         {
@@ -196,10 +226,6 @@ namespace VisualGrading.Business
             }
         }
 
-        #endregion
-
-        #region Grade Methods
-
         //this can be the same as UpdateGrade since nothing needs to be generated
         public async Task InsertGradeAsync(Grade grade)
         {
@@ -226,7 +252,6 @@ namespace VisualGrading.Business
             _dataManager.CommitChanges();
         }
 
-
         public async Task<List<Grade>> GetGradesAsync()
         {
             return await _dataManager.GetGradesAsync();
@@ -242,21 +267,19 @@ namespace VisualGrading.Business
             return GetFilteredGrades(null, null, subject, subCategory);
         }
 
-
-
-        public List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null, string subject = null, string subCategory = null)
+        public List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null,
+            string subject = null, string subCategory = null)
         {
-            List<long> studentIDsToFilterOn = new List<long>();
-            List<long> testIDsToFilterOn = new List<long>();
+            var studentIDsToFilterOn = new List<long>();
+            var testIDsToFilterOn = new List<long>();
 
             if (studentsToFilterOn != null && studentsToFilterOn.Count > 0)
-            studentsToFilterOn.ForEach(s => studentIDsToFilterOn.Add(s.ID));
+                studentsToFilterOn.ForEach(s => studentIDsToFilterOn.Add(s.ID));
 
             if (testsToFilterOn != null && testsToFilterOn.Count > 0)
-            testsToFilterOn.ForEach(t => testIDsToFilterOn.Add(t.ID));
+                testsToFilterOn.ForEach(t => testIDsToFilterOn.Add(t.ID));
 
-           return  _dataManager.GetFilteredGrades(studentIDsToFilterOn, testIDsToFilterOn, subject, subCategory);
-
+            return _dataManager.GetFilteredGrades(studentIDsToFilterOn, testIDsToFilterOn, subject, subCategory);
         }
 
         public List<Grade> GetGrades()

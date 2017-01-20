@@ -12,23 +12,18 @@ namespace VisualGrading.Settings
         private string _emailMessage;
         private string _emailPassword;
         private string _emailPort;
-        private bool _emailUsesSsl;
+        private bool _emailUsesSSL;
         private string _smtpAddress;
 
         #endregion
 
         #region Constructors
 
-        private SettingsProfile()
-        {
-            //TODO: first load settings file..
-        }
-
         #endregion
 
         #region Properties
 
-        public static SettingsProfile Instance { get; } = new SettingsProfile();
+        public long ID { get; set; }
 
         public string EmailAddress
         {
@@ -65,11 +60,11 @@ namespace VisualGrading.Settings
 
         public bool EmailUsesSSL
         {
-            get { return _emailUsesSsl; }
+            get { return _emailUsesSSL; }
             set
             {
-                if (value == _emailUsesSsl) return;
-                _emailUsesSsl = value;
+                if (value == _emailUsesSSL) return;
+                _emailUsesSSL = value;
                 OnPropertyChanged();
             }
         }

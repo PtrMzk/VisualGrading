@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Practices.Unity;
@@ -19,10 +20,10 @@ namespace VisualGrading.DataAccess
 
         private readonly IRepository<GradeDTO> _gradeRepository;
 
+        private readonly IRepository<SettingsProfileDTO> _settingsProfileRepository;
+
         private readonly IRepository<StudentDTO> _studentRepository;
-
-        // private readonly IRepository<IEntity> _studentRepositoryGen;
-
+        
         private readonly IRepository<TestDTO> _testRepository;
 
         private readonly IUnitOfWork _unitOfWork;
@@ -40,8 +41,8 @@ namespace VisualGrading.DataAccess
             _testRepository = _unitOfWork.TestRepository;
 
             _gradeRepository = _unitOfWork.GradeRepository;
+            _settingsProfileRepository = _unitOfWork.SettingsProfileRepository;
 
-            //_studentRepositoryGen = _unitOfWork.StudentRepositoryGen;
         }
 
         #endregion
@@ -50,12 +51,11 @@ namespace VisualGrading.DataAccess
 
         public static DataManager Instance { get; } = new DataManager();
 
-        private SettingsProfile SettingsProfile => SettingsProfile.Instance;
-
         #endregion
 
         #region Methods
 
+        //TODO: Refactor these methods to be generic
         public void CommitChanges()
         {
             _unitOfWork.Commit();
@@ -203,6 +203,45 @@ namespace VisualGrading.DataAccess
                 _testRepository.Add(testDTO);
         }
 
+        public void SaveSettingsProfile(SettingsProfile settingsProfile)
+        {
+            var settingsProfileDTO = new SettingsProfileDTO();
+            SettingsProfileDTO existingEntity = null;
+
+            Mapper.Map(settingsProfile, settingsProfileDTO);
+
+            settingsProfileDTO.EncryptedEmailPassword = EncryptEmailPassword(settingsProfile);
+            
+            if (settingsProfileDTO.ID != 0)
+                existingEntity = _settingsProfileRepository.Single(x => x.ID == settingsProfileDTO.ID);
+            if (existingEntity != null)
+                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(settingsProfileDTO);
+            else
+                _settingsProfileRepository.Add(settingsProfileDTO);
+        }
+
+        private byte[] EncryptEmailPassword(SettingsProfile settingsProfile)
+        {
+            return Encoding.UTF8.GetBytes(settingsProfile.EmailPassword);
+        }
+
+        private string DecryptEmailPassword(SettingsProfileDTO settingsProfileDTO)
+        {
+            return System.Text.Encoding.Default.GetString(settingsProfileDTO.EncryptedEmailPassword);
+        }
+
+        public async Task<SettingsProfile> GetSettingsProfileAsync()
+        {
+            var settingsProfileDTO = await _settingsProfileRepository.FirstOrDefaultAsync();
+            return ConvertSettingsProfileDTOToSettingProfile(settingsProfileDTO);
+        }
+
+        public SettingsProfile GetSettingsProfile()
+        {
+            var settingsProfileDTO = _settingsProfileRepository.FirstOrDefault();
+            return ConvertSettingsProfileDTOToSettingProfile(settingsProfileDTO);
+        }
+
         private List<Test> ConvertTestDTOsToTests(List<TestDTO> testDTOs)
         {
             var tests = new List<Test>();
@@ -288,6 +327,17 @@ namespace VisualGrading.DataAccess
             }
 
             return grades;
+        }
+
+        private SettingsProfile ConvertSettingsProfileDTOToSettingProfile(SettingsProfileDTO settingProfileDTO)
+        {
+            var settingsProfile = new SettingsProfile();
+
+            Mapper.Map(settingProfileDTO, settingsProfile);
+
+            settingsProfile.EmailPassword = DecryptEmailPassword(settingProfileDTO);
+
+            return settingsProfile;
         }
 
         #endregion

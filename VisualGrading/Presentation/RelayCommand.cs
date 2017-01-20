@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace VisualGrading.Helpers
+namespace VisualGrading.Presentation
 {
     public class RelayCommand : ICommand
     {

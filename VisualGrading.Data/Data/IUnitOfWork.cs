@@ -19,6 +19,8 @@ namespace VisualGrading.Model.Data
         IRepository<TestDTO> TestRepository { get; }
         IRepository<StudentDTO> StudentRepository { get; }
         IRepository<GradeDTO> GradeRepository { get; }
+        IRepository<SettingsProfileDTO> SettingsProfileRepository { get; }
+
 
         #region Borrowed from DbContext 
         DbEntityEntry Entry(object entity);

@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using StudentTestReporting.Annotations;
 using VisualGrading.Helpers;
+using VisualGrading.Presentation;
 
 namespace VisualGrading.Tests
 {

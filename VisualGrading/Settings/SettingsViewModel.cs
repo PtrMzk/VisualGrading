@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using VisualGrading.Business;
 using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
 using VisualGrading.Students;
-using VisualGrading.ViewModelHelpers;
+using VisualGrading.Presentation;
 
 namespace VisualGrading.Settings
 {
@@ -21,7 +22,8 @@ namespace VisualGrading.Settings
             _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             CancelCommand = new RelayCommand(OnCancel);
-            //SaveCommand = new RelayCommand(OnSave, CanSave);
+            SaveCommand = new RelayCommand(OnSave, CanSave);
+            SettingsProfile = _businessManager.GetSettingsProfile();
         }
 
         #endregion
@@ -31,6 +33,8 @@ namespace VisualGrading.Settings
         private IBusinessManager _businessManager;
 
         private IDataManager _dataManager;
+
+        public SettingsProfile SettingsProfile { get; set; }
 
         public RelayCommand CancelCommand { get; private set; }
 
@@ -48,20 +52,29 @@ namespace VisualGrading.Settings
             SaveCommand.RaiseCanExecuteChanged();
         }
 
-        //private bool CanSave()
-        //{
-        //    return !EditingStudent.HasErrors;
-        //}
+        private bool CanSave()
+        {
+            //TODO: Implement EditingSettingsProfile
+            //return !EditingStudent.HasErrors;
+            return true;
+        }
 
-        //private async void OnSave()
-        //{
-        //    UpdateStudent(EditingStudent, _editingStudent);
-        //    if (EditMode)
-        //        await _businessManager.UpdateStudentAsync(_editingStudent);
-        //    else
-        //        await _businessManager.InsertStudentAsync(_editingStudent);
-        //    Done();
-        //}
+        private async void OnSave()
+        {
+            //UpdateStudent(EditingStudent, _editingStudent);
+            //if (EditMode)
+            //    await _businessManager.UpdateStudentAsync(_editingStudent);
+            //else
+            //    await _businessManager.InsertStudentAsync(_editingStudent);
+
+            await _businessManager.UpdateSettingsProfileAsync(SettingsProfile);
+
+            //force update so ID is set for new entries
+            if (SettingsProfile.ID == 0)
+            SettingsProfile = _businessManager.GetSettingsProfile();
+
+            Done();
+        }
 
         private void OnCancel()
         {

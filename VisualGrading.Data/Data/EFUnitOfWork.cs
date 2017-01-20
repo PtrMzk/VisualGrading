@@ -17,10 +17,14 @@ namespace VisualGrading.Model.Data
         private readonly EFRepository<StudentDTO> _studentRepository;
         //private readonly IRepository<IEntity> _studentRepositoryGen;
         private readonly EFRepository<GradeDTO> _gradeRepository;
+        private readonly EFRepository<SettingsProfileDTO> _settingsProfileRepository;
+
 
         public DbSet<TestDTO> Tests { get; set; }
         public DbSet<StudentDTO> Students { get; set; }
         public DbSet<GradeDTO> Grades { get; set; }
+        public DbSet<SettingsProfileDTO> SettingsProfile { get; set; }
+
 
         public EFUnitOfWork()
             : base("name=VisualGradingDBContext")
@@ -28,6 +32,8 @@ namespace VisualGrading.Model.Data
             _testRepository = new EFRepository<TestDTO>(Tests);
             _studentRepository = new EFRepository<StudentDTO>(Students);
             _gradeRepository = new EFRepository<GradeDTO>(Grades);
+            _settingsProfileRepository = new EFRepository<SettingsProfileDTO>(SettingsProfile);
+
             //_studentRepositoryGen = new EFRepository<IEntity>();
         }
 
@@ -42,6 +48,11 @@ namespace VisualGrading.Model.Data
         public IRepository<TestDTO> TestRepository
         {
             get { return _testRepository; }
+        }
+
+        public IRepository<SettingsProfileDTO> SettingsProfileRepository
+        {
+            get { return _settingsProfileRepository; }
         }
 
         public IRepository<StudentDTO> StudentRepository

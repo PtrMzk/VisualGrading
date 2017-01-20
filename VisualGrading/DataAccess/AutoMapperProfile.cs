@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using AutoMapper;
 using VisualGrading.Grades;
 using VisualGrading.Model.Data;
+using VisualGrading.Settings;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
-namespace VisualGrading.Helpers
+namespace VisualGrading.DataAccess
 {
     public class AutoMapperProfile : Profile
     {
@@ -21,6 +22,9 @@ namespace VisualGrading.Helpers
             MappingDictionary.Add(typeof(Test), typeof(TestDTO));
             MappingDictionary.Add(typeof(GradeDTO), typeof(Grade));
             MappingDictionary.Add(typeof(Grade), typeof(GradeDTO));
+            MappingDictionary.Add(typeof(SettingsProfile), typeof(SettingsProfileDTO));
+            MappingDictionary.Add(typeof(SettingsProfileDTO), typeof(SettingsProfile));
+
             CreateMapsForAutoMapper();
         }
 

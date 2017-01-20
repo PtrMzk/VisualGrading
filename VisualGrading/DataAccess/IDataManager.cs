@@ -2,6 +2,7 @@
 using System.Security.Cryptography.Pkcs;
 using System.Threading.Tasks;
 using VisualGrading.Grades;
+using VisualGrading.Settings;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
@@ -9,7 +10,6 @@ namespace VisualGrading.DataAccess
 {
     public interface IDataManager
     {
-
         Task CommitChangesAsync();
         void CommitChanges();
         
@@ -30,5 +30,11 @@ namespace VisualGrading.DataAccess
         void SaveGrade(Grade grade);
         void DeleteGrade(Grade grade);
         List<Grade> GetFilteredGrades(List<long> studentIDsToFilterOn = null, List<long> testIDsToFilterOn = null, string subject = null, string subCategory = null);
+
+        void SaveSettingsProfile(SettingsProfile settingsProfile);
+
+        SettingsProfile GetSettingsProfile();
+
+        Task<SettingsProfile> GetSettingsProfileAsync();
     }
 }

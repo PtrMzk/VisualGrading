@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VisualGrading.ViewModelHelpers
+namespace VisualGrading.Presentation
 {
     public class BaseViewModel : INotifyPropertyChanged
     {

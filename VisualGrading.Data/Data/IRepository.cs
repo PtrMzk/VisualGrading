@@ -1,4 +1,4 @@
-﻿//https://codefizzle.wordpress.com/2012/07/26/correct-use-of-repository-and-unit-of-work-patterns-in-asp-net-mvc/
+﻿//Based on: https://codefizzle.wordpress.com/2012/07/26/correct-use-of-repository-and-unit-of-work-patterns-in-asp-net-mvc/
 
 using System;
 using System.Collections.Generic;
@@ -20,8 +20,9 @@ namespace VisualGrading.Model.Data
         T First(Expression<Func<T, bool>> predicate);
         T GetById(int id);
         T FirstOrDefault();
+        Task<T> FirstOrDefaultAsync();
 
-        
+
         Task<List<T>> GetAllAsync();
 
         void Add(T entity);

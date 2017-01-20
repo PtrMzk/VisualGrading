@@ -51,6 +51,11 @@ namespace VisualGrading.Model.Data
             return _dbSet.FirstOrDefault();
         }
 
+        public async Task<T> FirstOrDefaultAsync()
+        {
+            return await _dbSet.FirstOrDefaultAsync();
+        }
+
         public T Single(Expression<Func<T, bool>> predicate)
         {
             return _dbSet.First(predicate);

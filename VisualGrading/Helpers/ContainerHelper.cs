@@ -2,7 +2,7 @@
 using VisualGrading.Business;
 using VisualGrading.DataAccess;
 using VisualGrading.Model.Data;
-using VisualGrading.ViewModelHelpers;
+using VisualGrading.Presentation;
 
 namespace VisualGrading.Helpers
 {

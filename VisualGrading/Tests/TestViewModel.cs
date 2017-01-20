@@ -6,7 +6,7 @@ using System.Windows;
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
 using VisualGrading.Helpers;
-using VisualGrading.ViewModelHelpers;
+using VisualGrading.Presentation;
 
 namespace VisualGrading.Tests
 {

@@ -5,11 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     x:Class="VisualGrading.Settings.SettingsView"
     xmlns:h="clr-namespace:VisualGrading.Helpers"
+    xmlns:presentation="clr-namespace:VisualGrading.Presentation"
     mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="300">
+    d:DesignHeight="400" d:DesignWidth="300">
     <UserControl.Resources>
-        <h:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
-        <h:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
+        <presentation:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
+        <presentation:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
                                                  Negate="True" />
         <Style TargetType="TextBox">
             <Style.Triggers>
@@ -29,9 +30,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            
         </Grid.RowDefinitions>
         <Grid Row="0" Style="{StaticResource ChildNavGridStyle}" />
-        <Grid x:Name="grid1" DataContext="{Binding EditingStudent}" HorizontalAlignment="Left" Margin="10,15,0,0"
+        <Grid x:Name="grid1" DataContext="{Binding SettingsProfile}" HorizontalAlignment="Left" Margin="10,15,0,0"
               VerticalAlignment="Top" Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -39,15 +41,17 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Label Content="User name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0"
+            <Label Content="Email Address:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
-            <TextBox x:Name="userNameTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
-                     Grid.Row="0" Text="{Binding FirstName, ValidatesOnNotifyDataErrors=True}"
+            <TextBox x:Name="emailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
+                     Grid.Row="0" Text="{Binding EmailAddress, ValidatesOnNotifyDataErrors=True}"
                      VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="Password:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
@@ -57,17 +61,22 @@
             <Label Content="SMTP:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
             <TextBox x:Name="smtpTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
-                     Grid.Row="2" Text="{Binding Nickname, ValidatesOnNotifyDataErrors=True}"
+                     Grid.Row="2" Text="{Binding SMTPAddress, ValidatesOnNotifyDataErrors=True}"
                      VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="Port:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
             <TextBox x:Name="portAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
-                     Grid.Row="3" Text="{Binding EmailAddress, ValidatesOnNotifyDataErrors=True}"
+                     Grid.Row="3" Text="{Binding EmailPort, ValidatesOnNotifyDataErrors=True}"
                      VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="SSL:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
             <CheckBox Grid.Row="4" Grid.Column="1" VerticalContentAlignment="Center"
-                      HorizontalContentAlignment="Center" />
+                      HorizontalContentAlignment="Center" IsChecked="{Binding EmailUsesSSL}"/>
+            <Label Content="Message:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="5"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
+            <TextBox Grid.Row="5" Grid.Column="1" VerticalContentAlignment="Center"
+                      HorizontalContentAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}"
+                     Text="{Binding EmailMessage, ValidatesOnNotifyDataErrors=True}"/>
         </Grid>
         <Grid Grid.Row="2">
             <Button Content="Save"

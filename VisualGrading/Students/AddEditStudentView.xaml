@@ -5,11 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     x:Class="VisualGrading.Students.AddEditStudentView"
     xmlns:h="clr-namespace:VisualGrading.Helpers"
+    xmlns:presentation="clr-namespace:VisualGrading.Presentation"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <h:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
-        <h:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
+        <presentation:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
+        <presentation:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
                                                  Negate="True" />
         <Style TargetType="TextBox">
             <Style.Triggers>
