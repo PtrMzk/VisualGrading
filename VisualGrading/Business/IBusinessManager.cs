@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using VisualGrading.Grades;
 using VisualGrading.Settings;
@@ -11,41 +12,45 @@ namespace VisualGrading.Business
     {
         #region Methods
 
-        void InsertGrade(Grade grade);
-        Task InsertGradeAsync(Grade grade);
-        void UpdateGrade(Grade grade);
-        Task UpdateGradeAsync(Grade grade);
-        void UpdateStudent(Student student);
-        Task UpdateStudentAsync(Student student);
-        void InsertStudent(Student student);
-        Task InsertStudentAsync(Student student);
-        void UpdateTest(Test test);
-        Task UpdateTestAsync(Test test);
-        void InsertTest(Test test);
-        Task InsertTestAsync(Test test);
-        void InsertTestSeries(TestSeries tests);
-        Task InsertTestSeriesAsync(TestSeries tests);
         void DeleteStudent(Student student);
         Task DeleteStudentAsync(Student student);
         void DeleteTest(Test test);
         Task DeleteTestAsync(Test test);
-        List<Grade> GetGrades();
-        Task<List<Grade>> GetGradesAsync();
-        Task<List<Student>> GetStudentsAsync();
-        List<Student> GetStudents();
-        Task<List<Test>> GetTestsAsync();
-        List<Test> GetTests();
         List<Grade> GetFilteredGrades(List<Test> testsToFilterOn);
+        List<Grade> GetFilteredGrades(string subject, string subCategory);
 
         List<Grade> GetFilteredGrades(List<Student> studentsToFilterOn = null, List<Test> testsToFilterOn = null,
             string subject = null, string subCategory = null);
 
-        Task InsertSettingsProfileAsync(SettingsProfile settingsProfile);
+        List<Grade> GetGrades();
+        Task<List<Grade>> GetGradesAsync();
+        SettingsProfile GetSettingsProfileWithoutPassword();
+        Task<SettingsProfile> GetSettingsProfileWithoutPasswordAsync();
+        List<Student> GetStudents();
+        Task<List<Student>> GetStudentsAsync();
+        List<Test> GetTests();
+        Task<List<Test>> GetTestsAsync();
+        void InsertGrade(Grade grade);
+        Task InsertGradeAsync(Grade grade);
         void InsertSettingsProfile(SettingsProfile settingsProfile);
+        Task InsertSettingsProfileAsync(SettingsProfile settingsProfile);
+        void InsertStudent(Student student);
+        Task InsertStudentAsync(Student student);
+        void InsertTest(Test test);
+        Task InsertTestAsync(Test test);
+        void InsertTestSeries(TestSeries tests);
+        Task InsertTestSeriesAsync(TestSeries tests);
+        void SendEmail(string to, string cc, SettingsProfile settingsProfile = null);
+        void SendEmail(SettingsProfile settingsProfile);
+
+        void UpdateGrade(Grade grade);
+        Task UpdateGradeAsync(Grade grade);
         void UpdateSettingsProfile(SettingsProfile settingsProfile);
         Task UpdateSettingsProfileAsync(SettingsProfile settingsProfile);
-        Task<SettingsProfile> GetSettingsProfileAsync();
-        SettingsProfile GetSettingsProfile();
+        void UpdateStudent(Student student);
+        Task UpdateStudentAsync(Student student);
+        void UpdateTest(Test test);
+        Task UpdateTestAsync(Test test);
 
         #endregion
     }

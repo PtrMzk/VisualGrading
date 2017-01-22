@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.Practices.Unity;
 using VisualGrading.DataAccess;
 using VisualGrading.Grades;
@@ -27,106 +31,19 @@ namespace VisualGrading.Business
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
-        public async Task InsertSettingsProfileAsync(SettingsProfile settingsProfile)
+        public void DeleteStudent(Student student)
         {
-            await UpdateSettingsProfileAsync(settingsProfile);
-
-        }
-
-        public void InsertSettingsProfile(SettingsProfile settingsProfile)
-        {
-            UpdateSettingsProfile(settingsProfile);
-
-        }
-
-        public void UpdateSettingsProfile(SettingsProfile settingsProfile)
-        {
-            _dataManager.SaveSettingsProfile(settingsProfile);
-            _dataManager.CommitChanges();
-        }
-
-        public async Task UpdateSettingsProfileAsync(SettingsProfile settingsProfile)
-        {
-            _dataManager.SaveSettingsProfile(settingsProfile);
-            _dataManager.CommitChanges();
-        }
-
-        public async Task<SettingsProfile> GetSettingsProfileAsync()
-        {
-            return await _dataManager.GetSettingsProfileAsync();
-        }
-
-        public SettingsProfile GetSettingsProfile()
-        {
-            return _dataManager.GetSettingsProfile();
-        }
-
-
-
-        public async Task UpdateTestAsync(Test test)
-        {
-            _dataManager.SaveTest(test);
-
-            await _dataManager.CommitChangesAsync();
-        }
-
-        public void UpdateTest(Test test)
-        {
-            _dataManager.SaveTest(test);
+            _dataManager.DeleteStudent(student);
 
             _dataManager.CommitChanges();
-        }
-
-        public void InsertTest(Test test)
-        {
-            InsertTestAndApplicableGrades(test);
-
-            _dataManager.CommitChanges();
-        }
-
-        public async Task InsertTestAsync(Test test)
-        {
-            InsertTestAndApplicableGrades(test);
-
-            await _dataManager.CommitChangesAsync();
-        }
-
-        public async Task InsertTestSeriesAsync(TestSeries tests)
-        {
-            for (var i = 0; i < tests.TestCount; i++)
-            {
-                var seriesNumber = i + 1;
-                var test = GenerateTestFromTestSeries(tests, seriesNumber);
-                await InsertTestAsync(test);
-            }
-        }
-
-        public void InsertTestSeries(TestSeries tests)
-        {
-            for (var i = 0; i < tests.TestCount; i++)
-            {
-                var seriesNumber = i + 1;
-                var test = GenerateTestFromTestSeries(tests, seriesNumber);
-                InsertTest(test);
-            }
-        }
-
-        public async Task<List<Test>> GetTestsAsync()
-        {
-            return await _dataManager.GetTestsAsync();
-        }
-
-        public List<Test> GetTests()
-        {
-            return _dataManager.GetTests();
         }
 
         //the delete methods delete grades via Entity Framework
-        public async Task DeleteTestAsync(Test test)
+        public async Task DeleteStudentAsync(Student student)
         {
-            _dataManager.DeleteTest(test);
+            _dataManager.DeleteStudent(student);
 
             await _dataManager.CommitChangesAsync();
         }
@@ -138,123 +55,12 @@ namespace VisualGrading.Business
             _dataManager.CommitChanges();
         }
 
-        private Test GenerateTestFromTestSeries(TestSeries tests, int seriesNumber)
-        {
-            var test = new Test(string.Format("{0} {1}", tests.Name, seriesNumber), tests.Subject, tests.SubCategory,
-                seriesNumber, tests.MaximumPoints);
-            return test;
-        }
-
-        private void InsertTestAndApplicableGrades(Test test)
-        {
-            _dataManager.SaveTest(test);
-
-            //todo: see if you can do this from the repository
-            var students = _dataManager.GetStudents();
-
-            foreach (var student in students)
-            {
-                var grade = new Grade(student.ID, test.ID);
-                _dataManager.SaveGrade(grade);
-            }
-        }
-
-        public async Task UpdateStudentAsync(Student student)
-        {
-            _dataManager.SaveStudent(student);
-
-            await _dataManager.CommitChangesAsync();
-        }
-
-        public void UpdateStudent(Student student)
-        {
-            _dataManager.SaveStudent(student);
-
-            _dataManager.CommitChanges();
-        }
-
-        public async Task InsertStudentAsync(Student student)
-        {
-            InsertStudentAndApplicableGrades(student);
-
-            await _dataManager.CommitChangesAsync();
-        }
-
-        public void InsertStudent(Student student)
-        {
-            InsertStudentAndApplicableGrades(student);
-
-            _dataManager.CommitChanges();
-        }
-
-        public async Task<List<Student>> GetStudentsAsync()
-        {
-            return await _dataManager.GetStudentsAsync();
-        }
-
-        public List<Student> GetStudents()
-        {
-            return _dataManager.GetStudents();
-        }
-
         //the delete methods delete grades via Entity Framework
-        public async Task DeleteStudentAsync(Student student)
+        public async Task DeleteTestAsync(Test test)
         {
-            _dataManager.DeleteStudent(student);
+            _dataManager.DeleteTest(test);
 
             await _dataManager.CommitChangesAsync();
-        }
-
-        public void DeleteStudent(Student student)
-        {
-            _dataManager.DeleteStudent(student);
-
-            _dataManager.CommitChanges();
-        }
-
-        private void InsertStudentAndApplicableGrades(Student student)
-        {
-            _dataManager.SaveStudent(student);
-
-            //todo: see if you can do this from the repository
-            var tests = _dataManager.GetTests();
-
-            foreach (var test in tests)
-            {
-                var grade = new Grade(student.ID, test.ID);
-                _dataManager.SaveGrade(grade);
-            }
-        }
-
-        //this can be the same as UpdateGrade since nothing needs to be generated
-        public async Task InsertGradeAsync(Grade grade)
-        {
-            await UpdateGradeAsync(grade);
-        }
-
-        //this can be the same as UpdateGrade since nothing needs to be generated
-        public void InsertGrade(Grade grade)
-        {
-            UpdateGrade(grade);
-        }
-
-        public async Task UpdateGradeAsync(Grade grade)
-        {
-            _dataManager.SaveGrade(grade);
-
-            await _dataManager.CommitChangesAsync();
-        }
-
-        public void UpdateGrade(Grade grade)
-        {
-            _dataManager.SaveGrade(grade);
-
-            _dataManager.CommitChanges();
-        }
-
-        public async Task<List<Grade>> GetGradesAsync()
-        {
-            return await _dataManager.GetGradesAsync();
         }
 
         public List<Grade> GetFilteredGrades(List<Test> testsToFilterOn)
@@ -285,6 +91,267 @@ namespace VisualGrading.Business
         public List<Grade> GetGrades()
         {
             return _dataManager.GetGrades();
+        }
+
+        public async Task<List<Grade>> GetGradesAsync()
+        {
+            return await _dataManager.GetGradesAsync();
+        }
+
+        public SettingsProfile GetSettingsProfileWithoutPassword()
+        {
+            return _dataManager.GetSettingsProfileWithoutPassword();
+        }
+
+        public async Task<SettingsProfile> GetSettingsProfileWithoutPasswordAsync()
+        {
+            return await _dataManager.GetSettingsProfileWithoutPasswordAsync();
+        }
+
+        public List<Student> GetStudents()
+        {
+            return _dataManager.GetStudents();
+        }
+
+        public async Task<List<Student>> GetStudentsAsync()
+        {
+            return await _dataManager.GetStudentsAsync();
+        }
+
+        public List<Test> GetTests()
+        {
+            return _dataManager.GetTests();
+        }
+
+        public async Task<List<Test>> GetTestsAsync()
+        {
+            return await _dataManager.GetTestsAsync();
+        }
+
+        //this can be the same as UpdateGrade since nothing needs to be generated
+        public void InsertGrade(Grade grade)
+        {
+            UpdateGrade(grade);
+        }
+
+        //this can be the same as UpdateGrade since nothing needs to be generated
+        public async Task InsertGradeAsync(Grade grade)
+        {
+            await UpdateGradeAsync(grade);
+        }
+
+        public void InsertSettingsProfile(SettingsProfile settingsProfile)
+        {
+            UpdateSettingsProfile(settingsProfile);
+        }
+
+        public async Task InsertSettingsProfileAsync(SettingsProfile settingsProfile)
+        {
+            await UpdateSettingsProfileAsync(settingsProfile);
+        }
+
+        public void InsertStudent(Student student)
+        {
+            InsertStudentAndApplicableGrades(student);
+
+            _dataManager.CommitChanges();
+        }
+
+        public async Task InsertStudentAsync(Student student)
+        {
+            InsertStudentAndApplicableGrades(student);
+
+            await _dataManager.CommitChangesAsync();
+        }
+
+        public void InsertTest(Test test)
+        {
+            InsertTestAndApplicableGrades(test);
+
+            _dataManager.CommitChanges();
+        }
+
+        public async Task InsertTestAsync(Test test)
+        {
+            InsertTestAndApplicableGrades(test);
+
+            await _dataManager.CommitChangesAsync();
+        }
+
+        public void InsertTestSeries(TestSeries tests)
+        {
+            for (var i = 0; i < tests.TestCount; i++)
+            {
+                var seriesNumber = i + 1;
+                var test = GenerateTestFromTestSeries(tests, seriesNumber);
+                InsertTest(test);
+            }
+        }
+
+        public async Task InsertTestSeriesAsync(TestSeries tests)
+        {
+            for (var i = 0; i < tests.TestCount; i++)
+            {
+                var seriesNumber = i + 1;
+                var test = GenerateTestFromTestSeries(tests, seriesNumber);
+                await InsertTestAsync(test);
+            }
+        }
+
+        //overload used for sending test emails with in-memory settings profile
+        public void SendEmail(SettingsProfile settingsProfile)
+        {
+            SendEmail(settingsProfile.EmailAddress, null, settingsProfile);
+        }
+
+        public async void SendEmail(string to, string cc, SettingsProfile inMemorySettingsProfile = null)
+        {
+            SettingsProfile settingsProfile;
+            var inMemorySettingsProfileInUse = false;
+
+            if (inMemorySettingsProfile == null)
+            {
+                settingsProfile = _dataManager.GetSettingsProfileWithPassword();
+            }
+            else
+            {
+                settingsProfile = inMemorySettingsProfile;
+                inMemorySettingsProfileInUse = true;
+            }
+
+            if (string.IsNullOrEmpty(to))
+                to = settingsProfile.EmailAddress;
+
+            try
+            {
+                using (var client = new SmtpClient())
+                {
+                    client.Port = settingsProfile.EmailPort;
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential(settingsProfile.EmailAddress,
+                        settingsProfile.EmailPassword);
+                    client.Host = settingsProfile.SMTPAddress;
+                    client.EnableSsl = settingsProfile.EmailUsesSSL;
+
+                    using (var message = new MailMessage())
+                    {
+                        //message.Bcc.Add(webmasterEmail);
+                        message.From = new MailAddress(settingsProfile.EmailAddress);
+                        message.To.Add(new MailAddress(to));
+                        if (!string.IsNullOrEmpty(cc))
+                            message.CC.Add(new MailAddress(cc));
+                        message.Subject = "VisualGrading: Test Email";
+                        message.Body = settingsProfile.EmailMessage;
+                        await client.SendMailAsync(message);
+
+                        //todo: this is not MVVM friendly, needs to route exceptions back up to view instead
+                        MessageBox.Show("Email sent successfully.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //todo: this is not MVVM friendly, needs to route exceptions back up to view instead
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (!inMemorySettingsProfileInUse)
+                    settingsProfile.EmailPassword.Dispose();
+            }
+        }
+
+        public void UpdateGrade(Grade grade)
+        {
+            _dataManager.SaveGrade(grade);
+
+            _dataManager.CommitChanges();
+        }
+
+        public async Task UpdateGradeAsync(Grade grade)
+        {
+            _dataManager.SaveGrade(grade);
+
+            await _dataManager.CommitChangesAsync();
+        }
+
+        public void UpdateSettingsProfile(SettingsProfile settingsProfile)
+        {
+            _dataManager.SaveSettingsProfile(settingsProfile);
+            _dataManager.CommitChanges();
+        }
+
+        public async Task UpdateSettingsProfileAsync(SettingsProfile settingsProfile)
+        {
+            _dataManager.SaveSettingsProfile(settingsProfile);
+            await _dataManager.CommitChangesAsync();
+        }
+
+        public void UpdateStudent(Student student)
+        {
+            _dataManager.SaveStudent(student);
+
+            _dataManager.CommitChanges();
+        }
+
+        public async Task UpdateStudentAsync(Student student)
+        {
+            _dataManager.SaveStudent(student);
+
+            await _dataManager.CommitChangesAsync();
+        }
+
+        public void UpdateTest(Test test)
+        {
+            _dataManager.SaveTest(test);
+
+            _dataManager.CommitChanges();
+        }
+
+        public async Task UpdateTestAsync(Test test)
+        {
+            _dataManager.SaveTest(test);
+
+            await _dataManager.CommitChangesAsync();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private Test GenerateTestFromTestSeries(TestSeries tests, int seriesNumber)
+        {
+            var test = new Test(string.Format("{0} {1}", tests.Name, seriesNumber), tests.Subject, tests.SubCategory,
+                seriesNumber, tests.MaximumPoints);
+            return test;
+        }
+
+        private void InsertStudentAndApplicableGrades(Student student)
+        {
+            _dataManager.SaveStudent(student);
+
+            //todo: see if you can do this from the repository
+            var tests = _dataManager.GetTests();
+
+            foreach (var test in tests)
+            {
+                var grade = new Grade(student.ID, test.ID);
+                _dataManager.SaveGrade(grade);
+            }
+        }
+
+        private void InsertTestAndApplicableGrades(Test test)
+        {
+            _dataManager.SaveTest(test);
+
+            //todo: see if you can do this from the repository
+            var students = _dataManager.GetStudents();
+
+            foreach (var student in students)
+            {
+                var grade = new Grade(student.ID, test.ID);
+                _dataManager.SaveGrade(grade);
+            }
         }
 
         #endregion

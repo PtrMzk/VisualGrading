@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 using AutoMapper;
 using VisualGrading.Grades;
 using VisualGrading.Model.Data;
@@ -30,6 +31,9 @@ namespace VisualGrading.DataAccess
 
         protected override void Configure()
         {
+            CreateMap<string, MailAddress>().ConvertUsing(new StringToMailAddressTypeConverter());
+            CreateMap<MailAddress, string>().ConvertUsing(new MailAddressToStringTypeConverter());
+
             //CreateMap<string, DateTime>().ConvertUsing(new IntToDateTimeTypeConverter());
             //CreateMap<DateTime, string>().ConvertUsing(new DateTimeToIntTypeConverter());
             //CreateMap<StudentDTO, Student>();
@@ -44,6 +48,22 @@ namespace VisualGrading.DataAccess
         {
             foreach (var kvp in MappingDictionary)
                 CreateMap(kvp.Key, kvp.Value);
+        }
+    }
+
+    public class MailAddressToStringTypeConverter : ITypeConverter<MailAddress, string>
+    {
+        public string Convert(MailAddress source, string destination, ResolutionContext context)
+        {
+            return source.Address;
+        }
+    }
+
+    public class StringToMailAddressTypeConverter : ITypeConverter<string, MailAddress>
+    {
+        public MailAddress Convert(string source, MailAddress destination, ResolutionContext context)
+        {
+            return new MailAddress(source);
         }
     }
 

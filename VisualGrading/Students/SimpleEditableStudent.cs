@@ -39,12 +39,14 @@ namespace VisualGrading.Students
             set { SetProperty(ref _nickname, value); }
         }
 
+        [EmailAddress]
         public string EmailAddress
         {
             get { return _emailAddress; }
             set { SetProperty(ref _emailAddress, value); }
         }
 
+        [EmailAddress]
         public string ParentEmailAddress
         {
             get { return _parentEmailAddress; }

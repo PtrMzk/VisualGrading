@@ -4,14 +4,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     x:Class="VisualGrading.Settings.SettingsView"
+    xmlns:local="VisualGrading.Settings"
     xmlns:h="clr-namespace:VisualGrading.Helpers"
     xmlns:presentation="clr-namespace:VisualGrading.Presentation"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:settings="clr-namespace:VisualGrading.Settings"
     mc:Ignorable="d"
     d:DesignHeight="400" d:DesignWidth="300">
     <UserControl.Resources>
         <presentation:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
         <presentation:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
-                                                 Negate="True" />
+                                                            Negate="True" />
         <Style TargetType="TextBox">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError"
@@ -20,7 +23,6 @@
                             Value="{Binding RelativeSource={x:Static RelativeSource.Self},
                         Path=(Validation.Errors).CurrentItem.ErrorContent}" />
                 </Trigger>
-
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
@@ -30,7 +32,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            
         </Grid.RowDefinitions>
         <Grid Row="0" Style="{StaticResource ChildNavGridStyle}" />
         <Grid x:Name="grid1" DataContext="{Binding SettingsProfile}" HorizontalAlignment="Left" Margin="10,15,0,0"
@@ -42,7 +43,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -57,7 +57,12 @@
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
             <PasswordBox x:Name="passwordTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                          Grid.Row="1"
-                         VerticalAlignment="Center" Style="{StaticResource AddEditPasswordBoxStyle}" />
+                         VerticalAlignment="Center" Style="{StaticResource AddEditPasswordBoxStyle}"
+                          >
+                <i:Interaction.Behaviors>
+                    <settings:PasswordBoxBindingBehavior Password="{Binding EmailPassword}" />
+                </i:Interaction.Behaviors>
+            </PasswordBox>
             <Label Content="SMTP:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
             <TextBox x:Name="smtpTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
@@ -71,37 +76,30 @@
             <Label Content="SSL:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
             <CheckBox Grid.Row="4" Grid.Column="1" VerticalContentAlignment="Center"
-                      HorizontalContentAlignment="Center" IsChecked="{Binding EmailUsesSSL}"/>
+                      HorizontalContentAlignment="Center" IsChecked="{Binding EmailUsesSSL}" />
             <Label Content="Message:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="5"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
             <TextBox Grid.Row="5" Grid.Column="1" VerticalContentAlignment="Center"
-                      HorizontalContentAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}"
-                     Text="{Binding EmailMessage, ValidatesOnNotifyDataErrors=True}"/>
+                     HorizontalContentAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}"
+                     Text="{Binding EmailMessage, ValidatesOnNotifyDataErrors=True}" />
         </Grid>
         <Grid Grid.Row="2">
             <Button Content="Save"
                     Command="{Binding SaveCommand}"
-                    Visibility="{Binding EditMode, Converter={StaticResource VisConverter}}"
                     HorizontalAlignment="Left"
                     Margin="25,5,0,0"
                     VerticalAlignment="Top"
                     Width="75"
                     Style="{StaticResource AddEditButtonStyle}" />
-            <Button Content="Add"
-                    Command="{Binding SaveCommand}"
-                    Visibility="{Binding EditMode, Converter={StaticResource NegVisConverter}}"
+            <Button Content="Send Test Email"
+                    Command="{Binding SendTestEmailCommand}"
+                    CommandParameter="{Binding EmailAddress}"
                     HorizontalAlignment="Left"
-                    Margin="25,5,0,0"
+                    Margin="125,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75"
+                    Width="150"
                     Style="{StaticResource AddEditButtonStyle}" />
-            <Button Content="Cancel"
-                    Command="{Binding CancelCommand}"
-                    HorizontalAlignment="Left"
-                    Margin="130,5,0,0"
-                    VerticalAlignment="Top"
-                    Width="75"
-                    Style="{StaticResource AddEditButtonStyle}" />
+            
         </Grid>
 
     </Grid>

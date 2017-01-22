@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Text;
+using System.Security;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Practices.Unity;
@@ -18,12 +18,14 @@ namespace VisualGrading.DataAccess
 
         private readonly AutoMapperProfile _autoMapperProfile = new AutoMapperProfile();
 
+        private readonly Encryption _encryption;
+
         private readonly IRepository<GradeDTO> _gradeRepository;
 
         private readonly IRepository<SettingsProfileDTO> _settingsProfileRepository;
 
         private readonly IRepository<StudentDTO> _studentRepository;
-        
+
         private readonly IRepository<TestDTO> _testRepository;
 
         private readonly IUnitOfWork _unitOfWork;
@@ -43,6 +45,7 @@ namespace VisualGrading.DataAccess
             _gradeRepository = _unitOfWork.GradeRepository;
             _settingsProfileRepository = _unitOfWork.SettingsProfileRepository;
 
+            _encryption = new Encryption();
         }
 
         #endregion
@@ -53,7 +56,7 @@ namespace VisualGrading.DataAccess
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         //TODO: Refactor these methods to be generic
         public void CommitChanges()
@@ -66,38 +69,15 @@ namespace VisualGrading.DataAccess
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task<List<Student>> GetStudentsAsync()
+        public void DeleteGrade(Grade grade)
         {
-            var studentDTOs = await _studentRepository.GetAllAsync();
+            var gradeDTO = new GradeDTO();
 
-            var students = ConvertStudentDTOsToStudents(studentDTOs);
+            Mapper.Map(grade, gradeDTO);
 
-            return await CalculateOverallGradesAsync(students);
-        }
-
-        public List<Student> GetStudents()
-        {
-            var studentDTOs = _studentRepository.GetAll();
-
-            var students = ConvertStudentDTOsToStudents(studentDTOs);
-
-            return CalculateOverallGrades(students);
-        }
-
-        public void SaveStudent(Student student)
-        {
-            var studentDTO = new StudentDTO();
-            StudentDTO existingEntity = null;
-
-            Mapper.Map(student, studentDTO);
-
-            if (studentDTO.ID != 0)
-                existingEntity = _studentRepository.Single(x => x.ID == studentDTO.ID);
-
+            var existingEntity = _gradeRepository.Single(x => x.ID == gradeDTO.ID);
             if (existingEntity != null)
-                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(studentDTO);
-            else
-                _studentRepository.Add(studentDTO);
+                _gradeRepository.Delete(existingEntity);
         }
 
         public void DeleteStudent(Student student)
@@ -112,71 +92,6 @@ namespace VisualGrading.DataAccess
                 _studentRepository.Delete(existingEntity);
         }
 
-        private List<Student> ConvertStudentDTOsToStudents(List<StudentDTO> studentDTOs)
-        {
-            var students = new List<Student>();
-
-            foreach (var studentDTO in studentDTOs)
-            {
-                var student = new Student();
-                Mapper.Map(studentDTO, student);
-                students.Add(student);
-            }
-
-            return students;
-        }
-
-        private List<Student> CalculateOverallGrades(List<Student> students)
-        {
-            var grades = GetGrades();
-
-            return CalculateOverallGrades(students, grades);
-        }
-
-        private async Task<List<Student>> CalculateOverallGradesAsync(List<Student> students)
-        {
-            var grades = await GetGradesAsync();
-
-            return CalculateOverallGrades(students, grades);
-        }
-
-        private List<Student> CalculateOverallGrades(List<Student> students, List<Grade> grades)
-        {
-            var studentPoints = new Dictionary<long, StudentPointsHelper>();
-
-            foreach (var grade in grades)
-                if (studentPoints.ContainsKey(grade.StudentID))
-                {
-                    studentPoints[grade.StudentID].PointsAchieved += grade.Points;
-                    studentPoints[grade.StudentID].MaxPoints += grade.Test.MaximumPoints;
-                }
-                else
-                {
-                    studentPoints.Add(grade.StudentID,
-                        new StudentPointsHelper {PointsAchieved = grade.Points, MaxPoints = grade.Test.MaximumPoints});
-                }
-
-            foreach (var student in students)
-                if (studentPoints.ContainsKey(student.ID))
-                    student.OverallGrade = studentPoints[student.ID].Average;
-
-            return students;
-        }
-
-        public async Task<List<Test>> GetTestsAsync()
-        {
-            var testDTOs = await _testRepository.GetAllAsync();
-
-            return ConvertTestDTOsToTests(testDTOs);
-        }
-
-        public List<Test> GetTests()
-        {
-            var testDTOs = _testRepository.GetAll();
-
-            return ConvertTestDTOsToTests(testDTOs);
-        }
-
         public void DeleteTest(Test test)
         {
             var testDTO = new TestDTO();
@@ -186,81 +101,6 @@ namespace VisualGrading.DataAccess
             var existingEntity = _testRepository.Single(x => x.ID == testDTO.ID);
             if (existingEntity != null)
                 _testRepository.Delete(existingEntity);
-        }
-
-        public void SaveTest(Test test)
-        {
-            var testDTO = new TestDTO();
-            TestDTO existingEntity = null;
-
-            Mapper.Map(test, testDTO);
-
-            if (testDTO.ID != 0)
-                existingEntity = _testRepository.Single(x => x.ID == testDTO.ID);
-            if (existingEntity != null)
-                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(testDTO);
-            else
-                _testRepository.Add(testDTO);
-        }
-
-        public void SaveSettingsProfile(SettingsProfile settingsProfile)
-        {
-            var settingsProfileDTO = new SettingsProfileDTO();
-            SettingsProfileDTO existingEntity = null;
-
-            Mapper.Map(settingsProfile, settingsProfileDTO);
-
-            settingsProfileDTO.EncryptedEmailPassword = EncryptEmailPassword(settingsProfile);
-            
-            if (settingsProfileDTO.ID != 0)
-                existingEntity = _settingsProfileRepository.Single(x => x.ID == settingsProfileDTO.ID);
-            if (existingEntity != null)
-                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(settingsProfileDTO);
-            else
-                _settingsProfileRepository.Add(settingsProfileDTO);
-        }
-
-        private byte[] EncryptEmailPassword(SettingsProfile settingsProfile)
-        {
-            return Encoding.UTF8.GetBytes(settingsProfile.EmailPassword);
-        }
-
-        private string DecryptEmailPassword(SettingsProfileDTO settingsProfileDTO)
-        {
-            return System.Text.Encoding.Default.GetString(settingsProfileDTO.EncryptedEmailPassword);
-        }
-
-        public async Task<SettingsProfile> GetSettingsProfileAsync()
-        {
-            var settingsProfileDTO = await _settingsProfileRepository.FirstOrDefaultAsync();
-            return ConvertSettingsProfileDTOToSettingProfile(settingsProfileDTO);
-        }
-
-        public SettingsProfile GetSettingsProfile()
-        {
-            var settingsProfileDTO = _settingsProfileRepository.FirstOrDefault();
-            return ConvertSettingsProfileDTOToSettingProfile(settingsProfileDTO);
-        }
-
-        private List<Test> ConvertTestDTOsToTests(List<TestDTO> testDTOs)
-        {
-            var tests = new List<Test>();
-
-            foreach (var testDTO in testDTOs)
-            {
-                var test = new Test();
-                Mapper.Map(testDTO, test);
-                tests.Add(test);
-            }
-
-            return tests;
-        }
-
-        public async Task<List<Grade>> GetGradesAsync()
-        {
-            var gradeDTOs = await _gradeRepository.GetAllAsync();
-
-            return ConvertGradeDTOsToGrades(gradeDTOs);
         }
 
         public List<Grade> GetFilteredGrades(List<long> studentIDsFilter = null, List<long> testIDsFilter = null,
@@ -289,15 +129,67 @@ namespace VisualGrading.DataAccess
             return ConvertGradeDTOsToGrades(gradeDTOs);
         }
 
-        public void DeleteGrade(Grade grade)
+        public async Task<List<Grade>> GetGradesAsync()
         {
-            var gradeDTO = new GradeDTO();
+            var gradeDTOs = await _gradeRepository.GetAllAsync();
 
-            Mapper.Map(grade, gradeDTO);
+            return ConvertGradeDTOsToGrades(gradeDTOs);
+        }
 
-            var existingEntity = _gradeRepository.Single(x => x.ID == gradeDTO.ID);
-            if (existingEntity != null)
-                _gradeRepository.Delete(existingEntity);
+        public SettingsProfile GetSettingsProfileWithoutPassword()
+        {
+            var settingsProfileDTO = _settingsProfileRepository.FirstOrDefault();
+            return ConvertSettingsProfileDTOToSettingProfileWithoutPassword(settingsProfileDTO);
+        }
+
+        public async Task<SettingsProfile> GetSettingsProfileWithoutPasswordAsync()
+        {
+            var settingsProfileDTO = await _settingsProfileRepository.FirstOrDefaultAsync();
+            return ConvertSettingsProfileDTOToSettingProfileWithoutPassword(settingsProfileDTO);
+        }
+
+        public SettingsProfile GetSettingsProfileWithPassword()
+        {
+            var settingsProfileDTO = _settingsProfileRepository.FirstOrDefault();
+            return ConvertSettingsProfileDTOToSettingProfileWithPassword(settingsProfileDTO);
+        }
+
+        public async Task<SettingsProfile> GetSettingsProfileWithPasswordAsync()
+        {
+            var settingsProfileDTO = await _settingsProfileRepository.FirstOrDefaultAsync();
+            return ConvertSettingsProfileDTOToSettingProfileWithPassword(settingsProfileDTO);
+        }
+
+        public List<Student> GetStudents()
+        {
+            var studentDTOs = _studentRepository.GetAll();
+
+            var students = ConvertStudentDTOsToStudents(studentDTOs);
+
+            return CalculateOverallGrades(students);
+        }
+
+        public async Task<List<Student>> GetStudentsAsync()
+        {
+            var studentDTOs = await _studentRepository.GetAllAsync();
+
+            var students = ConvertStudentDTOsToStudents(studentDTOs);
+
+            return await CalculateOverallGradesAsync(students);
+        }
+
+        public List<Test> GetTests()
+        {
+            var testDTOs = _testRepository.GetAll();
+
+            return ConvertTestDTOsToTests(testDTOs);
+        }
+
+        public async Task<List<Test>> GetTestsAsync()
+        {
+            var testDTOs = await _testRepository.GetAllAsync();
+
+            return ConvertTestDTOsToTests(testDTOs);
         }
 
         public void SaveGrade(Grade grade)
@@ -315,6 +207,95 @@ namespace VisualGrading.DataAccess
                 _gradeRepository.Add(gradeDTO);
         }
 
+        public void SaveSettingsProfile(SettingsProfile settingsProfile)
+        {
+            var settingsProfileDTO = new SettingsProfileDTO();
+            SettingsProfileDTO existingEntity = null;
+
+            Mapper.Map(settingsProfile, settingsProfileDTO);
+
+            settingsProfileDTO.EncryptedEmailPassword = EncryptEmailPassword(settingsProfile);
+
+            if (settingsProfileDTO.ID != 0)
+                existingEntity = _settingsProfileRepository.Single(x => x.ID == settingsProfileDTO.ID);
+            if (existingEntity != null)
+                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(settingsProfileDTO);
+            else
+                _settingsProfileRepository.Add(settingsProfileDTO);
+        }
+
+        public void SaveStudent(Student student)
+        {
+            var studentDTO = new StudentDTO();
+            StudentDTO existingEntity = null;
+
+            Mapper.Map(student, studentDTO);
+
+            if (studentDTO.ID != 0)
+                existingEntity = _studentRepository.Single(x => x.ID == studentDTO.ID);
+
+            if (existingEntity != null)
+                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(studentDTO);
+            else
+                _studentRepository.Add(studentDTO);
+        }
+
+        public void SaveTest(Test test)
+        {
+            var testDTO = new TestDTO();
+            TestDTO existingEntity = null;
+
+            Mapper.Map(test, testDTO);
+
+            if (testDTO.ID != 0)
+                existingEntity = _testRepository.Single(x => x.ID == testDTO.ID);
+            if (existingEntity != null)
+                _unitOfWork.Entry(existingEntity).CurrentValues.SetValues(testDTO);
+            else
+                _testRepository.Add(testDTO);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private List<Student> CalculateOverallGrades(List<Student> students)
+        {
+            var grades = GetGrades();
+
+            return CalculateOverallGrades(students, grades);
+        }
+
+        private List<Student> CalculateOverallGrades(List<Student> students, List<Grade> grades)
+        {
+            var studentPoints = new Dictionary<long, StudentPointsHelper>();
+
+            foreach (var grade in grades)
+                if (studentPoints.ContainsKey(grade.StudentID))
+                {
+                    studentPoints[grade.StudentID].PointsAchieved += grade.Points;
+                    studentPoints[grade.StudentID].MaxPoints += grade.Test.MaximumPoints;
+                }
+                else
+                {
+                    studentPoints.Add(grade.StudentID,
+                        new StudentPointsHelper {PointsAchieved = grade.Points, MaxPoints = grade.Test.MaximumPoints});
+                }
+
+            foreach (var student in students)
+                if (studentPoints.ContainsKey(student.ID))
+                    student.OverallGrade = studentPoints[student.ID].Average;
+
+            return students;
+        }
+
+        private async Task<List<Student>> CalculateOverallGradesAsync(List<Student> students)
+        {
+            var grades = await GetGradesAsync();
+
+            return CalculateOverallGrades(students, grades);
+        }
+
         private List<Grade> ConvertGradeDTOsToGrades(List<GradeDTO> gradeDTOs)
         {
             var grades = new List<Grade>();
@@ -329,15 +310,62 @@ namespace VisualGrading.DataAccess
             return grades;
         }
 
-        private SettingsProfile ConvertSettingsProfileDTOToSettingProfile(SettingsProfileDTO settingProfileDTO)
+        private SettingsProfile ConvertSettingsProfileDTOToSettingProfileWithoutPassword(
+            SettingsProfileDTO settingProfileDTO)
         {
             var settingsProfile = new SettingsProfile();
 
             Mapper.Map(settingProfileDTO, settingsProfile);
 
+            return settingsProfile;
+        }
+
+        private SettingsProfile ConvertSettingsProfileDTOToSettingProfileWithPassword(
+            SettingsProfileDTO settingProfileDTO)
+        {
+            var settingsProfile = ConvertSettingsProfileDTOToSettingProfileWithoutPassword(settingProfileDTO);
+
             settingsProfile.EmailPassword = DecryptEmailPassword(settingProfileDTO);
 
             return settingsProfile;
+        }
+
+        private List<Student> ConvertStudentDTOsToStudents(List<StudentDTO> studentDTOs)
+        {
+            var students = new List<Student>();
+
+            foreach (var studentDTO in studentDTOs)
+            {
+                var student = new Student();
+                Mapper.Map(studentDTO, student);
+                students.Add(student);
+            }
+
+            return students;
+        }
+
+        private List<Test> ConvertTestDTOsToTests(List<TestDTO> testDTOs)
+        {
+            var tests = new List<Test>();
+
+            foreach (var testDTO in testDTOs)
+            {
+                var test = new Test();
+                Mapper.Map(testDTO, test);
+                tests.Add(test);
+            }
+
+            return tests;
+        }
+
+        private SecureString DecryptEmailPassword(SettingsProfileDTO settingsProfileDTO)
+        {
+            return _encryption.DecryptByteArray(settingsProfileDTO.EncryptedEmailPassword);
+        }
+
+        private byte[] EncryptEmailPassword(SettingsProfile settingsProfile)
+        {
+            return _encryption.EncryptSecureString(settingsProfile.EmailPassword);
         }
 
         #endregion

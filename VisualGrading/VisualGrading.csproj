@@ -145,6 +145,7 @@
     <Compile Include="Business\IBusinessManager.cs" />
     <Compile Include="Charts\ColorHelper.cs" />
     <Compile Include="DataAccess\DataManager.cs" />
+    <Compile Include="DataAccess\Encryption.cs" />
     <Compile Include="DataAccess\IDataManager.cs" />
     <Compile Include="Grades\GradeGenerator.cs" />
     <Compile Include="Grades\IGradeManager.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="Presentation\NegatableBooleanToVisibilityConverter.cs" />
     <Compile Include="Presentation\ObservableCollectionExtended.cs" />
     <Compile Include="Presentation\ValidatableBaseViewModel.cs" />
+    <Compile Include="Settings\PasswordBoxBindingBehavior.cs" />
     <Compile Include="Settings\SettingsProfile.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Settings\SettingsView.xaml.cs">

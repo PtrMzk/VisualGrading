@@ -33,8 +33,13 @@ namespace VisualGrading.DataAccess
 
         void SaveSettingsProfile(SettingsProfile settingsProfile);
 
-        SettingsProfile GetSettingsProfile();
+        SettingsProfile GetSettingsProfileWithoutPassword();
 
-        Task<SettingsProfile> GetSettingsProfileAsync();
+        SettingsProfile GetSettingsProfileWithPassword();
+
+        Task<SettingsProfile> GetSettingsProfileWithoutPasswordAsync();
+
+        Task<SettingsProfile> GetSettingsProfileWithPasswordAsync();
+
     }
 }

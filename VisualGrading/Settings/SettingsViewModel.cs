@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.Mail;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
@@ -22,8 +24,10 @@ namespace VisualGrading.Settings
             _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             CancelCommand = new RelayCommand(OnCancel);
+            SendTestEmailCommand = new RelayCommand(OnSendTestEmail);
+
             SaveCommand = new RelayCommand(OnSave, CanSave);
-            SettingsProfile = _businessManager.GetSettingsProfile();
+            SettingsProfile = _businessManager.GetSettingsProfileWithoutPassword();
         }
 
         #endregion
@@ -38,6 +42,8 @@ namespace VisualGrading.Settings
 
         public RelayCommand CancelCommand { get; private set; }
 
+        public RelayCommand SendTestEmailCommand { get; private set; }
+        
         public RelayCommand SaveCommand { get; }
 
         public event Action Done = delegate { };
@@ -54,24 +60,16 @@ namespace VisualGrading.Settings
 
         private bool CanSave()
         {
-            //TODO: Implement EditingSettingsProfile
-            //return !EditingStudent.HasErrors;
-            return true;
+            return !SettingsProfile.HasErrors;
         }
 
         private async void OnSave()
         {
-            //UpdateStudent(EditingStudent, _editingStudent);
-            //if (EditMode)
-            //    await _businessManager.UpdateStudentAsync(_editingStudent);
-            //else
-            //    await _businessManager.InsertStudentAsync(_editingStudent);
-
             await _businessManager.UpdateSettingsProfileAsync(SettingsProfile);
 
             //force update so ID is set for new entries
             if (SettingsProfile.ID == 0)
-            SettingsProfile = _businessManager.GetSettingsProfile();
+            SettingsProfile = _businessManager.GetSettingsProfileWithoutPassword();
 
             Done();
         }
@@ -79,6 +77,11 @@ namespace VisualGrading.Settings
         private void OnCancel()
         {
             Done();
+        }
+
+        private void OnSendTestEmail()
+        {
+            _businessManager.SendEmail(SettingsProfile);
         }
 
         #endregion
