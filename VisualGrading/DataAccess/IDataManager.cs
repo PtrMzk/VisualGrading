@@ -30,6 +30,7 @@ namespace VisualGrading.DataAccess
         void SaveGrade(Grade grade);
         void DeleteGrade(Grade grade);
         List<Grade> GetFilteredGrades(List<long> studentIDsToFilterOn = null, List<long> testIDsToFilterOn = null, string subject = null, string subCategory = null);
+        Task<List<Grade>> GetFilteredGradesAsync(List<long> studentIDsToFilterOn = null, List<long> testIDsToFilterOn = null, string subject = null, string subCategory = null);
 
         void SaveSettingsProfile(SettingsProfile settingsProfile);
 

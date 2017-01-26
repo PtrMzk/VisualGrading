@@ -46,6 +46,11 @@ namespace VisualGrading.Model.Data
             return _dbSet.Where(predicate).ToList();
         }
 
+        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
         public T FirstOrDefault()
         {
             return _dbSet.FirstOrDefault();

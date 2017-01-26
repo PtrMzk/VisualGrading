@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using VisualGrading.Grades;
 using VisualGrading.Settings;
@@ -10,7 +9,7 @@ namespace VisualGrading.Business
 {
     public interface IBusinessManager
     {
-        #region Methods
+        #region Public Methods
 
         void DeleteStudent(Student student);
         Task DeleteStudentAsync(Student student);
@@ -40,8 +39,8 @@ namespace VisualGrading.Business
         Task InsertTestAsync(Test test);
         void InsertTestSeries(TestSeries tests);
         Task InsertTestSeriesAsync(TestSeries tests);
-        void SendEmail(string to, string cc, SettingsProfile settingsProfile = null);
-        void SendEmail(SettingsProfile settingsProfile);
+        Task SendEmail(Student student);
+        Task SendTestEmail(SettingsProfile settingsProfile);
 
         void UpdateGrade(Grade grade);
         Task UpdateGradeAsync(Grade grade);

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Mail;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows;
 using Microsoft.Practices.Unity;
 using VisualGrading.DataAccess;
+using VisualGrading.Emails;
 using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Settings;
@@ -19,6 +16,7 @@ namespace VisualGrading.Business
         #region Fields
 
         private readonly IDataManager _dataManager;
+        private readonly IEmailManager _emailManager;
 
         #endregion
 
@@ -27,6 +25,7 @@ namespace VisualGrading.Business
         public BusinessManager()
         {
             _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
+            _emailManager = ContainerHelper.Container.Resolve<IEmailManager>();
         }
 
         #endregion
@@ -198,68 +197,21 @@ namespace VisualGrading.Business
             }
         }
 
-        //overload used for sending test emails with in-memory settings profile
-        public void SendEmail(SettingsProfile settingsProfile)
+        public async Task SendEmail(Student student)
         {
-            SendEmail(settingsProfile.EmailAddress, null, settingsProfile);
+            var students = new List<long> {student.ID};
+
+            Task<List<Grade>> gradesTask = _dataManager.GetFilteredGradesAsync(students);
+            var grades = await gradesTask;
+            await _emailManager.SendEmail(student, grades);
+        }
+        
+        public async Task SendTestEmail(SettingsProfile settingsProfile)
+        {
+            await _emailManager.SendTestEmail(settingsProfile);
         }
 
-        public async void SendEmail(string to, string cc, SettingsProfile inMemorySettingsProfile = null)
-        {
-            SettingsProfile settingsProfile;
-            var inMemorySettingsProfileInUse = false;
-
-            if (inMemorySettingsProfile == null)
-            {
-                settingsProfile = _dataManager.GetSettingsProfileWithPassword();
-            }
-            else
-            {
-                settingsProfile = inMemorySettingsProfile;
-                inMemorySettingsProfileInUse = true;
-            }
-
-            if (string.IsNullOrEmpty(to))
-                to = settingsProfile.EmailAddress;
-
-            try
-            {
-                using (var client = new SmtpClient())
-                {
-                    client.Port = settingsProfile.EmailPort;
-                    client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential(settingsProfile.EmailAddress,
-                        settingsProfile.EmailPassword);
-                    client.Host = settingsProfile.SMTPAddress;
-                    client.EnableSsl = settingsProfile.EmailUsesSSL;
-
-                    using (var message = new MailMessage())
-                    {
-                        //message.Bcc.Add(webmasterEmail);
-                        message.From = new MailAddress(settingsProfile.EmailAddress);
-                        message.To.Add(new MailAddress(to));
-                        if (!string.IsNullOrEmpty(cc))
-                            message.CC.Add(new MailAddress(cc));
-                        message.Subject = "VisualGrading: Test Email";
-                        message.Body = settingsProfile.EmailMessage;
-                        await client.SendMailAsync(message);
-
-                        //todo: this is not MVVM friendly, needs to route exceptions back up to view instead
-                        MessageBox.Show("Email sent successfully.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                //todo: this is not MVVM friendly, needs to route exceptions back up to view instead
-                MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                if (!inMemorySettingsProfileInUse)
-                    settingsProfile.EmailPassword.Dispose();
-            }
-        }
+        //todo: Email should be its own service
 
         public void UpdateGrade(Grade grade)
         {

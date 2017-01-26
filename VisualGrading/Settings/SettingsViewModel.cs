@@ -81,7 +81,7 @@ namespace VisualGrading.Settings
 
         private void OnSendTestEmail()
         {
-            _businessManager.SendEmail(SettingsProfile);
+            _businessManager.SendTestEmail(SettingsProfile);
         }
 
         #endregion

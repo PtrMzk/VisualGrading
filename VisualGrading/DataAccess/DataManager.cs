@@ -122,6 +122,34 @@ namespace VisualGrading.DataAccess
             return ConvertGradeDTOsToGrades(gradeDTOs);
         }
 
+        public async Task<List<Grade>> GetFilteredGradesAsync(List<long> studentIDsFilter = null,
+            List<long> testIDsFilter = null,
+            string subjectFilter = null, string subCategoryFilter = null)
+        {
+            List<GradeDTO> gradeDTOs;
+
+            if (studentIDsFilter == null)
+                studentIDsFilter = new List<long>();
+
+            if (testIDsFilter == null)
+            {
+                testIDsFilter = new List<long>();
+            }
+
+            //TODO: Make sure null check is not needed for the two lists
+            // it was breaking when implemeneted. 
+            gradeDTOs =
+                await _gradeRepository.FindAsync(
+                    g =>
+                        (studentIDsFilter.Contains(g.Student.ID) || studentIDsFilter.Count == 0)
+                        && (testIDsFilter.Contains(g.Test.ID) || testIDsFilter.Count == 0)
+                        && (g.Test.Subject == subjectFilter || subjectFilter == null)
+                        && (g.Test.SubCategory == subCategoryFilter || subCategoryFilter == null)
+                );
+
+            return ConvertGradeDTOsToGrades(gradeDTOs);
+        }
+
         public List<Grade> GetGrades()
         {
             var gradeDTOs = _gradeRepository.GetAll();

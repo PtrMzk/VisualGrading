@@ -12,20 +12,32 @@ namespace VisualGrading.Students
 {
     public class StudentViewModel : BaseViewModel
     {
-        #region Constructor
+        #region Fields
+
+        //private IStudentRepository _repository;
+
+        private readonly IBusinessManager _businessManager;
+
+        private List<Student> _allStudents;
+
+        private ObservableCollectionExtended<Student> _observableStudents;
+
+        private string _searchInput;
+
+        #endregion
+
+        #region Constructors
 
         public StudentViewModel()
         {
-            //_repository = repository;
-
             _businessManager = ContainerHelper.Container.Resolve<IBusinessManager>();
             DeleteCommand = new RelayCommand<Student>(OnDelete, CanDelete);
             AddCommand = new RelayCommand(OnAddStudent);
             EditCommand = new RelayCommand<Student>(OnEditStudent);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
             ChartCommand = new RelayCommand<Student>(OnChartRequested);
+            SendEmailCommand = new RelayCommand<Student>(OnSendEmail);
 
-            //AutoSaveCommand = new RelayCommand(OnRowEdit);
             DeleteRequested += DeleteStudent;
         }
 
@@ -33,19 +45,12 @@ namespace VisualGrading.Students
 
         #region Properties
 
-        //private IStudentRepository _repository;
-
-
-        private readonly IBusinessManager _businessManager;
-
-        private ObservableCollectionExtended<Student> _observableStudents;
-
         public ObservableCollectionExtended<Student> ObservableStudents
         {
             get { return _observableStudents; }
             set
             {
-                if ((_observableStudents != null) && (value != _observableStudents))
+                if (_observableStudents != null && value != _observableStudents)
                     _observableStudents.CollectionPropertyChanged -= ObservableStudents_CollectionChanged;
 
                 SetProperty(ref _observableStudents, value);
@@ -53,8 +58,6 @@ namespace VisualGrading.Students
                 _observableStudents.CollectionPropertyChanged += ObservableStudents_CollectionChanged;
             }
         }
-
-        private List<Student> _allStudents;
 
         private Student _selectedStudent { get; set; }
 
@@ -80,21 +83,13 @@ namespace VisualGrading.Students
 
         public RelayCommand<Student> EditCommand { get; private set; }
 
+        public RelayCommand<Student> SendEmailCommand { get; private set; }
+
         public RelayCommand ClearSearchCommand { get; private set; }
 
         public RelayCommand AutoSaveCommand { get; private set; }
 
         public RelayCommand<Student> ChartCommand { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        public event Action<Student> AddRequested = delegate { };
-        public event Action<Student> EditRequested = delegate { };
-        public event Action<Student> DeleteRequested = delegate { };
-        public event Action<Student> ChartRequested = delegate { };
-
-
-        private string _searchInput;
 
         public string SearchInput
         {
@@ -106,6 +101,23 @@ namespace VisualGrading.Students
             }
         }
 
+        #endregion
+
+        #region Public Methods
+
+        public async void LoadStudents()
+        {
+            if (DesignerProperties.GetIsInDesignMode(
+                new DependencyObject())) return;
+            
+                _allStudents = await _businessManager.GetStudentsAsync();
+
+                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
+
+                PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
+            
+        }
+
         public void OnRowEdit(object sender, PropertyChangedEventArgs e)
         {
             _businessManager.UpdateStudentAsync((Student) sender);
@@ -113,28 +125,21 @@ namespace VisualGrading.Students
 
         #endregion
 
-        #region Methods
+        #region Private Methods
 
-        public async void LoadStudents()
+        //TODO: THIS IS NEVER FALSE
+        private bool CanDelete(Student student)
         {
-            if (DesignerProperties.GetIsInDesignMode(
-                new DependencyObject())) return;
-
-            //todo: this wont update if studnet is added 
-            //if (_allStudents == null)
-            {
-                 _allStudents = await _businessManager.GetStudentsAsync();
-
-                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
-
-                PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
-            }
+            //TODO: Selected StudentDTO doesn't seem to work here, and this isn't really needed...
+            //return SelectedStudent != null;
+            return true;
         }
 
-        private void ObservableStudents_CollectionChanged(object sender,
-            PropertyChangedEventArgs propertyChangedEventArgs)
+        private void DeleteStudent(Student student)
         {
-            _businessManager.UpdateStudentAsync((Student) sender);
+            ObservableStudents.Remove(student);
+            _allStudents.Remove(student);
+            _businessManager.DeleteStudentAsync(student);
         }
 
         private void FilterStudents(string searchInput)
@@ -147,44 +152,20 @@ namespace VisualGrading.Students
                         _allStudents.Where(t => t.FullName.ToLower().Contains(searchInput.ToLower())));
         }
 
-        private void DeleteStudent(Student student)
+        private void ObservableStudents_CollectionChanged(object sender,
+            PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            ObservableStudents.Remove(student);
-            _allStudents.Remove(student);
-            _businessManager.DeleteStudentAsync(student);
+            _businessManager.UpdateStudentAsync((Student) sender);
         }
-
-        private void OnDelete(Student student)
-        {
-            DeleteRequested(student);
-        }
-        
 
         private void OnAddStudent()
         {
-            //place holder for the actual on add StudentDTO command for the actual on add StudentDTO button
-            //the one above is linked to the chart button i believe...
             AddRequested(new Student());
-        }
-
-        private void OnEditStudent(Student student)
-        {
-            EditRequested(student);
         }
 
         private void OnChartRequested(Student student)
         {
             ChartRequested(student);
-
-        }
-
-
-        //TODO: THIS IS NEVER FALSE
-        private bool CanDelete(Student student)
-        {
-            //TODO: Selected StudentDTO doesn't seem to work here, and this isn't really needed...
-            //return SelectedStudent != null;
-            return true;
         }
 
         private void OnClearSearch()
@@ -192,6 +173,28 @@ namespace VisualGrading.Students
             SearchInput = null;
         }
 
+        private void OnDelete(Student student)
+        {
+            DeleteRequested(student);
+        }
+
+        private void OnEditStudent(Student student)
+        {
+            EditRequested(student);
+        }
+
+        private void OnSendEmail(Student student)
+        {
+            _businessManager.SendEmail(student);
+        }
+
         #endregion
+
+        public event Action<Student> AddRequested = delegate { };
+        public event Action<Student> ChartRequested = delegate { };
+        public event Action<Student> DeleteRequested = delegate { };
+        public event Action<Student> EditRequested = delegate { };
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }

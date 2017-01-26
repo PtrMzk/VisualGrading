@@ -15,6 +15,8 @@ namespace VisualGrading.Model.Data
 
         List<T> GetAll();
         List<T> Find(Expression<Func<T, bool>> predicate);
+        Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate);
+
         T Single(Expression<Func<T, bool>> predicate);
         T SingleOrDefault(Expression<Func<T, bool>> predicate);
         T First(Expression<Func<T, bool>> predicate);

@@ -143,10 +143,13 @@
     </ApplicationDefinition>
     <Compile Include="Business\BusinessManager.cs" />
     <Compile Include="Business\IBusinessManager.cs" />
+    <Compile Include="Charts\ChartGenerator.cs" />
     <Compile Include="Charts\ColorHelper.cs" />
     <Compile Include="DataAccess\DataManager.cs" />
     <Compile Include="DataAccess\Encryption.cs" />
     <Compile Include="DataAccess\IDataManager.cs" />
+    <Compile Include="Emails\EmailManager.cs" />
+    <Compile Include="Emails\IEmailManager.cs" />
     <Compile Include="Grades\GradeGenerator.cs" />
     <Compile Include="Grades\IGradeManager.cs" />
     <Compile Include="DataAccess\AutoMapperProfile.cs" />

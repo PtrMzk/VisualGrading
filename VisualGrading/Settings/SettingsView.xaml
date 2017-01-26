@@ -93,7 +93,6 @@
                     Style="{StaticResource AddEditButtonStyle}" />
             <Button Content="Send Test Email"
                     Command="{Binding SendTestEmailCommand}"
-                    CommandParameter="{Binding EmailAddress}"
                     HorizontalAlignment="Left"
                     Margin="125,5,0,0"
                     VerticalAlignment="Top"
