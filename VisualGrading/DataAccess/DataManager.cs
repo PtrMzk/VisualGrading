@@ -132,9 +132,7 @@ namespace VisualGrading.DataAccess
                 studentIDsFilter = new List<long>();
 
             if (testIDsFilter == null)
-            {
                 testIDsFilter = new List<long>();
-            }
 
             //TODO: Make sure null check is not needed for the two lists
             // it was breaking when implemeneted. 
@@ -299,16 +297,21 @@ namespace VisualGrading.DataAccess
             var studentPoints = new Dictionary<long, StudentPointsHelper>();
 
             foreach (var grade in grades)
-                if (studentPoints.ContainsKey(grade.StudentID))
-                {
-                    studentPoints[grade.StudentID].PointsAchieved += grade.Points;
-                    studentPoints[grade.StudentID].MaxPoints += grade.Test.MaximumPoints;
-                }
-                else
-                {
-                    studentPoints.Add(grade.StudentID,
-                        new StudentPointsHelper {PointsAchieved = grade.Points, MaxPoints = grade.Test.MaximumPoints});
-                }
+                if (grade.Points != null)
+                    if (studentPoints.ContainsKey(grade.StudentID))
+                    {
+                        studentPoints[grade.StudentID].PointsAchieved += grade.NonNullablePoints;
+                        studentPoints[grade.StudentID].MaxPoints += grade.Test.MaximumPoints;
+                    }
+                    else
+                    {
+                        studentPoints.Add(grade.StudentID,
+                            new StudentPointsHelper
+                            {
+                                PointsAchieved = grade.NonNullablePoints,
+                                MaxPoints = grade.Test.MaximumPoints
+                            });
+                    }
 
             foreach (var student in students)
                 if (studentPoints.ContainsKey(student.ID))

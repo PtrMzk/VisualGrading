@@ -53,6 +53,11 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="MainNavGridStyle" TargetType="{x:Type Grid}">
+            <Setter Property="Background" Value="{StaticResource DarkNavBrush}" />
+        </Style>
+
+
         <Style x:Key="ChildNavGridStyle" TargetType="{x:Type Grid}">
             <Setter Property="Background" Value="{StaticResource MediumNavBrush}" />
             <Setter Property="Height" Value="40" />

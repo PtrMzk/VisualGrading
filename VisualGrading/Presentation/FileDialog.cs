@@ -22,6 +22,4 @@ namespace VisualGrading.Presentation
 
         #endregion
     }
-
-
 }

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using StudentTestReporting.Annotations;
 using VisualGrading.Students;
 using VisualGrading.Tests;
@@ -15,48 +10,62 @@ namespace VisualGrading.Grades
     [Serializable]
     public class Grade : INotifyPropertyChanged
     {
+        #region Fields
+
+        private int? _points;
+
+        [NonSerialized] private Student _student;
+
+        [NonSerialized] private Test _test;
+
+        #endregion
+
         #region Constructors
+
         public Grade()
         {
             //this.GradeID = Guid.NewGuid();
         }
+
         public Grade(Student student, Test test)
         {
-            this.Student = student;
-            this.Test = test;
-           // this.GradeID = Guid.NewGuid();
+            Student = student;
+            Test = test;
+            // this.GradeID = Guid.NewGuid();
         }
 
         public Grade(Student student, Test test, int points)
         {
-            this.Student = student;
-            this.StudentID = student.ID;
-            this.Test = test;
-            this.TestID = test.ID;
-            this.Points = points;
+            Student = student;
+            StudentID = student.ID;
+            Test = test;
+            TestID = test.ID;
+            Points = points;
             //this.GradeID = Guid.NewGuid();
         }
 
         public Grade(long studentID, long testID)
         {
-            this.StudentID = studentID;
-            this.TestID = testID;
+            StudentID = studentID;
+            TestID = testID;
             //this.GradeID = Guid.NewGuid();
         }
 
         public Grade(long studentID, long testID, int points)
         {
-            this.StudentID = studentID;
-            this.TestID = testID;
-            this.Points = points;
+            StudentID = studentID;
+            TestID = testID;
+            Points = points;
             //this.GradeID = Guid.NewGuid();
         }
+
         #endregion
 
         #region Properties
+
         public long ID { get; set; }
 
-        public int Points
+        public int? Points
         {
             get { return _points; }
             set
@@ -67,22 +76,24 @@ namespace VisualGrading.Grades
             }
         }
 
+        //used for calculations. calling code should always check for nulls in the Points property first.
+        public int NonNullablePoints
+        {
+            get
+            {
+                if (_points == null) return 0;
+                return (int)_points;
+            }
+        }
+
         public long StudentID { get; set; }
         public long TestID { get; set; }
-
-        [NonSerialized]
-        private Test _test;
 
         public Test Test
         {
             get { return _test; }
             set { _test = value; }
         }
-
-        [NonSerialized]
-        private Student _student;
-
-        private int _points;
 
         public Student Student
         {
@@ -92,19 +103,31 @@ namespace VisualGrading.Grades
 
         public decimal PercentAverage
         {
-            get { return _points / (decimal) (Test.MaximumPoints == 0 ? 1 : Test.MaximumPoints); }
+            get
+            {
+                if (_points != null)
+                    return (int)_points / (decimal) (Test.MaximumPoints == 0 ? 1 : Test.MaximumPoints);
+
+                return 0m;
+            }
         }
+
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region Private Methods
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region Interface Implementations
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 }
-
-
-

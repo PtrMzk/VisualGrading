@@ -16,7 +16,6 @@ namespace VisualGrading.Business
         #region Fields
 
         private readonly IDataManager _dataManager;
-        private readonly IEmailManager _emailManager;
 
         #endregion
 
@@ -25,7 +24,6 @@ namespace VisualGrading.Business
         public BusinessManager()
         {
             _dataManager = ContainerHelper.Container.Resolve<IDataManager>();
-            _emailManager = ContainerHelper.Container.Resolve<IEmailManager>();
         }
 
         #endregion
@@ -199,15 +197,25 @@ namespace VisualGrading.Business
 
         public async Task SendEmail(Student student)
         {
+            //todo: can this be implemented as a class field without a circular reference
+            // businessManager -> emailManager -> chartGenerator -> businessManager 
+            var _emailManager = new EmailManager();
+
             var students = new List<long> {student.ID};
 
             Task<List<Grade>> gradesTask = _dataManager.GetFilteredGradesAsync(students);
             var grades = await gradesTask;
+
+
             await _emailManager.SendEmail(student, grades);
         }
         
         public async Task SendTestEmail(SettingsProfile settingsProfile)
         {
+            //todo: can this be implemented as a class field without a circular reference
+            // businessManager -> emailManager -> chartGenerator -> businessManager 
+            var _emailManager = new EmailManager();
+
             await _emailManager.SendTestEmail(settingsProfile);
         }
 

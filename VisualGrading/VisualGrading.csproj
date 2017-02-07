@@ -160,6 +160,7 @@
     <Compile Include="Presentation\NegatableBooleanToVisibilityConverter.cs" />
     <Compile Include="Presentation\ObservableCollectionExtended.cs" />
     <Compile Include="Presentation\ValidatableBaseViewModel.cs" />
+    <Compile Include="Search\SmartSearch.cs" />
     <Compile Include="Settings\PasswordBoxBindingBehavior.cs" />
     <Compile Include="Settings\SettingsProfile.cs" />
     <Compile Include="Properties\Annotations.cs" />

@@ -166,10 +166,6 @@ namespace VisualGrading.Grades
                 foreach (var grade in _allGrades)
                 {
                     csvExport.AddRow();
-                    //foreach (var property in properties)
-                    //{
-                    //    csvExport[property.Name] = property.GetValue(grade, null);
-                    //}
                     csvExport["StudentID"] = grade.StudentID;
                     csvExport["Student"] = grade.Student.FullName;
                     csvExport["TestID"] = grade.TestID;

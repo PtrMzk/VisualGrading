@@ -51,7 +51,7 @@
             <RowDefinition Height="55" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid x:Name="NavBar">
+        <Grid x:Name="NavBar" Style="{StaticResource MainNavGridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />

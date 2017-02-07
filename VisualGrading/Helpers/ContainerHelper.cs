@@ -9,10 +9,6 @@ namespace VisualGrading.Helpers
 {
     public static class ContainerHelper
     {
-        #region Fields
-
-        #endregion
-
         #region Constructors
 
         static ContainerHelper()
@@ -23,10 +19,10 @@ namespace VisualGrading.Helpers
 
             Container.RegisterInstance<IDataManager>(DataManager.Instance);
 
-            Container.RegisterInstance<IEmailManager>(new EmailManager());
+            //Container.RegisterInstance<IEmailManager>(new EmailManager());
 
             Container.RegisterInstance<IBusinessManager>(new BusinessManager());
-            
+
             Container.RegisterInstance<IFileDialog>(new FileDialog());
         }
 

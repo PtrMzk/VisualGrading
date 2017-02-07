@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Practices.Unity;
 using OxyPlot;
 using OxyPlot.Axes;
@@ -17,6 +18,7 @@ namespace VisualGrading.Charts
         private const string MAIN_FONT = "Segoe UI";
         private const string TEST_CHART = "Test Chart";
         private const string STUDENT_CHART = "Student Chart";
+        private const string PERCENT_FORMAT = "0%";
         private readonly IBusinessManager _businessManager;
 
         #endregion
@@ -32,6 +34,13 @@ namespace VisualGrading.Charts
 
         #region Public Methods
 
+        public PlotModel ChartByStudent(Student studentFilter)
+        {
+            var studentsFilter = new List<Student>() {studentFilter};
+
+            return ChartByStudents(studentsFilter);
+        }
+
         public PlotModel ChartByStudents(List<Student> studentsFilter = null, List<Test> testsFilter = null,
             string subjectFilter = null, string subCategoryFilter = null, string title = null)
         {
@@ -46,16 +55,20 @@ namespace VisualGrading.Charts
 
             foreach (var grade in grades)
             {
-                if (!averageGradeByStudent.ContainsKey(grade.StudentID))
+                if (grade.Points != null)
                 {
-                    averageGradeByStudent.Add(grade.StudentID,
-                        new ChartHelper(grade.Student.FullName, grade.Points, grade.Test.MaximumPoints));
+                    if (!averageGradeByStudent.ContainsKey(grade.StudentID))
+                    {
+                        averageGradeByStudent.Add(grade.StudentID,
+                            new ChartHelper(grade.Student.FullName, grade.NonNullablePoints, grade.Test.MaximumPoints));
+                    }
+                    else
+                    {
+                        averageGradeByStudent[grade.StudentID].PointsAttained += grade.NonNullablePoints;
+                        averageGradeByStudent[grade.StudentID].PointsPossible += grade.Test.MaximumPoints;
+                    }
                 }
-                else
-                {
-                    averageGradeByStudent[grade.StudentID].PointsAttained += grade.Points;
-                    averageGradeByStudent[grade.StudentID].PointsPossible += grade.Test.MaximumPoints;
-                }
+
 
                 if (!distinctTests.ContainsKey(grade.TestID))
                     distinctTests.Add(grade.TestID, grade.Test.Name);
@@ -67,6 +80,13 @@ namespace VisualGrading.Charts
 
             return chart;
         }
+
+        public PlotModel ChartByTests(Student studentFilter)
+        {
+            var studentsFilter = new List<Student>() {studentFilter};
+
+            return ChartByTests(studentsFilter);
+         }
 
         public PlotModel ChartByTests(List<Student> studentsFilter = null, List<Test> testsFilter = null,
             string subjectFilter = null, string subCategoryFilter = null, string title = null)
@@ -82,16 +102,20 @@ namespace VisualGrading.Charts
 
             foreach (var grade in grades)
             {
-                if (!averageGradeByTest.ContainsKey(grade.TestID))
+                if (grade.Points != null)
                 {
-                    averageGradeByTest.Add(grade.TestID,
-                        new ChartHelper(grade.Test.Name, grade.Points, grade.Test.MaximumPoints));
+                    if (!averageGradeByTest.ContainsKey(grade.TestID))
+                    {
+                        averageGradeByTest.Add(grade.TestID,
+                            new ChartHelper(grade.Test.Name, grade.NonNullablePoints, grade.Test.MaximumPoints));
+                    }
+                    else
+                    {
+                        averageGradeByTest[grade.TestID].PointsAttained += grade.NonNullablePoints;
+                        averageGradeByTest[grade.TestID].PointsPossible += grade.Test.MaximumPoints;
+                    }
                 }
-                else
-                {
-                    averageGradeByTest[grade.TestID].PointsAttained += grade.Points;
-                    averageGradeByTest[grade.TestID].PointsPossible += grade.Test.MaximumPoints;
-                }
+                
 
                 if (!distinctStudents.ContainsKey(grade.TestID))
                     distinctStudents.Add(grade.TestID, grade.Student.FullName);
@@ -109,6 +133,8 @@ namespace VisualGrading.Charts
 
         private void AddAxesToChart(PlotModel chart, CategoryAxis categoryAxis, ColumnSeries columnSeries)
         {
+            Func<double, string> labelFormatter = percents => percents.ToString(PERCENT_FORMAT);
+
             var valueAxis = new LinearAxis
             {
                 Position = AxisPosition.Left,
@@ -116,7 +142,8 @@ namespace VisualGrading.Charts
                 MaximumPadding = 0.06,
                 AbsoluteMinimum = 0,
                 AbsoluteMaximum = 1.1,
-                Maximum = 1
+                Maximum = 1,
+                LabelFormatter = labelFormatter
             };
 
             chart.Series.Add(columnSeries);
@@ -129,7 +156,8 @@ namespace VisualGrading.Charts
         {
             var categoryAxis = new CategoryAxis
             {
-                Position = AxisPosition.Bottom
+                Position = AxisPosition.Bottom,
+                //Angle = 15
             };
 
             foreach (var grouping in averageGradeSortedDictionary)

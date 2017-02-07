@@ -22,6 +22,8 @@ namespace VisualGrading.Charts
             //TODO: same as AlternatingBackgroundColor. See if you can parse it from _resources. 
             OxyBackgroundColor = OxyColor.Parse("#ECE9E8");
 
+            MutedColorPalette.Add("Medium Navigation Green", "#2F7177");
+            
             //i demand a pancake
             //MutedColorPalette.Add("Dark Purple (borrowed from forever lost)", "#5D4157");
             //MutedColorPalette.Add("Rock my world", "#547980");
@@ -48,7 +50,7 @@ namespace VisualGrading.Charts
             //MutedColorPalette.Add("Sea Foaming", "#A8DBA8");
             //MutedColorPalette.Add("Sea Showing Green", "#79BD9A");
             //MutedColorPalette.Add("There We Could Sail", "#3B8686");
-            MutedColorPalette.Add("Adrift in Dreams", "#0B486B");
+            //MutedColorPalette.Add("Adrift in Dreams", "#0B486B");
 
             foreach (var color in MutedColorPalette.Values)
                 OxyColorPalete.Add(OxyColor.Parse(color));
