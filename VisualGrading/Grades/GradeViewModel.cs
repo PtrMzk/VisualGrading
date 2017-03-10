@@ -8,6 +8,7 @@ using VisualGrading.Business;
 using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
+using VisualGrading.Search;
 
 namespace VisualGrading.Grades
 {
@@ -95,7 +96,7 @@ namespace VisualGrading.Grades
 
         #endregion
 
-        #region Methods
+        #region Public Methods
 
         public async void LoadGrades()
         {
@@ -114,26 +115,31 @@ namespace VisualGrading.Grades
             }
         }
 
-        private async void ObservableGrades_CollectionChanged(object sender,
-            PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            await _businessManager.UpdateGradeAsync((Grade) sender);
-        }
+        #endregion
+
+        #region Private Methods
 
         private void FilterGrades(string searchInput)
         {
             if (string.IsNullOrWhiteSpace(searchInput))
+            {
                 ObservableGrades = new ObservableCollectionExtended<Grade>(_allGrades);
+            }
             else
+            {
+                var smartSearch = new SmartSearch<Grade>();
+                var matchingIDs = smartSearch.Search(_allGrades, searchInput);
+
                 ObservableGrades =
                     new ObservableCollectionExtended<Grade>(
-                        _allGrades.Where(g =>
-                            g.Test.Name.ToLower().Contains(searchInput.ToLower()) ||
-                            g.Test.Subject.ToLower().Contains(searchInput.ToLower()) ||
-                            g.Test.SubCategory.ToLower().Contains(searchInput.ToLower()) ||
-                            g.Student.FullName.ToLower().Contains(searchInput.ToLower())
-                        )
-                    );
+                        Enumerable.Where(_allGrades, g => matchingIDs.Contains(g.ID)));
+            }
+        }
+
+        private async void ObservableGrades_CollectionChanged(object sender,
+            PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            await _businessManager.UpdateGradeAsync((Grade) sender);
         }
 
         private void OnAddGrade()
@@ -141,14 +147,14 @@ namespace VisualGrading.Grades
             AddRequested(new Grade());
         }
 
-        private void OnEditGrade(Grade Grade)
-        {
-            EditRequested(Grade);
-        }
-
         private void OnClearSearch()
         {
             SearchInput = null;
+        }
+
+        private void OnEditGrade(Grade Grade)
+        {
+            EditRequested(Grade);
         }
 
         private void OnExport()
@@ -182,9 +188,9 @@ namespace VisualGrading.Grades
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
         public event Action<Grade> AddRequested = delegate { };
         public event Action<Grade> EditRequested = delegate { };
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }
 }

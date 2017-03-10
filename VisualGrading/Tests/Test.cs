@@ -1,18 +1,24 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 using StudentTestReporting.Annotations;
+using VisualGrading.Helpers;
 
 namespace VisualGrading.Tests
 {
-    public class Test : INotifyPropertyChanged
+    public class Test : INotifyPropertyChanged, IIdentified
     {
+        #region Fields
+
         private DateTime _date;
         private int _maximumPoints;
         private string _name;
         private int _seriesNumber;
         private string _subCategory;
         private string _subject;
+
+        #endregion
 
         #region Constructors
 
@@ -103,13 +109,41 @@ namespace VisualGrading.Tests
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        #region Public Methods
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+
+            foreach (var property in typeof(Test).GetProperties())
+            {
+                var propertyValue = property.GetValue(this);
+
+                if (stringBuilder.Length == 0)
+                    stringBuilder.Append(propertyValue);
+                else
+                    stringBuilder.AppendFormat(" {0}", propertyValue);
+            }
+            return stringBuilder.ToString();
+        }
+
+        #endregion
+
+        #region Private Methods
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region Interface Implementations
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
     }

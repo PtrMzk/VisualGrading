@@ -5,8 +5,10 @@ using System.Linq;
 using System.Windows;
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
+using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
+using VisualGrading.Search;
 
 namespace VisualGrading.Students
 {
@@ -109,13 +111,12 @@ namespace VisualGrading.Students
         {
             if (DesignerProperties.GetIsInDesignMode(
                 new DependencyObject())) return;
-            
-                _allStudents = await _businessManager.GetStudentsAsync();
 
-                ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
+            _allStudents = await _businessManager.GetStudentsAsync();
 
-                PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
-            
+            ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
+
+            PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
         }
 
         public void OnRowEdit(object sender, PropertyChangedEventArgs e)
@@ -145,11 +146,18 @@ namespace VisualGrading.Students
         private void FilterStudents(string searchInput)
         {
             if (string.IsNullOrWhiteSpace(searchInput))
+            {
                 ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
+            }
             else
+            {
+                var smartSearch = new SmartSearch<Grade>();
+                var matchingIDs = smartSearch.Search(_allStudents, searchInput);
+
                 ObservableStudents =
                     new ObservableCollectionExtended<Student>(
-                        _allStudents.Where(t => t.FullName.ToLower().Contains(searchInput.ToLower())));
+                        _allStudents.Where(g => matchingIDs.Contains(g.ID)));
+            }
         }
 
         private void ObservableStudents_CollectionChanged(object sender,

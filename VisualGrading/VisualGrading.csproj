@@ -156,6 +156,7 @@
     <Compile Include="Helpers\ContainerHelper.cs" />
     <Compile Include="Helpers\EnumLibrary.cs" />
     <Compile Include="DataAccess\CSVExport.cs" />
+    <Compile Include="Helpers\IIdentified.cs" />
     <Compile Include="Presentation\MVVMBehaviors.cs" />
     <Compile Include="Presentation\NegatableBooleanToVisibilityConverter.cs" />
     <Compile Include="Presentation\ObservableCollectionExtended.cs" />

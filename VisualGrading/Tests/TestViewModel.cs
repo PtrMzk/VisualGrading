@@ -5,8 +5,10 @@ using System.Linq;
 using System.Windows;
 using Microsoft.Practices.Unity;
 using VisualGrading.Business;
+using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
+using VisualGrading.Search;
 
 namespace VisualGrading.Tests
 {
@@ -127,9 +129,14 @@ namespace VisualGrading.Tests
             if (string.IsNullOrWhiteSpace(searchInput))
                 ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
             else
+            {
+                var smartSearch = new SmartSearch<Grade>();
+                var matchingIDs = smartSearch.Search(_allTests, searchInput);
+
                 ObservableTests =
                     new ObservableCollectionExtended<Test>(
-                        _allTests.Where(t => t.Subject.ToLower().Contains(searchInput.ToLower())));
+                        Enumerable.Where(_allTests, g => matchingIDs.Contains(g.ID)));
+            }
         }
 
         private async void DeleteTest(Test test)

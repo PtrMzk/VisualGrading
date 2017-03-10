@@ -1,29 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using StudentTestReporting.Annotations;
+using VisualGrading.Helpers;
 
 namespace VisualGrading.Students
 {
     [Serializable]
-    public class Student : INotifyPropertyChanged
+    public class Student : INotifyPropertyChanged, IIdentified
     {
+        #region Fields
+
         private string _emailAddress;
-        private string _nickname;
         private string _firstName;
         private string _lastName;
+        private string _nickname;
         private string _parentEmailAddress;
 
-        public Student()
-        {
-            //this.ID = Guid.NewGuid();
-        }
+        #endregion
+
+        #region Constructors
+
+        #endregion
+
+        #region Properties
 
         public long ID { get; set; }
 
@@ -51,7 +53,10 @@ namespace VisualGrading.Students
             }
         }
 
-        public string FullName { get { return string.Format("{0} {1}", !string.IsNullOrEmpty(Nickname) ? Nickname : FirstName, LastName); }}
+        public string FullName
+        {
+            get { return string.Format("{0} {1}", !string.IsNullOrEmpty(Nickname) ? Nickname : FirstName, LastName); }
+        }
 
         public string Nickname
         {
@@ -66,7 +71,7 @@ namespace VisualGrading.Students
         }
 
         [EmailAddress]
-        public string EmailAddress  
+        public string EmailAddress
         {
             get { return _emailAddress; }
             set
@@ -92,27 +97,55 @@ namespace VisualGrading.Students
 
         public decimal OverallGrade { get; set; }
 
-        #region StudentRefreshEvent
-        //TODO: is this event needed? 
-        //public delegate void StudentRefreshEventHandler(object sender, EventArgs args);
-
-        //public event StudentRefreshEventHandler StudentRefreshing;
-
-        //protected virtual void OnStudentRefreshing()
-        //{
-        //    if (StudentRefreshing != null)
-        //    {
-        //        StudentRefreshing(this, EventArgs.Empty);
-        //    }
-        //}
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        #region Public Methods
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+
+            foreach (var property in typeof(Student).GetProperties())
+            {
+                var propertyValue = property.GetValue(this);
+
+                if (stringBuilder.Length == 0)
+                    stringBuilder.Append(propertyValue);
+                else
+                    stringBuilder.AppendFormat(" {0}", propertyValue);
+            }
+            return stringBuilder.ToString();
+        }
+
+        #endregion
+
+        #region Private Methods
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region Interface Implementations
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        //}
+        //    }
+        //        StudentRefreshing(this, EventArgs.Empty);
+        //    {
+        //    if (StudentRefreshing != null)
+        //{
+
+        //protected virtual void OnStudentRefreshing()
+
+        //public event StudentRefreshEventHandler StudentRefreshing;
+        //public delegate void StudentRefreshEventHandler(object sender, EventArgs args);
+        //TODO: is this event needed? 
     }
 }

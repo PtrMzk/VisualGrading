@@ -1,14 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text;
 using StudentTestReporting.Annotations;
+using VisualGrading.Helpers;
 using VisualGrading.Students;
 using VisualGrading.Tests;
 
 namespace VisualGrading.Grades
 {
     [Serializable]
-    public class Grade : INotifyPropertyChanged
+    public class Grade : INotifyPropertyChanged, IIdentified
     {
         #region Fields
 
@@ -82,7 +84,7 @@ namespace VisualGrading.Grades
             get
             {
                 if (_points == null) return 0;
-                return (int)_points;
+                return (int) _points;
             }
         }
 
@@ -106,10 +108,30 @@ namespace VisualGrading.Grades
             get
             {
                 if (_points != null)
-                    return (int)_points / (decimal) (Test.MaximumPoints == 0 ? 1 : Test.MaximumPoints);
+                    return (int) _points / (decimal) (Test.MaximumPoints == 0 ? 1 : Test.MaximumPoints);
 
                 return 0m;
             }
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+
+            foreach (var property in typeof(Grade).GetProperties())
+            {
+                var propertyValue = property.GetValue(this);
+
+                if (stringBuilder.Length == 0)
+                    stringBuilder.Append(propertyValue);
+                else
+                    stringBuilder.AppendFormat(" {0}", propertyValue);
+            }
+            return stringBuilder.ToString();
         }
 
         #endregion
