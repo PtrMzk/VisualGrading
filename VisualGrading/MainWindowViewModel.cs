@@ -7,15 +7,24 @@ using VisualGrading.DataAccess;
 using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Helpers.EnumLibrary;
+using VisualGrading.Presentation;
 using VisualGrading.Settings;
 using VisualGrading.Students;
 using VisualGrading.Tests;
-using VisualGrading.Presentation;
 
 namespace VisualGrading
 {
     internal class MainWindowViewModel : BaseViewModel
     {
+        #region Constructors
+
+        public MainWindowViewModel()
+        {
+            InitializeVisualGrading();
+        }
+
+        #endregion
+
         #region Fields
 
         private AddEditStudentViewModel _addEditStudentViewModel;
@@ -35,27 +44,18 @@ namespace VisualGrading
 
         #endregion
 
-        #region Constructors
-
-        public MainWindowViewModel()
-        {
-            InitializeVisualGrading();
-        }
-
-        #endregion
-
         #region Properties
 
         public BaseViewModel CurrentViewModel
         {
-            get { return _currentViewModel; }
-            set { SetProperty(ref _currentViewModel, value); }
+            get => _currentViewModel;
+            set => SetProperty(ref _currentViewModel, value);
         }
 
         public NavigationTarget CurrentTab
         {
-            get { return _currentTab; }
-            set { SetProperty(ref _currentTab, value); }
+            get => _currentTab;
+            set => SetProperty(ref _currentTab, value);
         }
 
         public RelayCommand<NavigationTarget> NavCommand { get; private set; }
@@ -68,7 +68,8 @@ namespace VisualGrading
         {
             //set AppData to be location of DB file
             AppDomain.CurrentDomain.SetData("DataDirectory",
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "VisualGrading"));
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "VisualGrading"));
 
             Mapper.Initialize(cfg => { cfg.AddProfile<AutoMapperProfile>(); });
 
@@ -99,8 +100,12 @@ namespace VisualGrading
 
             _studentViewModel.ChartRequested += NavToChart;
 
-            //default to Grades list
-            OnNav(NavigationTarget.Grade);
+            SetDefaultScreen();
+        }
+
+        private void SetDefaultScreen()
+        {
+            OnNav(NavigationTarget.Test);
         }
 
         private void NavToAddTest(Test test)

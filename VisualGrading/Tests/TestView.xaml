@@ -48,10 +48,9 @@
             <DockPanel
                 Grid.Column="2"
                 Style="{StaticResource ChildNavDockPanel}">
-
                 <Label Content="Search:"
                        Style="{StaticResource ChildNavLabelStyle}"
-                       Width="60" />
+                       Width="70" Margin="0,-2,0,0" />
                 <TextBox Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource ChildNavTextBoxStyle}"
                           />
@@ -76,7 +75,7 @@
                                     CellStyle="{StaticResource ContentDataGridCellStyle}"
 
                                     HeaderStyle="{StaticResource ContentDataGridHeaderStyle}" />
-                <DataGridTextColumn Header="SubCategory" Binding="{Binding SubCategory}"
+                <DataGridTextColumn Header="Unit" Binding="{Binding SubCategory}"
                                     Width="*"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}"
                                     HeaderStyle="{StaticResource ContentDataGridHeaderStyle}" />
@@ -91,7 +90,7 @@
                 <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Chart Test"
+                            <Button Content="Chart"
                                     Command="{Binding DataContext.ChartTestCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                     CommandParameter="{Binding}"
                                     Margin="5"
@@ -102,7 +101,7 @@
                 <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Chart Subject"
+                            <Button Content="Subject"
                                     Command="{Binding DataContext.ChartSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                     CommandParameter="{Binding Subject}"
                                     Margin="5"
@@ -113,7 +112,7 @@
                 <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Chart SubCategory"
+                            <Button Content="Unit"
                                     Command="{Binding DataContext.ChartSubCategoryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                     CommandParameter="{Binding SubCategory}"
                                     Margin="5"

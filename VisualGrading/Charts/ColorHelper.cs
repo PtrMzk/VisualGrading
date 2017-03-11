@@ -20,7 +20,7 @@ namespace VisualGrading.Charts
             OxyColorPalete = new List<OxyColor>();
 
             //TODO: same as AlternatingBackgroundColor. See if you can parse it from _resources. 
-            OxyBackgroundColor = OxyColor.Parse("#ECE9E8");
+            OxyBackgroundColor = OxyColor.Parse("#ebebeb");
 
             MutedColorPalette.Add("Medium Navigation Green", "#2F7177");
             
