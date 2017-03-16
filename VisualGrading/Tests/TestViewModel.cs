@@ -1,4 +1,38 @@
-﻿using System;
+﻿#region Header
+
+// +===========================================================================+
+// Visual Grading Source Code
+// 
+// Copyright (C) 2016-2017 Piotr Mikolajczyk
+// 
+// 2017-03-15
+// TestViewModel.cs
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//  +===========================================================================+
+
+#endregion
+
+#region Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,11 +44,25 @@ using VisualGrading.Helpers;
 using VisualGrading.Presentation;
 using VisualGrading.Search;
 
+#endregion
+
 namespace VisualGrading.Tests
 {
     public class TestViewModel : BaseViewModel
     {
-        #region Constructor
+        #region Fields
+
+        private readonly IBusinessManager _businessManager;
+
+        private List<Test> _allTests;
+
+        private ObservableCollectionExtended<Test> _observableTests;
+
+        private string _searchInput;
+
+        #endregion
+
+        #region Constructors
 
         public TestViewModel()
         {
@@ -27,6 +75,7 @@ namespace VisualGrading.Tests
             ChartTestCommand = new RelayCommand<Test>(OnChartRequested);
             ChartSubjectCommand = new RelayCommand<string>(OnSubjectChartRequested);
             ChartSubCategoryCommand = new RelayCommand<string>(OnSubCategoryChartRequested);
+            GoToTestGradesCommand = new RelayCommand<long>(OnGoToTestGradesRequested);
 
             DeleteRequested += DeleteTest;
         }
@@ -34,10 +83,6 @@ namespace VisualGrading.Tests
         #endregion
 
         #region Properties
-
-        private readonly IBusinessManager _businessManager;
-
-        private ObservableCollectionExtended<Test> _observableTests;
 
         public ObservableCollectionExtended<Test> ObservableTests
         {
@@ -52,8 +97,6 @@ namespace VisualGrading.Tests
                 _observableTests.CollectionPropertyChanged += ObservableTests_CollectionChanged;
             }
         }
-
-        private List<Test> _allTests;
 
         private Test _selectedTest { get; set; }
 
@@ -83,21 +126,11 @@ namespace VisualGrading.Tests
 
         public RelayCommand<Test> ChartTestCommand { get; private set; }
 
+        public RelayCommand<long> GoToTestGradesCommand { get; private set; }
+
         public RelayCommand<string> ChartSubjectCommand { get; private set; }
 
         public RelayCommand<string> ChartSubCategoryCommand { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        public event Action<Test> AddRequested = delegate { };
-        public event Action<TestSeries> AddSeriesRequested = delegate { };
-        public event Action<Test> EditRequested = delegate { };
-        public event Action<Test> DeleteRequested = delegate { };
-        public event Action<Test> TestChartRequested = delegate { };
-        public event Action<string> SubjectChartRequested = delegate { };
-        public event Action<string> SubCategoryChartRequested = delegate { };
-
-        private string _searchInput;
 
         public string SearchInput
         {
@@ -111,7 +144,12 @@ namespace VisualGrading.Tests
 
         #endregion
 
-        #region Methods
+        #region Public Methods
+
+        public void ClearSearch()
+        {
+            SearchInput = null;
+        }
 
         public async void LoadTests()
         {
@@ -122,21 +160,26 @@ namespace VisualGrading.Tests
             ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
 
             PropertyChanged(this, new PropertyChangedEventArgs("ObservableTests"));
+
+            //reapply search filter
+            FilterTests(SearchInput);
         }
 
-        private void FilterTests(string searchInput)
+        public void SearchTests(string searchInput)
         {
-            if (string.IsNullOrWhiteSpace(searchInput))
-                ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
-            else
-            {
-                var smartSearch = new SmartSearch<Grade>();
-                var matchingIDs = smartSearch.Search(_allTests, searchInput);
+            SearchInput = searchInput;
+        }
 
-                ObservableTests =
-                    new ObservableCollectionExtended<Test>(
-                        Enumerable.Where(_allTests, g => matchingIDs.Contains(g.ID)));
-            }
+        #endregion
+
+        #region Private Methods
+
+        //TODO: THIS IS NEVER FALSE
+        private bool CanDelete(Test test)
+        {
+            //TODO: Selected test doesn't seem to work here, and this isn't really needed...
+            //return SelectedTest != null;
+            return true;
         }
 
         private async void DeleteTest(Test test)
@@ -146,9 +189,21 @@ namespace VisualGrading.Tests
             await _businessManager.DeleteTestAsync(test);
         }
 
-        private void OnDelete(Test test)
+        private void FilterTests(string searchInput)
         {
-            DeleteRequested(test);
+            if (string.IsNullOrWhiteSpace(searchInput))
+            {
+                ObservableTests = new ObservableCollectionExtended<Test>(_allTests);
+            }
+            else
+            {
+                var smartSearch = new SmartSearch<Grade>();
+                var matchingIDs = smartSearch.Search(_allTests, searchInput);
+
+                ObservableTests =
+                    new ObservableCollectionExtended<Test>(
+                        _allTests.Where(g => matchingIDs.Contains(g.ID)));
+            }
         }
 
         private async void ObservableTests_CollectionChanged(object sender,
@@ -167,19 +222,29 @@ namespace VisualGrading.Tests
             AddSeriesRequested(new TestSeries());
         }
 
-        private void OnEditTest(Test test)
-        {
-            EditRequested(test);
-        }
-
         private void OnChartRequested(Test grouping)
         {
             TestChartRequested(grouping);
         }
 
-        private void OnSubjectChartRequested(string grouping)
+        private void OnClearSearch()
         {
-            SubjectChartRequested(grouping);
+            ClearSearch();
+        }
+
+        private void OnDelete(Test test)
+        {
+            DeleteRequested(test);
+        }
+
+        private void OnEditTest(Test test)
+        {
+            EditRequested(test);
+        }
+
+        private void OnGoToTestGradesRequested(long id)
+        {
+            GoToTestGradesRequested(id);
         }
 
         private void OnSubCategoryChartRequested(string grouping)
@@ -187,19 +252,22 @@ namespace VisualGrading.Tests
             SubCategoryChartRequested(grouping);
         }
 
-        //TODO: THIS IS NEVER FALSE
-        private bool CanDelete(Test test)
+        private void OnSubjectChartRequested(string grouping)
         {
-            //TODO: Selected test doesn't seem to work here, and this isn't really needed...
-            //return SelectedTest != null;
-            return true;
-        }
-
-        private void OnClearSearch()
-        {
-            SearchInput = null;
+            SubjectChartRequested(grouping);
         }
 
         #endregion
+
+        public event Action<Test> AddRequested = delegate { };
+        public event Action<TestSeries> AddSeriesRequested = delegate { };
+        public event Action<Test> DeleteRequested = delegate { };
+        public event Action<Test> EditRequested = delegate { };
+        public event Action<long> GoToTestGradesRequested = delegate { };
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event Action<string> SubCategoryChartRequested = delegate { };
+        public event Action<string> SubjectChartRequested = delegate { };
+        public event Action<Test> TestChartRequested = delegate { };
     }
 }

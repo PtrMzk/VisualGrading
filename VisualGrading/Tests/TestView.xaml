@@ -13,11 +13,11 @@
     mc:Ignorable="d"
     d:DesignHeight="600" d:DesignWidth="600">
 
-    <i:Interaction.Triggers>
+    <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <ei:CallMethodAction TargetObject="{Binding}" MethodName="LoadTests" />
         </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </i:Interaction.Triggers>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,8 +36,7 @@
                     Grid.Column="0"
                     HorizontalAlignment="Left"
 
-                    Style="{StaticResource ChildNavLeftMostButtonStyle}"
-                     />
+                    Style="{StaticResource ChildNavLeftMostButtonStyle}" />
             <Button Content="Quick Add Series"
                     HorizontalContentAlignment="Center"
                     Command="{Binding AddSeriesCommand}"
@@ -50,15 +49,13 @@
                 Style="{StaticResource ChildNavDockPanel}">
                 <Label Content="Search:"
                        Style="{StaticResource ChildNavLabelStyle}"
-                       Width="70" Margin="0,-2,0,0" />
+                       Width="70" Margin="0,-2,0,-2" />
                 <TextBox Text="{Binding SearchInput, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource ChildNavTextBoxStyle}"
-                          />
+                         Style="{StaticResource ChildNavTextBoxStyle}" />
                 <Button Content="X"
                         Command="{Binding ClearSearchCommand}"
                         Style="{StaticResource ChildNavXButtonStyle}"
-                        HorizontalAlignment="Right"
-                        />
+                        HorizontalAlignment="Right" />
             </DockPanel>
         </Grid>
         <DataGrid ItemsSource="{Binding ObservableTests}"
@@ -68,7 +65,7 @@
                   Style="{StaticResource ContentDataGridStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}"
-                                    Width="*" CellStyle="{StaticResource ContentDataGridCellStyle}"
+                                    Width="*" CellStyle="{StaticResource BoldContentDataGridCellStyle}"
                                     HeaderStyle="{StaticResource ContentDataGridHeaderStyle}" />
                 <DataGridTextColumn Header="Subject" Binding="{Binding Subject}"
                                     Width="*"
@@ -83,11 +80,12 @@
                                     Width="*"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}"
                                     HeaderStyle="{StaticResource ContentDataGridHeaderStyle}" />
-                <DataGridTextColumn Header="Date" Binding="{Binding Date}"
+                <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"
                                     Width="*"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}"
                                     HeaderStyle="{StaticResource ContentDataGridHeaderStyle}" />
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}">
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Chart"
@@ -98,7 +96,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}">
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Subject"
@@ -109,7 +108,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}">
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Unit"
@@ -120,18 +120,21 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}">
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Edit"
-                                    Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    CommandParameter="{Binding }"
+                            <Button Content="Grades"
+                                    Command="{Binding DataContext.GoToTestGradesCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding ID}"
                                     Margin="5"
                                     Style="{StaticResource ContentButtonStyle}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}">
+
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="Delete"

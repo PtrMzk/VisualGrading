@@ -15,11 +15,11 @@
         <!--<KeyBinding Key="D"
                     Command="{Binding DeleteCommand}" />-->
     </UserControl.InputBindings>
-    <i:Interaction.Triggers>
+    <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <ei:CallMethodAction TargetObject="{Binding}" MethodName="LoadGrades" />
         </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </i:Interaction.Triggers>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -36,8 +36,7 @@
                     HorizontalContentAlignment="Center"
                     Grid.Column="0"
                     HorizontalAlignment="Left"
-                    Style="{StaticResource ChildNavLeftMostButtonStyle}"
-                     />
+                    Style="{StaticResource ChildNavLeftMostButtonStyle}" />
             <DockPanel
                 Grid.Column="2"
                 Style="{StaticResource ChildNavDockPanel}">
@@ -56,22 +55,52 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Student" Binding="{Binding Student.FullName}" IsReadOnly="True"
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
+                                    CellStyle="{StaticResource BoldContentDataGridCellStyle}" />
                 <DataGridTextColumn Header="Test" Binding="{Binding Test.Name}"
                                     Width="*"
                                     IsReadOnly="True" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
+                                    CellStyle="{StaticResource BoldContentDataGridCellStyle}" />
                 <DataGridTextColumn Header="Points Possible" Binding="{Binding Test.MaximumPoints}"
+                                    IsReadOnly="True" Width="*"
+                                    HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
+                                    CellStyle="{StaticResource NonEditableContentDataGridCellStyle}" />
+                <DataGridTextColumn Header="Grade" Binding="{Binding Points}"
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
-                <DataGridTextColumn Header="Grade" Binding="{Binding Points}" FontWeight="Bold"
-                                    Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
-                <DataGridTextColumn Header="Date" Binding="{Binding Test.Date}"
+                                    CellStyle="{StaticResource BoldContentDataGridCellStyle}" />
+                <DataGridTextColumn Header="Percent" Binding="{Binding PercentAverage, StringFormat=p}"
                                     Width="*"
                                     IsReadOnly="True" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
+                                    CellStyle="{StaticResource NonEditableContentDataGridCellStyle}" />
+                <DataGridTextColumn Header="Date" Binding="{Binding Test.Date, StringFormat=d}"
+                                    Width="*"
+                                    IsReadOnly="True" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
+                                    CellStyle="{StaticResource NonEditableContentDataGridCellStyle}" />
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Student"
+                                    Command="{Binding DataContext.GoToStudentCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding StudentID}"
+                                    Margin="5"
+                                    Style="{StaticResource ContentButtonStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Test"
+                                    Command="{Binding DataContext.GoToTestCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding TestID}"
+                                    Margin="5"
+                                    Style="{StaticResource ContentButtonStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
+
         </DataGrid>
     </Grid>
 </UserControl>

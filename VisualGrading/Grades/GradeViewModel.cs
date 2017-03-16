@@ -1,4 +1,38 @@
-﻿using System;
+﻿#region Header
+
+// +===========================================================================+
+// Visual Grading Source Code
+// 
+// Copyright (C) 2016-2017 Piotr Mikolajczyk
+// 
+// 2017-03-15
+// GradeViewModel.cs
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//  +===========================================================================+
+
+#endregion
+
+#region Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,6 +43,8 @@ using VisualGrading.DataAccess;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
 using VisualGrading.Search;
+
+#endregion
 
 namespace VisualGrading.Grades
 {
@@ -39,6 +75,8 @@ namespace VisualGrading.Grades
             ExportCommand = new RelayCommand(OnExport);
             EditCommand = new RelayCommand<Grade>(OnEditGrade);
             ClearSearchCommand = new RelayCommand(OnClearSearch);
+            GoToStudentCommand = new RelayCommand<long>(OnGoToStudent);
+            GoToTestCommand = new RelayCommand<long>(OnGoToTest);
         }
 
         #endregion
@@ -84,6 +122,10 @@ namespace VisualGrading.Grades
 
         public RelayCommand ClearSearchCommand { get; private set; }
 
+        public RelayCommand<long> GoToStudentCommand { get; private set; }
+
+        public RelayCommand<long> GoToTestCommand { get; private set; }
+
         public string SearchInput
         {
             get { return _searchInput; }
@@ -97,6 +139,11 @@ namespace VisualGrading.Grades
         #endregion
 
         #region Public Methods
+
+        public void ClearSearch()
+        {
+            SearchInput = null;
+        }
 
         public async void LoadGrades()
         {
@@ -113,6 +160,14 @@ namespace VisualGrading.Grades
 
                 PropertyChanged(this, new PropertyChangedEventArgs("ObservableGrades"));
             }
+
+            //reapply search filter
+            FilterGrades(SearchInput);
+        }
+
+        public void SearchGrades(string searchInput)
+        {
+            SearchInput = searchInput;
         }
 
         #endregion
@@ -130,9 +185,12 @@ namespace VisualGrading.Grades
                 var smartSearch = new SmartSearch<Grade>();
                 var matchingIDs = smartSearch.Search(_allGrades, searchInput);
 
-                ObservableGrades =
-                    new ObservableCollectionExtended<Grade>(
-                        Enumerable.Where(_allGrades, g => matchingIDs.Contains(g.ID)));
+                if (matchingIDs.Count > 0)
+                    ObservableGrades =
+                        new ObservableCollectionExtended<Grade>(
+                            _allGrades.Where(g => matchingIDs.Contains(g.ID)));
+                else
+                    ObservableGrades = new ObservableCollectionExtended<Grade>();
             }
         }
 
@@ -149,7 +207,7 @@ namespace VisualGrading.Grades
 
         private void OnClearSearch()
         {
-            SearchInput = null;
+            ClearSearch();
         }
 
         private void OnEditGrade(Grade Grade)
@@ -186,10 +244,22 @@ namespace VisualGrading.Grades
             }
         }
 
+        private void OnGoToStudent(long id)
+        {
+            GoToStudentRequested(id);
+        }
+
+        private void OnGoToTest(long id)
+        {
+            GoToTestRequested(id);
+        }
+
         #endregion
 
         public event Action<Grade> AddRequested = delegate { };
         public event Action<Grade> EditRequested = delegate { };
+        public event Action<long> GoToStudentRequested = delegate { };
+        public event Action<long> GoToTestRequested = delegate { };
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }

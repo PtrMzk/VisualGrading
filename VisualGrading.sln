@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualGrading", "VisualGrading\VisualGrading.csproj", "{425DB637-EBC7-4C56-8094-B95B15B86537}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualGrading.Model", "VisualGrading.Data\VisualGrading.Model.csproj", "{43E9BF96-3417-4F56-BF5B-4C1622D977BD}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "VisualGrading.Installer", "VisualGrading.Installer\VisualGrading.Installer.vdproj", "{E1F51521-A633-46EA-86E6-A1230510136B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,8 @@ Global
 		{43E9BF96-3417-4F56-BF5B-4C1622D977BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43E9BF96-3417-4F56-BF5B-4C1622D977BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43E9BF96-3417-4F56-BF5B-4C1622D977BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1F51521-A633-46EA-86E6-A1230510136B}.Debug|Any CPU.ActiveCfg = Debug
+		{E1F51521-A633-46EA-86E6-A1230510136B}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,7 +10,7 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:settings="clr-namespace:VisualGrading.Settings"
     mc:Ignorable="d"
-    d:DesignHeight="400" d:DesignWidth="300">
+    d:DesignHeight="394.913">
     <UserControl.Resources>
         <presentation:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
         <presentation:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
@@ -26,15 +26,16 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-
     <Grid Style="{StaticResource ContentGridStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
         <Grid Row="0" Style="{StaticResource ChildNavGridStyle}" />
-        <Grid x:Name="grid1" DataContext="{Binding SettingsProfile}" HorizontalAlignment="Left" Margin="10,15,0,0"
+
+        <Grid x:Name="grid1" DataContext="{Binding SettingsProfile}" Margin="10,15,0,0"
               VerticalAlignment="Top" Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -46,19 +47,18 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label Content="Email Address:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
-            <TextBox x:Name="emailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
+            <TextBox x:Name="emailAddressTextBox" Grid.Column="1" HorizontalAlignment="Left"
                      Grid.Row="0" Text="{Binding EmailAddress, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" />
+                     VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" Width="244" />
             <Label Content="Password:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
-            <PasswordBox x:Name="passwordTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
+            <PasswordBox x:Name="passwordTextBox" Grid.Column="1" HorizontalAlignment="Left"
                          Grid.Row="1"
-                         VerticalAlignment="Center" Style="{StaticResource AddEditPasswordBoxStyle}"
-                          >
+                         VerticalAlignment="Center" Style="{StaticResource AddEditPasswordBoxStyle}" Width="244">
                 <i:Interaction.Behaviors>
                     <settings:PasswordBoxBindingBehavior Password="{Binding EmailPassword}" />
                 </i:Interaction.Behaviors>
@@ -79,9 +79,9 @@
                       HorizontalContentAlignment="Center" IsChecked="{Binding EmailUsesSSL}" />
             <Label Content="Message:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="5"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
-            <TextBox Grid.Row="5" Grid.Column="1" VerticalContentAlignment="Center"
-                     HorizontalContentAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}"
-                     Text="{Binding EmailMessage, ValidatesOnNotifyDataErrors=True}" />
+            <TextBox Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left"
+                     Style="{StaticResource AddEditTextBoxStyle}"
+                     Text="{Binding EmailMessage, ValidatesOnNotifyDataErrors=True}" Width="600" />
         </Grid>
         <Grid Grid.Row="2">
             <Button Content="Save"
@@ -98,8 +98,7 @@
                     VerticalAlignment="Top"
                     Width="150"
                     Style="{StaticResource AddEditButtonStyle}" />
-            
-        </Grid>
 
+        </Grid>
     </Grid>
 </UserControl>

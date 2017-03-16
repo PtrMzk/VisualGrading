@@ -1,4 +1,38 @@
-﻿using System;
+﻿#region Header
+
+// +===========================================================================+
+// Visual Grading Source Code
+// 
+// Copyright (C) 2016-2017 Piotr Mikolajczyk
+// 
+// 2017-03-15
+// ChartGenerator.cs
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//  +===========================================================================+
+
+#endregion
+
+#region Namespaces
+
+using System;
 using System.Collections.Generic;
 using Microsoft.Practices.Unity;
 using OxyPlot;
@@ -8,6 +42,8 @@ using VisualGrading.Business;
 using VisualGrading.Helpers;
 using VisualGrading.Students;
 using VisualGrading.Tests;
+
+#endregion
 
 namespace VisualGrading.Charts
 {
@@ -19,6 +55,7 @@ namespace VisualGrading.Charts
         private const string TEST_CHART = "Test Chart";
         private const string STUDENT_CHART = "Student Chart";
         private const string PERCENT_FORMAT = "0%";
+        private const string SORTPROPERTY_ID_FORMAT = "{0} || {1}";
         private readonly IBusinessManager _businessManager;
 
         #endregion
@@ -36,7 +73,7 @@ namespace VisualGrading.Charts
 
         public PlotModel ChartByStudent(Student studentFilter)
         {
-            var studentsFilter = new List<Student>() {studentFilter};
+            var studentsFilter = new List<Student> {studentFilter};
 
             return ChartByStudents(studentsFilter);
         }
@@ -46,7 +83,7 @@ namespace VisualGrading.Charts
         {
             var grades = _businessManager.GetFilteredGrades(studentsFilter, testsFilter, subjectFilter,
                 subCategoryFilter);
-            var averageGradeByStudent = new SortedDictionary<long, ChartHelper>();
+            var averageGradeByStudent = new SortedDictionary<string, ChartHelper>();
             var distinctTests = new SortedDictionary<long, string>();
             var columnSeries = CreateColumnSeries();
             var plotTitle = title != null ? title : STUDENT_CHART;
@@ -55,20 +92,20 @@ namespace VisualGrading.Charts
 
             foreach (var grade in grades)
             {
+                var studentNameAndIDComboKey = string.Format(SORTPROPERTY_ID_FORMAT, grade.Student.FullName,
+                    grade.StudentID); //name is used to sort, ID is for correct bucketing in case of duplicate names
+
                 if (grade.Points != null)
-                {
-                    if (!averageGradeByStudent.ContainsKey(grade.StudentID))
+                    if (!averageGradeByStudent.ContainsKey(studentNameAndIDComboKey))
                     {
-                        averageGradeByStudent.Add(grade.StudentID,
+                        averageGradeByStudent.Add(studentNameAndIDComboKey,
                             new ChartHelper(grade.Student.FullName, grade.NonNullablePoints, grade.Test.MaximumPoints));
                     }
                     else
                     {
-                        averageGradeByStudent[grade.StudentID].PointsAttained += grade.NonNullablePoints;
-                        averageGradeByStudent[grade.StudentID].PointsPossible += grade.Test.MaximumPoints;
+                        averageGradeByStudent[studentNameAndIDComboKey].PointsAttained += grade.NonNullablePoints;
+                        averageGradeByStudent[studentNameAndIDComboKey].PointsPossible += grade.Test.MaximumPoints;
                     }
-                }
-
 
                 if (!distinctTests.ContainsKey(grade.TestID))
                     distinctTests.Add(grade.TestID, grade.Test.Name);
@@ -83,17 +120,17 @@ namespace VisualGrading.Charts
 
         public PlotModel ChartByTests(Student studentFilter)
         {
-            var studentsFilter = new List<Student>() {studentFilter};
+            var studentsFilter = new List<Student> {studentFilter};
 
             return ChartByTests(studentsFilter);
-         }
+        }
 
         public PlotModel ChartByTests(List<Student> studentsFilter = null, List<Test> testsFilter = null,
             string subjectFilter = null, string subCategoryFilter = null, string title = null)
         {
             var grades = _businessManager.GetFilteredGrades(studentsFilter, testsFilter, subjectFilter,
                 subCategoryFilter);
-            var averageGradeByTest = new SortedDictionary<long, ChartHelper>();
+            var averageGradeByTest = new SortedDictionary<string, ChartHelper>();
             var distinctStudents = new SortedDictionary<long, string>();
             var columnSeries = CreateColumnSeries();
             var plotTitle = title != null ? title : TEST_CHART;
@@ -102,20 +139,20 @@ namespace VisualGrading.Charts
 
             foreach (var grade in grades)
             {
+                var dateAndTestIDComboKey = string.Format(SORTPROPERTY_ID_FORMAT, grade.Test.Date.ToString("yy-MM-dd"),
+                    grade.TestID); // we actually want tests to be sorted by date. ID is used for correct bucketing. 
+
                 if (grade.Points != null)
-                {
-                    if (!averageGradeByTest.ContainsKey(grade.TestID))
+                    if (!averageGradeByTest.ContainsKey(dateAndTestIDComboKey))
                     {
-                        averageGradeByTest.Add(grade.TestID,
+                        averageGradeByTest.Add(dateAndTestIDComboKey,
                             new ChartHelper(grade.Test.Name, grade.NonNullablePoints, grade.Test.MaximumPoints));
                     }
                     else
                     {
-                        averageGradeByTest[grade.TestID].PointsAttained += grade.NonNullablePoints;
-                        averageGradeByTest[grade.TestID].PointsPossible += grade.Test.MaximumPoints;
+                        averageGradeByTest[dateAndTestIDComboKey].PointsAttained += grade.NonNullablePoints;
+                        averageGradeByTest[dateAndTestIDComboKey].PointsPossible += grade.Test.MaximumPoints;
                     }
-                }
-                
 
                 if (!distinctStudents.ContainsKey(grade.TestID))
                     distinctStudents.Add(grade.TestID, grade.Student.FullName);
@@ -151,13 +188,13 @@ namespace VisualGrading.Charts
             chart.Axes.Add(valueAxis);
         }
 
-        private CategoryAxis CreateCategoryAxis(SortedDictionary<long, ChartHelper> averageGradeSortedDictionary,
+        private CategoryAxis CreateCategoryAxis(SortedDictionary<string, ChartHelper> averageGradeSortedDictionary,
             ColumnSeries columnSeries)
         {
             var categoryAxis = new CategoryAxis
             {
                 Position = AxisPosition.Bottom,
-                //Angle = 15
+                Angle = 45
             };
 
             foreach (var grouping in averageGradeSortedDictionary)
@@ -193,6 +230,7 @@ namespace VisualGrading.Charts
                 LegendOrientation = LegendOrientation.Horizontal,
                 LegendBorderThickness = 0,
                 PlotAreaBackground = OxyColor.Parse("#FFFFFFFF"),
+                PlotMargins = new OxyThickness(75, double.NaN, 60, double.NaN),
                 Background = ColorHelper.OxyBackgroundColor,
                 DefaultColors = ColorHelper.OxyColorPalete,
                 LegendFont = MAIN_FONT,

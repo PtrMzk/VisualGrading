@@ -1,4 +1,38 @@
-﻿using System;
+﻿#region Header
+
+// +===========================================================================+
+// Visual Grading Source Code
+// 
+// Copyright (C) 2016-2017 Piotr Mikolajczyk
+// 
+// 2017-03-15
+// EmailManager.cs
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//  +===========================================================================+
+
+#endregion
+
+#region Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -14,6 +48,8 @@ using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Settings;
 using VisualGrading.Students;
+
+#endregion
 
 namespace VisualGrading.Emails
 {
@@ -49,7 +85,7 @@ namespace VisualGrading.Emails
         private const string HTML_HEADER_ROW =
             @"<tr style = ""background-color: #195E63; color: #FFFFFF; font-weight: lighter; text-align: center"">
             <th width=""34%"">{0}</th><th width=""33%"">{1}</th><th width=""33%"">{2}</th></tr>";
-        
+
         private const string HTML_DATA_ROWS =
             @"<tr style = "" text-align: center""><td>{0}</td><td>{1}/{2}</td><td>{3}</td></tr>";
 
@@ -89,7 +125,7 @@ namespace VisualGrading.Emails
 
             using (var memoryStream = new MemoryStream())
             {
-                var pngExporter = new PngExporter() {Width= (grades.Count * 256), Height= 700 };
+                var pngExporter = new PngExporter {Width = grades.Count * 256, Height = 700};
                 pngExporter.Export(chart, memoryStream);
 
                 var gradesChart = new LinkedResource(memoryStream, "image/png");
@@ -191,7 +227,8 @@ namespace VisualGrading.Emails
                         }
                         else
                         {
-                            var messageWithoutChart = string.Format(MESSAGE_FORMAT, settingsProfile.EmailMessage, htmlContent);
+                            var messageWithoutChart = string.Format(MESSAGE_FORMAT, settingsProfile.EmailMessage,
+                                htmlContent);
 
                             message.Body = messageWithoutChart;
                         }

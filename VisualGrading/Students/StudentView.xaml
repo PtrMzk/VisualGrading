@@ -15,11 +15,11 @@
         <!--<KeyBinding Key="D"
                     Command="{Binding DeleteCommand}" />-->
     </UserControl.InputBindings>
-    <i:Interaction.Triggers>
+    <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <ei:CallMethodAction TargetObject="{Binding}" MethodName="LoadStudents" />
         </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </i:Interaction.Triggers>-->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -52,19 +52,13 @@
                   Grid.Row="1"
                   HeadersVisibility="Column"
                   Style="{StaticResource ContentDataGridStyle}">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="RowEditEnding">
-                    --><!--<ei:CallMethodAction  TargetObject="{Binding}" MethodName="OnStudentRowEdit"/>--><!--
-                    <i:InvokeCommandAction Command="{Binding AutoSaveCommand"></i:InvokeCommandAction>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
             <DataGrid.Columns>
-                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, UpdateSourceTrigger=LostFocus}" 
+                <DataGridTextColumn Header="First Name" Binding="{Binding FirstName, UpdateSourceTrigger=LostFocus}"
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
+                                    CellStyle="{StaticResource BoldContentDataGridCellStyle}" />
                 <DataGridTextColumn Header="Last Name" Binding="{Binding LastName, UpdateSourceTrigger=LostFocus}"
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
+                                    CellStyle="{StaticResource BoldContentDataGridCellStyle}" />
                 <DataGridTextColumn Header="Email" Binding="{Binding EmailAddress, UpdateSourceTrigger=LostFocus}"
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
@@ -73,10 +67,12 @@
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
                                     CellStyle="{StaticResource ContentDataGridCellStyle}" />
                 <DataGridTextColumn Header="Overall Grade"
-                                    Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus, StringFormat=p}" IsReadOnly="True" 
+                                    Binding="{Binding OverallGrade, UpdateSourceTrigger=LostFocus, StringFormat=p}"
                                     Width="*" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                    CellStyle="{StaticResource ContentDataGridCellStyle}" />
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
+                                    IsReadOnly="True"
+                                    CellStyle="{StaticResource NonEditableContentDataGridCellStyle}" />
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}"
                                         CellStyle="{StaticResource ContentDataGridCellStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -88,7 +84,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}"
                                         CellStyle="{StaticResource ContentDataGridCellStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -100,19 +97,20 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
-                                        CellStyle="{StaticResource ContentDataGridCellStyle}">
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Edit"
-                                    Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                    CommandParameter="{Binding}"
-                                    Style="{StaticResource ContentButtonStyle}"
-                                    Margin="5" />
+                            <Button Content="Grades"
+                                    Command="{Binding DataContext.GoToStudentGradesCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding ID}"
+                                    Margin="5"
+                                    Style="{StaticResource ContentButtonStyle}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="Auto" HeaderStyle="{StaticResource ContentDataGridHeaderStyle}"
+                <DataGridTemplateColumn Width="Auto"
+                                        HeaderStyle="{StaticResource NonEditableContentDataGridHeaderStyle}"
                                         CellStyle="{StaticResource ContentDataGridCellStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

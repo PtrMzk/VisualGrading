@@ -1,25 +1,69 @@
-﻿using System;
+﻿#region Header
+
+// +===========================================================================+
+// Visual Grading Source Code
+// 
+// Copyright (C) 2016-2017 Piotr Mikolajczyk
+// 
+// 2017-03-15
+// IStudentRepository.cs
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//  +===========================================================================+
+
+#endregion
+
+#region Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
+#endregion
 
 namespace VisualGrading.Students
 {
     public interface IStudentRepository
     {
+        #region Properties
+
         List<Student> StudentList { get; set; }
 
-        event Action OnStudentDelete;
-        event Action OnStudentUpdate;
-        event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        #region Public Methods
+
         //TODO: This probably shouldnt reference the studentRepository class...
         //event StudentRepository.OnStudentChangedEventHandler StudentAdded;
 
         void AddStudentAsync(Student Student);
+        Student GetStudentByID(int studentID);
         Task<List<Student>> GetStudentsAsync();
         void RemoveStudent(Student student);
         void UpdateStudentAsync(Student updatedStudent);
-        Student GetStudentByID(int studentID);
+
+        #endregion
+
+        event Action OnStudentDelete;
+        event Action OnStudentUpdate;
+        event PropertyChangedEventHandler PropertyChanged;
     }
 }

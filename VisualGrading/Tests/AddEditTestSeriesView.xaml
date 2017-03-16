@@ -42,30 +42,30 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Label Content="Series Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0"
-                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
-            <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
+            <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="0" Text="{Binding Name, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center"
-                      Style="{StaticResource AddEditTextBoxStyle}"/>
+                     Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="Subject:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1"
-                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
-            <TextBox x:Name="subjectTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
+            <TextBox x:Name="subjectTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="1" Text="{Binding Subject, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center"
-                      Style="{StaticResource AddEditTextBoxStyle}"/>
+                     Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="SubCategory:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2"
-                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
-            <TextBox x:Name="subCategoryTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
+            <TextBox x:Name="subCategoryTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="2" Text="{Binding SubCategory, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center"  Style="{StaticResource AddEditTextBoxStyle}"/>
+                     VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="Amount of Tests:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3"
-                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
-            <TextBox x:Name="amountTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
+            <TextBox x:Name="amountTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="3" Text="{Binding Length, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center"
-                      Style="{StaticResource AddEditTextBoxStyle}"/>
+                     Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="Points:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4"
-                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}"/>
-            <TextBox x:Name="pointsTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+                   VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
+            <TextBox x:Name="pointsTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="4" Text="{Binding MaximumPoints, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center"  Style="{StaticResource AddEditTextBoxStyle}"/>
+                     VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" />
         </Grid>
         <Grid Grid.Row="2">
             <Button Content="Add"
@@ -73,15 +73,15 @@
                     HorizontalAlignment="Left"
                     Margin="25,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75" 
-                    Style="{StaticResource AddEditButtonStyle}"/>
+                    Width="75"
+                    Style="{StaticResource AddEditButtonStyle}" />
             <Button Content="Cancel"
                     Command="{Binding CancelCommand}"
                     HorizontalAlignment="Left"
                     Margin="130,5,0,0"
                     VerticalAlignment="Top"
-                    Width="75" 
-                    Style="{StaticResource AddEditButtonStyle}"/>
+                    Width="75"
+                    Style="{StaticResource AddEditButtonStyle}" />
         </Grid>
 
     </Grid>

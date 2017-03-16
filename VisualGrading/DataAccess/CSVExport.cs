@@ -1,4 +1,36 @@
-﻿//https://github.com/jitbit/CsvExport
+﻿#region Header
+
+// +===========================================================================+
+// Visual Grading Source Code
+// 
+// Copyright (C) 2016-2017 Piotr Mikolajczyk
+// 
+// 2017-03-15
+// CSVExport.cs
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//  +===========================================================================+
+
+#endregion
+
+#region Namespaces
 
 using System;
 using System.Collections.Generic;
@@ -6,68 +38,69 @@ using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Web;
+
+#endregion
 
 namespace VisualGrading.DataAccess
 {
+    //Code from: https://github.com/jitbit/CsvExport
+
     /// <summary>
-    /// Simple CSV export
-    /// Example:
-    ///   CsvExport myExport = new CsvExport();
-    ///
-    ///   myExport.AddRow();
-    ///   myExport["Region"] = "New York, USA";
-    ///   myExport["Sales"] = 100000;
-    ///   myExport["Date Opened"] = new DateTime(2003, 12, 31);
-    ///
-    ///   myExport.AddRow();
-    ///   myExport["Region"] = "Sydney \"in\" Australia";
-    ///   myExport["Sales"] = 50000;
-    ///   myExport["Date Opened"] = new DateTime(2005, 1, 1, 9, 30, 0);
-    ///
-    /// Then you can do any of the following three output options:
-    ///   string myCsv = myExport.Export();
-    ///   myExport.ExportToFile("Somefile.csv");
-    ///   byte[] myCsvData = myExport.ExportToBytes();
+    ///     Simple CSV export
+    ///     Example:
+    ///     CsvExport myExport = new CsvExport();
+    ///     myExport.AddRow();
+    ///     myExport["Region"] = "New York, USA";
+    ///     myExport["Sales"] = 100000;
+    ///     myExport["Date Opened"] = new DateTime(2003, 12, 31);
+    ///     myExport.AddRow();
+    ///     myExport["Region"] = "Sydney \"in\" Australia";
+    ///     myExport["Sales"] = 50000;
+    ///     myExport["Date Opened"] = new DateTime(2005, 1, 1, 9, 30, 0);
+    ///     Then you can do any of the following three output options:
+    ///     string myCsv = myExport.Export();
+    ///     myExport.ExportToFile("Somefile.csv");
+    ///     byte[] myCsvData = myExport.ExportToBytes();
     /// </summary>
     public class CsvExport
     {
-        /// <summary>
-        /// To keep the ordered list of column names
-        /// </summary>
-        List<string> fields = new List<string>();
+        #region Fields
 
         /// <summary>
-        /// The list of rows
-        /// </summary>
-        List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
-
-        /// <summary>
-        /// The current row
-        /// </summary>
-        Dictionary<string, object> currentRow { get { return rows[rows.Count - 1]; } }
-
-        /// <summary>
-        /// The string used to separate columns in the output
+        ///     The string used to separate columns in the output
         /// </summary>
         private readonly string columnSeparator;
 
         /// <summary>
-        /// Whether to include the preamble that declares which column separator is used in the output
+        ///     To keep the ordered list of column names
+        /// </summary>
+        private readonly List<string> fields = new List<string>();
+
+        /// <summary>
+        ///     Whether to include the preamble that declares which column separator is used in the output
         /// </summary>
         private readonly bool includeColumnSeparatorDefinitionPreamble;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CsvExport"/> class.
+        ///     The list of rows
+        /// </summary>
+        private readonly List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="CsvExport" /> class.
         /// </summary>
         /// <param name="columnSeparator">
-        /// The string used to separate columns in the output.
-        /// By default this is a comma so that the generated output is a CSV file.
+        ///     The string used to separate columns in the output.
+        ///     By default this is a comma so that the generated output is a CSV file.
         /// </param>
         /// <param name="includeColumnSeparatorDefinitionPreamble">
-        /// Whether to include the preamble that declares which column separator is used in the output.
-        /// By default this is <c>true</c> so that Excel can open the generated CSV
-        /// without asking the user to specify the delimiter used in the file.
+        ///     Whether to include the preamble that declares which column separator is used in the output.
+        ///     By default this is <c>true</c> so that Excel can open the generated CSV
+        ///     without asking the user to specify the delimiter used in the file.
         /// </param>
         public CsvExport(string columnSeparator = ",", bool includeColumnSeparatorDefinitionPreamble = true)
         {
@@ -75,8 +108,20 @@ namespace VisualGrading.DataAccess
             this.includeColumnSeparatorDefinitionPreamble = includeColumnSeparatorDefinitionPreamble;
         }
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
-        /// Set a value on this column
+        ///     The current row
+        /// </summary>
+        private Dictionary<string, object> currentRow
+        {
+            get { return rows[rows.Count - 1]; }
+        }
+
+        /// <summary>
+        ///     Set a value on this column
         /// </summary>
         public object this[string field]
         {
@@ -88,8 +133,12 @@ namespace VisualGrading.DataAccess
             }
         }
 
+        #endregion
+
+        #region Public Methods
+
         /// <summary>
-        /// Call this before setting any fields on a row
+        ///     Call this before setting any fields on a row
         /// </summary>
         public void AddRow()
         {
@@ -97,66 +146,98 @@ namespace VisualGrading.DataAccess
         }
 
         /// <summary>
-        /// Add a list of typed objects, maps object properties to CsvFields
+        ///     Add a list of typed objects, maps object properties to CsvFields
         /// </summary>
         public void AddRows<T>(IEnumerable<T> list)
         {
             if (list.Any())
-            {
                 foreach (var obj in list)
                 {
                     AddRow();
                     var values = obj.GetType().GetProperties();
                     foreach (var value in values)
-                    {
                         this[value.Name] = value.GetValue(obj, null);
-                    }
                 }
-            }
         }
 
         /// <summary>
-        /// Converts a value to how it should output in a csv file
-        /// If it has a comma, it needs surrounding with double quotes
-        /// Eg Sydney, Australia -> "Sydney, Australia"
-        /// Also if it contains any double quotes ("), then they need to be replaced with quad quotes[sic] ("")
-        /// Eg "Dangerous Dan" McGrew -> """Dangerous Dan"" McGrew"
+        ///     Output all rows as a CSV returning a string
+        /// </summary>
+        public string Export()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var line in ExportToLines())
+                sb.AppendLine(line);
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        ///     Exports as raw UTF8 bytes
+        /// </summary>
+        public byte[] ExportToBytes()
+        {
+            var data = Encoding.UTF8.GetBytes(Export());
+            return Encoding.UTF8.GetPreamble().Concat(data).ToArray();
+        }
+
+        /// <summary>
+        ///     Exports to a file
+        /// </summary>
+        public void ExportToFile(string path)
+        {
+            File.WriteAllLines(path, ExportToLines(), Encoding.UTF8);
+        }
+
+        /// <summary>
+        ///     Converts a value to how it should output in a csv file
+        ///     If it has a comma, it needs surrounding with double quotes
+        ///     Eg Sydney, Australia -> "Sydney, Australia"
+        ///     Also if it contains any double quotes ("), then they need to be replaced with quad quotes[sic] ("")
+        ///     Eg "Dangerous Dan" McGrew -> """Dangerous Dan"" McGrew"
         /// </summary>
         /// <param name="columnSeparator">
-        /// The string used to separate columns in the output.
-        /// By default this is a comma so that the generated output is a CSV document.
+        ///     The string used to separate columns in the output.
+        ///     By default this is a comma so that the generated output is a CSV document.
         /// </param>
         public static string MakeValueCsvFriendly(object value, string columnSeparator = ",")
         {
             if (value == null) return "";
-            if (value is INullable && ((INullable)value).IsNull) return "";
+            if (value is INullable && ((INullable) value).IsNull) return "";
             if (value is DateTime)
             {
-                if (((DateTime)value).TimeOfDay.TotalSeconds == 0)
-                    return ((DateTime)value).ToString("yyyy-MM-dd");
-                return ((DateTime)value).ToString("yyyy-MM-dd HH:mm:ss");
+                if (((DateTime) value).TimeOfDay.TotalSeconds == 0)
+                    return ((DateTime) value).ToString("yyyy-MM-dd");
+                return ((DateTime) value).ToString("yyyy-MM-dd HH:mm:ss");
             }
-            string output = value.ToString().Trim();
-            if (output.Contains(columnSeparator) || output.Contains("\"") || output.Contains("\n") || output.Contains("\r"))
+            var output = value.ToString().Trim();
+            if (output.Contains(columnSeparator) || output.Contains("\"") || output.Contains("\n") ||
+                output.Contains("\r"))
                 output = '"' + output.Replace("\"", "\"\"") + '"';
 
             if (output.Length > 30000) //cropping value for stupid Excel
-            {
                 if (output.EndsWith("\""))
                 {
                     output = output.Substring(0, 30000);
-                    if (output.EndsWith("\"") && !output.EndsWith("\"\"")) //rare situation when cropped line ends with a '"'
+                    if (output.EndsWith("\"") && !output.EndsWith("\"\""))
+                        //rare situation when cropped line ends with a '"'
                         output += "\""; //add another '"' to escape it
                     output += "\"";
                 }
                 else
+                {
                     output = output.Substring(0, 30000);
-            }
+                }
             return output;
         }
 
+        #endregion
+
+        #region Private Methods
+
         /// <summary>
-        /// Outputs all rows as a CSV, returning one string at a time
+        ///     Outputs all rows as a CSV, returning one string at a time
         /// </summary>
         private IEnumerable<string> ExportToLines()
         {
@@ -166,46 +247,16 @@ namespace VisualGrading.DataAccess
             yield return string.Join(columnSeparator, fields);
 
             // The rows
-            foreach (Dictionary<string, object> row in rows)
+            foreach (var row in rows)
             {
-                foreach (string k in fields.Where(f => !row.ContainsKey(f)))
-                {
+                foreach (var k in fields.Where(f => !row.ContainsKey(f)))
                     row[k] = null;
-                }
-                yield return string.Join(columnSeparator, fields.Select(field => MakeValueCsvFriendly(row[field], columnSeparator)));
+                yield return
+                    string.Join(columnSeparator,
+                        fields.Select(field => MakeValueCsvFriendly(row[field], columnSeparator)));
             }
         }
 
-        /// <summary>
-        /// Output all rows as a CSV returning a string
-        /// </summary>
-        public string Export()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (string line in ExportToLines())
-            {
-                sb.AppendLine(line);
-            }
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Exports to a file
-        /// </summary>
-        public void ExportToFile(string path)
-        {
-            File.WriteAllLines(path, ExportToLines(), Encoding.UTF8);
-        }
-
-        /// <summary>
-        /// Exports as raw UTF8 bytes
-        /// </summary>
-        public byte[] ExportToBytes()
-        {
-            var data = Encoding.UTF8.GetBytes(Export());
-            return Encoding.UTF8.GetPreamble().Concat(data).ToArray();
-        }
+        #endregion
     }
 }

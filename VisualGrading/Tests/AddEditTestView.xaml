@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <presentation:NegatableBooleanToVisibilityConverter x:Key="VisConverter" />
         <presentation:NegatableBooleanToVisibilityConverter x:Key="NegVisConverter"
-                                                 Negate="True" />
+                                                            Negate="True" />
         <Style TargetType="TextBox">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError"
@@ -47,9 +47,9 @@
             </Grid.ColumnDefinitions>
             <Label Content="Name:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="0"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
-            <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+            <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="0" Text="{Binding Name, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center"
-                      Style="{StaticResource AddEditTextBoxStyle}" />
+                     Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="Subject:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
             <TextBox x:Name="subjectTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
@@ -57,19 +57,19 @@
                      Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="SubCategory:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
-            <TextBox x:Name="subCategoryTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+            <TextBox x:Name="subCategoryTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="2" Text="{Binding SubCategory, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center"  Style="{StaticResource AddEditTextBoxStyle}" />
+                     VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="Date:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
-            <TextBox x:Name="dateTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+            <TextBox x:Name="dateTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="3" Text="{Binding Date, ValidatesOnNotifyDataErrors=True}" VerticalAlignment="Center"
-                      Style="{StaticResource AddEditTextBoxStyle}"/>
+                     Style="{StaticResource AddEditTextBoxStyle}" />
             <Label Content="Point Value:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4"
                    VerticalAlignment="Center" Style="{StaticResource AddEditLabelStyle}" />
-            <TextBox x:Name="maxPointsTextBox" Grid.Column="1" HorizontalAlignment="Left"  Margin="3"
+            <TextBox x:Name="maxPointsTextBox" Grid.Column="1" HorizontalAlignment="Left" Margin="3"
                      Grid.Row="4" Text="{Binding MaximumPoints, ValidatesOnNotifyDataErrors=True}"
-                     VerticalAlignment="Center"  Style="{StaticResource AddEditTextBoxStyle}" />
+                     VerticalAlignment="Center" Style="{StaticResource AddEditTextBoxStyle}" />
         </Grid>
         <Grid Grid.Row="2">
             <Button Content="Save"

@@ -1,4 +1,38 @@
-﻿using System;
+﻿#region Header
+
+// +===========================================================================+
+// Visual Grading Source Code
+// 
+// Copyright (C) 2016-2017 Piotr Mikolajczyk
+// 
+// 2017-03-15
+// StudentViewModel.cs
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//  +===========================================================================+
+
+#endregion
+
+#region Namespaces
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,6 +43,8 @@ using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Presentation;
 using VisualGrading.Search;
+
+#endregion
 
 namespace VisualGrading.Students
 {
@@ -39,6 +75,7 @@ namespace VisualGrading.Students
             ClearSearchCommand = new RelayCommand(OnClearSearch);
             ChartCommand = new RelayCommand<Student>(OnChartRequested);
             SendEmailCommand = new RelayCommand<Student>(OnSendEmail);
+            GoToStudentGradesCommand = new RelayCommand<long>(OnGoToStudentGrades);
 
             DeleteRequested += DeleteStudent;
         }
@@ -93,6 +130,8 @@ namespace VisualGrading.Students
 
         public RelayCommand<Student> ChartCommand { get; private set; }
 
+        public RelayCommand<long> GoToStudentGradesCommand { get; private set; }
+
         public string SearchInput
         {
             get { return _searchInput; }
@@ -107,6 +146,11 @@ namespace VisualGrading.Students
 
         #region Public Methods
 
+        public void ClearSearch()
+        {
+            SearchInput = null;
+        }
+
         public async void LoadStudents()
         {
             if (DesignerProperties.GetIsInDesignMode(
@@ -117,6 +161,9 @@ namespace VisualGrading.Students
             ObservableStudents = new ObservableCollectionExtended<Student>(_allStudents);
 
             PropertyChanged(this, new PropertyChangedEventArgs("ObservableStudents"));
+
+            //reapply search filter
+            FilterStudents(SearchInput);
         }
 
         public void OnRowEdit(object sender, PropertyChangedEventArgs e)
@@ -124,11 +171,15 @@ namespace VisualGrading.Students
             _businessManager.UpdateStudentAsync((Student) sender);
         }
 
+        public void SearchStudents(string searchInput)
+        {
+            SearchInput = searchInput;
+        }
+
         #endregion
 
         #region Private Methods
 
-        //TODO: THIS IS NEVER FALSE
         private bool CanDelete(Student student)
         {
             //TODO: Selected StudentDTO doesn't seem to work here, and this isn't really needed...
@@ -178,7 +229,7 @@ namespace VisualGrading.Students
 
         private void OnClearSearch()
         {
-            SearchInput = null;
+            ClearSearch();
         }
 
         private void OnDelete(Student student)
@@ -189,6 +240,11 @@ namespace VisualGrading.Students
         private void OnEditStudent(Student student)
         {
             EditRequested(student);
+        }
+
+        private void OnGoToStudentGrades(long id)
+        {
+            GoToStudentGradesRequested(id);
         }
 
         private void OnSendEmail(Student student)
@@ -202,6 +258,7 @@ namespace VisualGrading.Students
         public event Action<Student> ChartRequested = delegate { };
         public event Action<Student> DeleteRequested = delegate { };
         public event Action<Student> EditRequested = delegate { };
+        public event Action<long> GoToStudentGradesRequested = delegate { };
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
     }

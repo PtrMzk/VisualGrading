@@ -14,9 +14,8 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:enumLibrary="clr-namespace:VisualGrading.Helpers.EnumLibrary"
         mc:Ignorable="d"
-        Title="Visual Grading" MinHeight="650" MinWidth="650" 
-        >
-    
+        Title="Visual Grading" MinHeight="650" MinWidth="650">
+
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
@@ -45,6 +44,7 @@
         <DataTemplate DataType="{x:Type st:SettingsViewModel}">
             <st:SettingsView />
         </DataTemplate>
+        <p:EnumMatchToBooleanConverter x:Key="enumConverter" />
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -65,27 +65,42 @@
                          Command="{Binding NavCommand}"
                          CommandParameter="{x:Static e:NavigationTarget.Test}"
                          Grid.Column="0"
-                         Style="{StaticResource TitleButtonStyle}" />
+                         Style="{StaticResource TitleButtonStyle}"
+                         IsChecked="{Binding Path=CurrentTab, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=Test}" />
             <RadioButton Content="Students"
                          Command="{Binding NavCommand}"
                          CommandParameter="{x:Static e:NavigationTarget.Student}"
                          Grid.Column="1"
-                         Style="{StaticResource TitleButtonStyle}" />
+                         Style="{StaticResource TitleButtonStyle}"
+                         IsChecked="{Binding Path=CurrentTab, Mode=TwoWay, 
+                        Converter={StaticResource enumConverter},
+                         ConverterParameter=Student}" />
             <RadioButton Content="Grades"
                          Command="{Binding NavCommand}"
                          CommandParameter="{x:Static e:NavigationTarget.Grade}"
                          Grid.Column="2"
-                         Style="{StaticResource TitleButtonStyle}" />
+                         Style="{StaticResource TitleButtonStyle}"
+                         IsChecked="{Binding Path=CurrentTab, Mode=TwoWay, 
+                    Converter={StaticResource enumConverter},
+                    ConverterParameter=Grade}" />
             <RadioButton Content="Charts"
                          Command="{Binding NavCommand}"
                          CommandParameter="{x:Static e:NavigationTarget.Chart}"
                          Grid.Column="3"
-                         Style="{StaticResource TitleButtonStyle}" />
+                         Style="{StaticResource TitleButtonStyle}"
+                         IsChecked="{Binding Path=CurrentTab, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=Chart}" />
             <RadioButton Content="Settings"
                          Command="{Binding NavCommand}"
                          CommandParameter="{x:Static e:NavigationTarget.Settings}"
                          Grid.Column="4"
-                         Style="{StaticResource TitleButtonStyle}" />
+                         Style="{StaticResource TitleButtonStyle}"
+                         IsChecked="{Binding Path=CurrentTab, Mode=TwoWay, 
+                                 Converter={StaticResource enumConverter},
+                                 ConverterParameter=Settings}" />
 
         </Grid>
         <Grid x:Name="MainContent"

@@ -1,30 +1,58 @@
-﻿//https://codefizzle.wordpress.com/2012/07/26/correct-use-of-repository-and-unit-of-work-patterns-in-asp-net-mvc/
+﻿#region Header
 
-using System;
-using System.Collections.Generic;
+// +===========================================================================+
+// Visual Grading Source Code
+// 
+// Copyright (C) 2016-2017 Piotr Mikolajczyk
+// 
+// 2017-03-15
+// EFUnitOfWork.cs
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to
+// the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//  +===========================================================================+
+
+#endregion
+
+#region Namespaces
+
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SQLite.CodeFirst;
-using VisualGrading.Model.Data;
+
+#endregion
 
 namespace VisualGrading.Model.Data
 {
-   public class EFUnitOfWork : DbContext, IUnitOfWork
+    public class EFUnitOfWork : DbContext, IUnitOfWork
     {
-        private readonly EFRepository<TestDTO> _testRepository;
-        private readonly EFRepository<StudentDTO> _studentRepository;
+        #region Fields
+
         //private readonly IRepository<IEntity> _studentRepositoryGen;
         private readonly EFRepository<GradeDTO> _gradeRepository;
         private readonly EFRepository<SettingsProfileDTO> _settingsProfileRepository;
+        private readonly EFRepository<StudentDTO> _studentRepository;
+        private readonly EFRepository<TestDTO> _testRepository;
 
+        #endregion
 
-        public DbSet<TestDTO> Tests { get; set; }
-        public DbSet<StudentDTO> Students { get; set; }
-        public DbSet<GradeDTO> Grades { get; set; }
-        public DbSet<SettingsProfileDTO> SettingsProfile { get; set; }
-
+        #region Constructors
 
         public EFUnitOfWork()
             : base("name=VisualGradingDBContext")
@@ -37,13 +65,14 @@ namespace VisualGrading.Model.Data
             //_studentRepositoryGen = new EFRepository<IEntity>();
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            var sqliteConnectionInitializer = new SqliteCreateDatabaseIfNotExists<EFUnitOfWork>(modelBuilder);
-            Database.SetInitializer(sqliteConnectionInitializer);
-        }
+        #endregion
 
-        #region IUnitOfWork Implementation
+        #region Properties
+
+        public DbSet<TestDTO> Tests { get; set; }
+        public DbSet<StudentDTO> Students { get; set; }
+        public DbSet<GradeDTO> Grades { get; set; }
+        public DbSet<SettingsProfileDTO> SettingsProfile { get; set; }
 
         public IRepository<TestDTO> TestRepository
         {
@@ -69,15 +98,29 @@ namespace VisualGrading.Model.Data
         {
             get { return _gradeRepository; }
         }
-        
+
+        #endregion
+
+        #region Public Methods
+
         public void Commit()
         {
-            this.SaveChanges();
+            SaveChanges();
         }
 
         public async Task CommitAsync()
         {
-            await this.SaveChangesAsync();
+            await SaveChangesAsync();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            var sqliteConnectionInitializer = new SqliteCreateDatabaseIfNotExists<EFUnitOfWork>(modelBuilder);
+            Database.SetInitializer(sqliteConnectionInitializer);
         }
 
         #endregion
