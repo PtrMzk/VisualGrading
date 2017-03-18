@@ -5,6 +5,8 @@ Key Features:
 
 - One-click emails that can be sent to both students and their guardians. Each email features a table of grades and a summary of the student’s performance!
 
+- Easily export all grades to a CSV for further analysis in Excel!
+
 - ‘Smart Search’ allows any grid to be filtered realtime!
 ![alt tag](https://github.com/PtrMzk/VisualGrading/blob/master/Images/SmartSearch.png?raw=false)
 
