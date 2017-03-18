@@ -72,6 +72,7 @@
             <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource DataGridLines}" />
             <Setter Property="VerticalGridLinesBrush" Value="{StaticResource DataGridLines}" />
             <Setter Property="Background" Value="{StaticResource LightNavBrush}" />
+            <Setter Property="CanUserDeleteRows" Value="False" />
         </Style>
 
         <Style x:Key="ContentDataGridCellStyle" TargetType="{x:Type DataGridCell}">

@@ -11,10 +11,6 @@
     x:Class="VisualGrading.Grades.GradeView"
     mc:Ignorable="d"
     d:DesignHeight="600" d:DesignWidth="600">
-    <UserControl.InputBindings>
-        <!--<KeyBinding Key="D"
-                    Command="{Binding DeleteCommand}" />-->
-    </UserControl.InputBindings>
     <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <ei:CallMethodAction TargetObject="{Binding}" MethodName="LoadGrades" />
