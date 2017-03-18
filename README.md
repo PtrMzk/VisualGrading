@@ -20,3 +20,15 @@ Key Features:
 -	Download the files in the “Installers” folder
 -	Run setup.exe
 -	An icon to Visual Grading will placed on the desktop
+
+## Frameworks Used
+- AutoMapper
+- EntityFramework
+- OxyPlot
+- SqlLite
+- Unity
+
+
+## License
+
+This project is licensed under [MIT](http://www.opensource.org/licenses/mit-license.php "Read more about the MIT license form"). Refer to license.txt for more information.
