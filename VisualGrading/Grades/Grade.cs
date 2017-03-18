@@ -5,7 +5,7 @@
 // 
 // Copyright (C) 2016-2017 Piotr Mikolajczyk
 // 
-// 2017-03-15
+// 2017-03-18
 // Grade.cs
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -50,6 +50,7 @@ namespace VisualGrading.Grades
     {
         #region Fields
 
+        private const string ID_CONSTANT = "ID";
         private int? _points;
 
         [NonSerialized] private Student _student;
@@ -161,6 +162,9 @@ namespace VisualGrading.Grades
 
             foreach (var property in typeof(Grade).GetProperties())
             {
+                if (property.Name.ToUpper().EndsWith(ID_CONSTANT)) //skip ID properties
+                    continue;
+
                 var propertyValue = property.GetValue(this);
 
                 if (stringBuilder.Length == 0)

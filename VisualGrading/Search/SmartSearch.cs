@@ -5,7 +5,7 @@
 // 
 // Copyright (C) 2016-2017 Piotr Mikolajczyk
 // 
-// 2017-03-15
+// 2017-03-18
 // SmartSearch.cs
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -50,6 +50,7 @@ namespace VisualGrading.Search
         private const char SPACE = ' ';
         private const string ID_PATTERN = @"\w+:\[\d+\]";
         private const char SEMICOLON = ':';
+        private const string ID = "ID";
 
         #endregion
 
@@ -101,6 +102,9 @@ namespace VisualGrading.Search
 
                 foreach (var property in typeof(T).GetProperties())
                 {
+                    if (property.Name.ToUpper().EndsWith(ID)) //skip ID properties
+                        continue;
+
                     var propertyValue = property.GetValue(objectToSearch) != null
                         ? property.GetValue(objectToSearch).ToString()
                         : string.Empty;

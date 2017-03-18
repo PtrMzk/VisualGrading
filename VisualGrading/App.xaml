@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:VisualGrading"
     xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
-    xmlns:drawing="clr-namespace:System.Drawing;assembly=System.Drawing"
     x:Class="VisualGrading.App"
     StartupUri="MainWindow.xaml">
     <Application.Resources>
@@ -100,6 +99,8 @@
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="{StaticResource LightNavBrush}" />
+            <Setter Property="HorizontalContentAlignment" Value="Left"></Setter>
+            <Setter Property="Padding" Value="5"></Setter>
         </Style>
 
         <Style x:Key="NonEditableContentDataGridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}"

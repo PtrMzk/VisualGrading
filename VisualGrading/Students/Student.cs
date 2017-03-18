@@ -5,7 +5,7 @@
 // 
 // Copyright (C) 2016-2017 Piotr Mikolajczyk
 // 
-// 2017-03-15
+// 2017-03-18
 // Student.cs
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -49,6 +49,7 @@ namespace VisualGrading.Students
     {
         #region Fields
 
+        private const string ID_CONSTANT = "ID";
         private string _emailAddress;
         private string _firstName;
         private string _lastName;
@@ -139,6 +140,9 @@ namespace VisualGrading.Students
 
             foreach (var property in typeof(Student).GetProperties())
             {
+                if (property.Name.ToUpper().EndsWith(ID_CONSTANT)) //skip ID properties
+                    continue;
+
                 var propertyValue = property.GetValue(this);
 
                 if (stringBuilder.Length == 0)
@@ -166,19 +170,5 @@ namespace VisualGrading.Students
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
-
-        //}
-        //    }
-        //        StudentRefreshing(this, EventArgs.Empty);
-        //    {
-        //    if (StudentRefreshing != null)
-        //{
-
-        //protected virtual void OnStudentRefreshing()
-
-        //public event StudentRefreshEventHandler StudentRefreshing;
-        //public delegate void StudentRefreshEventHandler(object sender, EventArgs args);
-
-        //TODO: is this event needed? 
     }
 }

@@ -5,7 +5,7 @@
 // 
 // Copyright (C) 2016-2017 Piotr Mikolajczyk
 // 
-// 2017-03-15
+// 2017-03-18
 // Test.cs
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -47,6 +47,8 @@ namespace VisualGrading.Tests
     {
         #region Fields
 
+        private const string ID_CONSTANT = "ID";
+
         private DateTime _date;
         private int _maximumPoints;
         private string _name;
@@ -71,6 +73,7 @@ namespace VisualGrading.Tests
             SubCategory = subCategory;
             SeriesNumber = seriesNumber;
             MaximumPoints = maxPoints;
+            Date = DateTime.Today;
         }
 
         #endregion
@@ -155,6 +158,9 @@ namespace VisualGrading.Tests
 
             foreach (var property in typeof(Test).GetProperties())
             {
+                if (property.Name.ToUpper().EndsWith(ID_CONSTANT)) //skip ID properties
+                    continue;
+
                 var propertyValue = property.GetValue(this);
 
                 if (stringBuilder.Length == 0)
