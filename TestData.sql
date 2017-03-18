@@ -35,9 +35,11 @@ go;
 
 
 update student
-set EmailAddress = lower((substr(firstname, 0 , 1) || lastname || '@lorem.com'))
+set EmailAddress = lower((substr(firstname, 0 , 2) || lastname || '@lorem.com'))
   ,ParentEmailAddress = lower(('a' || lastname || '@ipsum.net'));
 go
+
+select * FROM STUDENT
 
 
 insert into test (Name, Subject, SubCategory, Date, SeriesNumber, MaximumPoints)
