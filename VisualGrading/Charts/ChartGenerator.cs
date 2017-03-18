@@ -34,11 +34,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Practices.Unity;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using VisualGrading.Business;
+using VisualGrading.Grades;
 using VisualGrading.Helpers;
 using VisualGrading.Students;
 using VisualGrading.Tests;
@@ -55,7 +57,6 @@ namespace VisualGrading.Charts
         private const string TEST_CHART = "Test Chart";
         private const string STUDENT_CHART = "Student Chart";
         private const string PERCENT_FORMAT = "0%";
-        private const string SORTPROPERTY_ID_FORMAT = "{0} || {1}";
         private readonly IBusinessManager _businessManager;
 
         #endregion
@@ -83,35 +84,35 @@ namespace VisualGrading.Charts
         {
             var grades = _businessManager.GetFilteredGrades(studentsFilter, testsFilter, subjectFilter,
                 subCategoryFilter);
-            var averageGradeByStudent = new SortedDictionary<string, ChartHelper>();
+            var averageGradeByStudent = new SortedDictionary<long, ChartHelper>();
             var distinctTests = new SortedDictionary<long, string>();
             var columnSeries = CreateColumnSeries();
-            var plotTitle = title != null ? title : STUDENT_CHART;
+            var plotTitle = title ?? STUDENT_CHART;
 
             var chart = GetBasePlotModel(plotTitle);
 
             foreach (var grade in grades)
             {
-                var studentNameAndIDComboKey = string.Format(SORTPROPERTY_ID_FORMAT, grade.Student.FullName,
-                    grade.StudentID); //name is used to sort, ID is for correct bucketing in case of duplicate names
+                var studentID = grade.StudentID; 
 
                 if (grade.Points != null)
-                    if (!averageGradeByStudent.ContainsKey(studentNameAndIDComboKey))
+                    if (!averageGradeByStudent.ContainsKey(studentID))
                     {
-                        averageGradeByStudent.Add(studentNameAndIDComboKey,
-                            new ChartHelper(grade.Student.FullName, grade.NonNullablePoints, grade.Test.MaximumPoints));
+                        averageGradeByStudent.Add(studentID,
+                            new ChartHelper(grade.Student.FullName, grade));
                     }
                     else
                     {
-                        averageGradeByStudent[studentNameAndIDComboKey].PointsAttained += grade.NonNullablePoints;
-                        averageGradeByStudent[studentNameAndIDComboKey].PointsPossible += grade.Test.MaximumPoints;
+                        averageGradeByStudent[studentID].AddGrade(grade);
                     }
 
                 if (!distinctTests.ContainsKey(grade.TestID))
                     distinctTests.Add(grade.TestID, grade.Test.Name);
             }
 
-            var categoryAxis = CreateCategoryAxis(averageGradeByStudent, columnSeries);
+            var sortedAveragedGrades = averageGradeByStudent.Values.OrderBy(x => x.Grades[0].Student.LastName).ToList();
+
+            var categoryAxis = CreateCategoryAxis(sortedAveragedGrades, columnSeries);
 
             AddAxesToChart(chart, categoryAxis, columnSeries);
 
@@ -130,35 +131,35 @@ namespace VisualGrading.Charts
         {
             var grades = _businessManager.GetFilteredGrades(studentsFilter, testsFilter, subjectFilter,
                 subCategoryFilter);
-            var averageGradeByTest = new SortedDictionary<string, ChartHelper>();
+            var averageGradeByTest = new SortedDictionary<long, ChartHelper>();
             var distinctStudents = new SortedDictionary<long, string>();
             var columnSeries = CreateColumnSeries();
-            var plotTitle = title != null ? title : TEST_CHART;
+            var plotTitle = title ?? TEST_CHART;
 
             var chart = GetBasePlotModel(plotTitle);
 
             foreach (var grade in grades)
             {
-                var dateAndTestIDComboKey = string.Format(SORTPROPERTY_ID_FORMAT, grade.Test.Date.ToString("yy-MM-dd"),
-                    grade.TestID); // we actually want tests to be sorted by date. ID is used for correct bucketing. 
+                var testID = grade.TestID; 
 
                 if (grade.Points != null)
-                    if (!averageGradeByTest.ContainsKey(dateAndTestIDComboKey))
+                    if (!averageGradeByTest.ContainsKey(testID))
                     {
-                        averageGradeByTest.Add(dateAndTestIDComboKey,
-                            new ChartHelper(grade.Test.Name, grade.NonNullablePoints, grade.Test.MaximumPoints));
+                        averageGradeByTest.Add(testID,
+                            new ChartHelper(grade.Test.Name, grade));
                     }
                     else
                     {
-                        averageGradeByTest[dateAndTestIDComboKey].PointsAttained += grade.NonNullablePoints;
-                        averageGradeByTest[dateAndTestIDComboKey].PointsPossible += grade.Test.MaximumPoints;
+                        averageGradeByTest[testID].AddGrade(grade);
                     }
 
                 if (!distinctStudents.ContainsKey(grade.TestID))
                     distinctStudents.Add(grade.TestID, grade.Student.FullName);
             }
 
-            var categoryAxis = CreateCategoryAxis(averageGradeByTest, columnSeries);
+            var sortedAveragedGrades = averageGradeByTest.Values.OrderBy(x => x.Grades[0].Test.Date).ToList();
+
+            var categoryAxis = CreateCategoryAxis(sortedAveragedGrades, columnSeries);
 
             AddAxesToChart(chart, categoryAxis, columnSeries);
             return chart;
@@ -188,7 +189,7 @@ namespace VisualGrading.Charts
             chart.Axes.Add(valueAxis);
         }
 
-        private CategoryAxis CreateCategoryAxis(SortedDictionary<string, ChartHelper> averageGradeSortedDictionary,
+        private CategoryAxis CreateCategoryAxis(List<ChartHelper> averagedGrades,
             ColumnSeries columnSeries)
         {
             var categoryAxis = new CategoryAxis
@@ -197,11 +198,11 @@ namespace VisualGrading.Charts
                 Angle = 45
             };
 
-            foreach (var grouping in averageGradeSortedDictionary)
+            foreach (var grouping in averagedGrades)
             {
-                categoryAxis.Labels.Add(grouping.Value.Name);
+                categoryAxis.Labels.Add(grouping.Name);
 
-                columnSeries.Items.Add(new ColumnItem {Value = (double) grouping.Value.PointsAverage});
+                columnSeries.Items.Add(new ColumnItem {Value = (double) grouping.PointsAverage});
             }
             return categoryAxis;
         }
@@ -252,26 +253,45 @@ namespace VisualGrading.Charts
     {
         #region Fields
 
-        public string Name;
-        public decimal PointsAttained;
-        public decimal PointsPossible;
+        private string _name;
+        private decimal _pointsAttained;
+        private decimal _pointsPossible;
+        private List<Grade> _grades;
 
         #endregion
 
         #region Constructors
 
-        public ChartHelper(string name, decimal pointsAttained, decimal pointsPossible)
+        public ChartHelper(string name, Grade grade)
         {
-            Name = name;
-            PointsAttained = pointsAttained;
-            PointsPossible = pointsPossible;
+            _grades = new List<Grade>();
+            _name = name;
+            AddGrade(grade);
         }
+
+        public void AddGrade(Grade grade)
+        {
+            _grades.Add(grade);
+            _pointsAttained += grade.NonNullablePoints;
+            _pointsPossible += grade.Test.MaximumPoints;
+        }
+
 
         #endregion
 
         #region Properties
 
-        public decimal PointsAverage => PointsAttained / PointsPossible;
+        public List<Grade> Grades
+        {
+            get { return _grades; }
+        }
+
+        public string Name
+        {
+            get { return _name;}
+        }
+
+        public decimal PointsAverage => _pointsAttained / _pointsPossible;
 
         #endregion
     }
